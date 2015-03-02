@@ -10,6 +10,8 @@ import java.util.List;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.model.RemoveAxiom;
 //import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 //import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -84,7 +86,7 @@ public class OWLOntologyBuilder {
 			
 			System.out.println("La classe traitée est : "+ uriConcept);
 			
-			// On va le rattacher à Thing (subClassOf)
+			// On va la rattacher à Thing (subClassOf)
 			
 			String conceptIRI = uriConcept.getSchemeSpecificPart();
 			System.out.println("La valeur de conceptIRI = "+conceptIRI);
@@ -158,12 +160,50 @@ public class OWLOntologyBuilder {
 					break;
 				case "broader":
 					System.out.println("Transcodage de broader");
+					
 					// Il faut ici construire une relation SubClassOf
+					
+					/**
+					 * 1 - On regarde si la classe est SubClassOf Thing
+					 * Si c'est le cas, on supprime cet axiome
+					 * 
+					 * 2 - On construit la deuxième classe si elle n'existe pas.
+					 * 		On la rattache à Thing
+					 * 3 - On crée la relation SubClassOf entre la classe que l'on traite et
+					 * 		cette deuxième classe.
+					 */
+					
+					// 1 - On regarde si la classe est SubClassOf Thing
+										
+					// On la recherche dans le factory
+					OWLSubClassOfAxiom rechercheThing = fact.getOWLSubClassOfAxiom(owlClass, thing);
+					if (rechercheThing.getSuperClass() == null) {
+						System.out.println("La classe n'est pas rattachée à Thing.");
+					}
+					else {
+						System.out.println("La classe est rattachée à Thing. Suppression de la relation.");
+						RemoveAxiom removeAxiom = new RemoveAxiom(onto,rechercheThing);
+						manager.applyChange(removeAxiom);
+					}
+					
 					
 					// Il faut construire la deuxième classe si elle n'existe pas
 
 
 					OWLClass classe2 = fact.getOWLClass(IRI.create(uriClasse2));
+					
+					// On la rattache à Thing si elle n'est pas déjà présente dans l'ontologie
+					
+					// On regarde si on trouve cette classe dans l'ontologie
+					
+					// Si on la trouve, on ne modifie pas ses relations précédentes.
+					
+					// Si on on ne la trouve pas :
+					OWLAxiom axiomThing = fact.getOWLSubClassOfAxiom(classe2, thing);
+					AddAxiom addAxiomThing = new AddAxiom(onto, axiomThing);
+					manager.applyChange(addAxiomThing);
+
+					
 					// Now create the axiom
 					OWLAxiom axiom2 = fact.getOWLSubClassOfAxiom(owlClass, classe2);
 					
