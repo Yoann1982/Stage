@@ -21,7 +21,7 @@ import transco.OWLOntologyBuilder;
 public class Principale {
 
 	
-		// Test commit2
+		// Test commit3
 	/**
 	 * @param args
 	 * @throws Exception 
