@@ -202,6 +202,8 @@ public class OWLOntologyBuilder {
 					OWLAxiom axiomThing = fact.getOWLSubClassOfAxiom(classe2, thing);
 					AddAxiom addAxiomThing = new AddAxiom(onto, axiomThing);
 					manager.applyChange(addAxiomThing);
+					
+					//Test commit
 
 					
 					// Now create the axiom
