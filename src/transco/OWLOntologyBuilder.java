@@ -254,7 +254,7 @@ public class OWLOntologyBuilder {
 		Set<OWLClass> listClassOnto = onto.getClassesInSignature();
 		boolean dejaPresent = false;
 		for (OWLClass cls : listClassOnto) {
-			if (cls.getIRI() == classeRecherchee.getIRI()) {
+			if (cls.getIRI().equals(classeRecherchee.getIRI())) {
 				System.out
 						.println("La classe est déjà présente. On ne rajoute pas la classe.");
 				dejaPresent = true;
