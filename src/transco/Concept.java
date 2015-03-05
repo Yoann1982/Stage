@@ -4,6 +4,13 @@ import java.util.List;
 
 import org.semanticweb.skos.SKOSConcept;
 
+/**
+ * Cette classe permet de stocker les informations contenus dans un Concept SKOS
+ * @deprecated Cette classe est remplacée par la classe ConceptSKOS. 
+ * @see ConceptSKOS
+ * @author y.keravec
+ *
+ */
 public class Concept {
 
 	private SKOSConcept concept = null;

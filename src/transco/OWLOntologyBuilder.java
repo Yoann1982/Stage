@@ -3,7 +3,6 @@ package transco;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
-
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;

@@ -1,5 +1,10 @@
 package transco;
 
+/**
+ * Cette classe permet de stocker les informations correspondantes aux objets SKOSAnnotation
+ * @author y.keravec
+ *
+ */
 public class Annotation {
 
 	/**
