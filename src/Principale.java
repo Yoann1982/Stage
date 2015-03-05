@@ -1,21 +1,12 @@
-import java.util.Set;
-
-import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLOntology;
-//import org.semanticweb.skos.SKOSAnnotation;
-//import org.semanticweb.skos.SKOSEntity;
-//import org.semanticweb.skos.SKOSLiteral;
-//import org.semanticweb.skos.SKOSUntypedLiteral;
-
 import transco.ConceptSKOS;
+import transco.OWLReader;
 import transco.SKOSReader;
 import transco.WriteOntology;
 import transco.OWLOntologyBuilder;
 
 
 /**
- * @author yoann
+ * @author Yoann Keravec
  *
  */
 public class Principale {
@@ -56,12 +47,28 @@ public class Principale {
 		// String nomFichierSortie = "/home/yoann/BERGONIE/OUT/ontologie.owl";
 		// Version Windows
 		String nomFichierSortie = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\ontologie.owl";
-		WriteOntology fileOnto = new WriteOntology();
-		fileOnto.chargeOntology(builder.getOnto());
-		//fileOnto.chargeOntology("file:/home/yoann/BERGONIE/pizza.owl");
+		//OWLReader fileOnto = new OWLReader();
+		//fileOnto.chargeOntology(nomFichierSortie);
+		//fileOnto.chargeOntology(builder.getOnto());
 		
+		WriteOntology fileOntoWriter = new WriteOntology(builder.getOnto());
+		//fileOnto.chargeOntology("file:/home/yoann/BERGONIE/pizza.owl");
 		//fileOnto.parcoursWalker();
-		fileOnto.writeFile(nomFichierSortie);
+		fileOntoWriter.writeFile(nomFichierSortie);
+		
+		// Partie chargement ontologie, import & écriture
+		
+		String nomFichierOnto = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OWL\\bcbsarcoma_v3.owl";
+		OWLReader fileOntoRead = new OWLReader();
+		fileOntoRead.chargeOntology(nomFichierOnto);
+		
+		String ontoExterne = "http://www.w3.org/TR/skos-reference/skos-owl1-dl.rdf";
+		fileOntoRead.importOnto(ontoExterne);
+		
+		WriteOntology fileOntoWriterOnto = new WriteOntology(fileOntoRead.getOntologie());
+		String nomFichierSortieOnto = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\apresImport.owl";
+		fileOntoWriterOnto.writeFile(nomFichierSortieOnto);
+		
 		
 		// Lecture de l'ontologie
 		

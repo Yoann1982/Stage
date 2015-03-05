@@ -1,9 +1,7 @@
 package transco;
 
-//import org.semanticweb.skos.properties.SKOSBroaderProperty;
 import org.semanticweb.skosapibinding.SKOSManager;
 import org.semanticweb.skos.*;
-
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
