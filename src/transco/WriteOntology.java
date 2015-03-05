@@ -4,7 +4,7 @@ package transco;
 //import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Collections;
-import java.util.Iterator;
+//import java.util.Iterator;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 //import org.semanticweb.owlapi.formats.OWLXMLDocumentFormat;
@@ -14,7 +14,7 @@ import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
 //import org.semanticweb.owlapi.io.StreamDocumentTarget;
 //import org.semanticweb.owlapi.io.StreamDocumentTarget;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotation;
+//import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 //import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -58,47 +58,30 @@ public class WriteOntology {
 	
 	public void writeFile(String nomFichier) throws Exception {
 		// Get hold of an ontology manager
-		OWLOntologyManager managerWriter = OWLManager.createOWLOntologyManager();
-		//this.manager = manager;
-		/*
-		TranscoSKOSToOWL transco = new TranscoSKOSToOWL();
-		transco.transo(nomFichier);
-		transco.parcours();
-		OWLOntology transcoOntology = transco.getOntology();
-		this.pizza.getAnnotations().size();
+		
+		System.out.println("\n");
+		System.out.println("*************** Traitement d'écriture du fichier OWL *******************");
+		System.out.println("");
 
-		Iterator<OWLAnnotation> itAnnot = this.pizza.getAnnotations()
-				.iterator();
-		while (itAnnot.hasNext()) {
-			OWLAnnotation annot = itAnnot.next();
-			System.out.println("Annot : " + annot);
-		}
-		*/
+		OWLOntologyManager managerWriter = OWLManager.createOWLOntologyManager();
 		
 		if (this.ontologie.isEmpty()) {
-			System.out.println("L'ontologie est vide. Pas de fichier Ã  Ã©crire.");
+			System.out.println("L'ontologie est vide. Pas de fichier à  écrire.");
 		} else {
-			System.out.println("L'ontologie n'est pas vide. Il est possible d'Ã©crire un fichier OWL.");
+			System.out.println("L'ontologie n'est pas vide. Il est possible d'écrire un fichier OWL.");
 		}
 
 
 		// Now save a local copy of the ontology. (Specify a path appropriate to
 		// your setup)
-		System.out.println("Nom fichier : " + nomFichier);
 		File file = new File(nomFichier);
 
 		// OWLXMLOntologyFormat owlxmlFormat = new OWLXMLOntologyFormat();
 		RDFXMLOntologyFormat rdfXMLFormat = new RDFXMLOntologyFormat();
 
-		// manager.saveOntology(this.pizza, rdfXMLFormat,
-		// IRI.create(file.toURI()));
-		System.out.println("DEBUG : juste avant que ca plante");
-		System.out.println("Format : " + rdfXMLFormat);
-		System.out.println("IRI : " + IRI.create(file.toURI()));
-		System.out.println("URI : " + file.toURI());
 		managerWriter.saveOntology(this.ontologie, rdfXMLFormat,IRI.create(file.toURI()));
-		// manager.saveOntology(this.pizza, owlxmlFormat,
-		// new StreamDocumentTarget(new ByteArrayOutputStream()));
+		System.out.println("Nom du fichier créé : " + nomFichier);
+
 	}
 
 	public void parcoursWalker() {

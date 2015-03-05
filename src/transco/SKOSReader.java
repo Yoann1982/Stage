@@ -4,6 +4,7 @@ package transco;
 import org.semanticweb.skosapibinding.SKOSManager;
 import org.semanticweb.skos.*;
 
+import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +100,9 @@ public class SKOSReader {
 
 			// SKOSDataset dataset =
 			// manager.loadDataset(URI.create("file:/home/yoann/BERGONIE/canals.skos"));
-			this.dataset = manager.loadDataset(URI.create(fileInput));
+			System.out.println("Fichier = "+fileInput );
+			URI uriFichier = new File(fileInput).toURI();
+			this.dataset = manager.loadDataset(uriFichier);
 
 			for (SKOSConcept concept : dataset.getSKOSConcepts()) {
 				writeConcept(concept);
