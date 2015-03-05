@@ -171,7 +171,7 @@ public class OWLOntologyBuilder {
 					// On recherche dans l'ontologie si la classe est déjà présente
 					ajouteURIAThing(uriClasse2);
 
-					// 3 - On crée l'axiom SubClassOf entre owlClass et classe2
+					// 3 - On crée l'axiome SubClassOf entre owlClass et classe2
 					ajoutSubClassOf(owlClass,classe2);
 					break;
 				case "related":

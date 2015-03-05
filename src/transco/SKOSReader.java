@@ -116,7 +116,7 @@ public class SKOSReader {
 	// End loadFile.
 
 	/**
-	 * Cette mÃ©thode parcours le fichier SKOS et charge son contenu dans la
+	 * Cette méthode parcours le fichier SKOS et charge son contenu dans la
 	 * liste de concept de la classe SKOSReader
 	 */
 	public void writeConcept(SKOSConcept conceptSKOS) {
