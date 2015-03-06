@@ -53,7 +53,7 @@ public class Principale {
 		//fileOnto.chargeOntology(nomFichierSortie);
 		//fileOnto.chargeOntology(builder.getOnto());
 		
-		WriteOntology fileOntoWriter = new WriteOntology(builder.getOnto());
+		WriteOntology fileOntoWriter = new WriteOntology(builder.getOntology());
 		//fileOnto.chargeOntology("file:/home/yoann/BERGONIE/pizza.owl");
 		//fileOnto.parcoursWalker();
 		fileOntoWriter.writeFile(nomFichierSortie);

@@ -25,7 +25,7 @@ import org.semanticweb.skos.SKOSUntypedLiteral;
  * alignment
  */
 public class OWLOntologyBuilder {
-	private OWLOntology onto = null;
+	private OWLOntology ontology = null;
 	private OWLDataFactory fact = null;
 	private OWLOntologyManager manager;
 
@@ -35,7 +35,7 @@ public class OWLOntologyBuilder {
 			this.manager = OWLManager.createOWLOntologyManager();
 			fact = this.manager.getOWLDataFactory();
 
-			onto = this.manager.createOntology();
+			ontology = this.manager.createOntology();
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -159,7 +159,7 @@ public class OWLOntologyBuilder {
 					} else {
 						System.out
 								.println("La classe traitée est rattachée à Thing. Suppression de la relation.");
-						RemoveAxiom removeAxiom = new RemoveAxiom(onto,
+						RemoveAxiom removeAxiom = new RemoveAxiom(ontology,
 								rechercheThing);
 						manager.applyChange(removeAxiom);
 					}
@@ -205,16 +205,12 @@ public class OWLOntologyBuilder {
 		OWLClass ret = null;
 		try {
 			// URI uri = new URI(uriStr + "#" + className);
-			onto.getClass();
+			ontology.getClass();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return ret;
 
-	}
-
-	public OWLOntology getOntology() {
-		return onto;
 	}
 
 	public void addComment(OWLClass owlClass, String value) {
@@ -223,7 +219,7 @@ public class OWLOntologyBuilder {
 
 		OWLAxiom ax = fact.getOWLAnnotationAssertionAxiom(owlClass.getIRI(),
 				commentAnno);
-		this.manager.applyChange(new AddAxiom(onto, ax));
+		this.manager.applyChange(new AddAxiom(ontology, ax));
 	}
 
 	public void addLabel(OWLClass owlClass, String value) {
@@ -232,15 +228,15 @@ public class OWLOntologyBuilder {
 
 		OWLAxiom ax = fact.getOWLAnnotationAssertionAxiom(owlClass.getIRI(),
 				labelAnno);
-		this.manager.applyChange(new AddAxiom(onto, ax));
+		this.manager.applyChange(new AddAxiom(ontology, ax));
 	}
 
-	public OWLOntology getOnto() {
-		return onto;
+	public OWLOntology getOntology() {
+		return ontology;
 	}
 
-	public void setOnto(OWLOntology onto) {
-		this.onto = onto;
+	public void setOntology(OWLOntology onto) {
+		this.ontology = onto;
 	}
 
 	/**
@@ -251,7 +247,7 @@ public class OWLOntologyBuilder {
 	 */
 	public boolean isPresent(OWLClass classeRecherchee) {
 
-		Set<OWLClass> listClassOnto = onto.getClassesInSignature();
+		Set<OWLClass> listClassOnto = ontology.getClassesInSignature();
 		boolean dejaPresent = false;
 		for (OWLClass cls : listClassOnto) {
 			if (cls.getIRI().equals(classeRecherchee.getIRI())) {
@@ -272,7 +268,7 @@ public class OWLOntologyBuilder {
 	public void ajoutSubClassOf(OWLClass classeSub, OWLClass superClasse) {
 		OWLAxiom axiomThing = fact.getOWLSubClassOfAxiom(
 				classeSub, superClasse);
-		AddAxiom addAxiomThing = new AddAxiom(onto, axiomThing);
+		AddAxiom addAxiomThing = new AddAxiom(ontology, axiomThing);
 		manager.applyChange(addAxiomThing);
 	}
 	
