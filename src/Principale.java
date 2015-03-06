@@ -81,6 +81,8 @@ public class Principale {
 		fileOntoWriterOnto.writeFile(nomFichierSortieOnto);
 		
 		
+		skosBuilder.foundIriProject();
+		
 		// Lecture de l'ontologie
 		
 		/*

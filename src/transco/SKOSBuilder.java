@@ -14,9 +14,11 @@ import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -31,11 +33,10 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
  */
 public class SKOSBuilder {
 
-	OWLOntology originalOntology;
-	OWLOntology targetOntology;
-	IRI iriRDF = IRI.create("http://www.w3.org/2000/01/rdf-schema");
-	IRI iriSKOS = IRI.create("http://www.w3.org/2004/02/skos/core");
-	
+	private OWLOntology originalOntology;
+	private OWLOntology targetOntology;
+	private IRI iriRDFS = IRI.create("http://www.w3.org/2000/01/rdf-schema");
+	private IRI iriSKOS = IRI.create("http://www.w3.org/2004/02/skos/core");
 
 	public OWLOntology getOriginalOntology() {
 		return originalOntology;
@@ -61,8 +62,6 @@ public class SKOSBuilder {
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLDataFactory fact = manager.getOWLDataFactory();
-
-		
 
 		// On crée la relation broader
 		
@@ -97,9 +96,9 @@ public class SKOSBuilder {
 			
 			for (OWLAnnotation curseurAnnot : listeAnnot) {
 				System.out.println("Propriété : " + curseurAnnot.getProperty().getIRI() );
-				System.out.println("IRI Label : " +IRI.create(iriRDF+ "#label"));
+				System.out.println("IRI Label : " +IRI.create(iriRDFS+ "#label"));
 				// On récupère le type de propriété rdfs:label
-				if (curseurAnnot.getProperty().getIRI().equals(IRI.create(iriRDF+ "#label"))) {
+				if (curseurAnnot.getProperty().getIRI().equals(IRI.create(iriRDFS+ "#label"))) {
 					// on récupère la valeur
 					annotValeur = curseurAnnot.getValue();
 					
@@ -155,6 +154,113 @@ public class SKOSBuilder {
 
 	}
 
+	/**
+	 * Cette méthode permet de retrouver l'IRI correspondant aux classes présentes dans l'ontologie d'origine
+	 * @return IRI (partie Scheme et SchemeSpecificPart) des classes
+	 */
+	public IRI foundIriProject() {
+		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+		OWLDataFactory fact = manager.getOWLDataFactory();
+		
+		IRI iriClasseFille = null;
+		
+		//Set<OWLClass> listClassOnto = originalOntology.getCl;
+		
+		Set<OWLClassExpression> listeClasseExpression = fact.getOWLThing().getSubClasses(originalOntology);
+
+		// Si la liste de sous classe est vide, on ne traite pas (c'est que
+		// Concept n'est père d'aucun autre concept
+
+		if (listeClasseExpression.size() != 0) {
+
+			// On va pour chaque relation SubClassOf retrouvée crééer un
+			// équivalent SKOS:Broader
+			for (OWLClassExpression curseur : listeClasseExpression) {
+				iriClasseFille = curseur.asOWLClass().getIRI();
+				System.out.println("IRI classe : " + iriClasseFille);
+				System.out.println("IRI namespace : " + iriClasseFille.getNamespace());
+				System.out.println("IRI scheme : " + iriClasseFille.getScheme());
+				System.out.println("IRI specifi : " + iriClasseFille.getScheme()+":"+iriClasseFille.toURI().getSchemeSpecificPart());
+				break;
+			}
+		}
+		return IRI.create(iriClasseFille.getScheme()+":"+iriClasseFille.toURI().getSchemeSpecificPart());
+	}
+	
+	/**
+	 * Cette méthode permet de récupérer la class OWLClass associé à l'URI
+	 * @param type
+	 * @return OWLClass : la classe associée à l'URI
+	 */
+	public OWLClass recupClassByIRI(IRI type) {
+		
+		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+		OWLDataFactory fact = manager.getOWLDataFactory();
+		
+		return fact.getOWLClass(type);
+	
+	}
+	
+	/**
+	 * Cette méthode permet d'ajouter dans l'ontologie un individu du type indiqué en entrée
+	 * @param type : La classe à laquelle correspond l'individu
+	 * @param individu : OWLNamedIndividual l'individu qui instancie la classe (type)
+	 */
+	public void addClassAssertion(IRI iriClasse, OWLNamedIndividual individu) {
+		
+		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+		OWLDataFactory fact = manager.getOWLDataFactory();
+		
+		OWLClassAssertionAxiom classAssertion = fact
+                .getOWLClassAssertionAxiom(recupClassByIRI(iriClasse), individu);
+		
+		manager.addAxiom(targetOntology, classAssertion);
+		
+	}
+	
+	/**
+	 * Cette méthode permet d'ajouter un individu dans l'ontologie
+	 * Elle retourne l'individu correspondant
+	 * @param type : Type (Classe) de l'individu
+	 * @param name : Nom de l'individu
+	 * @return
+	 */
+	public OWLNamedIndividual addIndividual(IRI type, IRI name) {
+		
+		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+		OWLDataFactory fact = manager.getOWLDataFactory();
+		
+		OWLNamedIndividual scheme = fact
+				.getOWLNamedIndividual(name);
+		
+		addClassAssertion(type, scheme);
+		return scheme;
+	}
+	
+	/**
+	 * Cette méthode permet d'ajouter une relation inScheme entre un Concept et un ConceptScheme
+	 * @param classe : Correspond au Concept SKOS
+	 * @param scheme : Correspond au ConceptScheme SKOS
+	 */
+	public void addScheme(OWLIndividual classe, OWLIndividual scheme) {
+
+		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+		OWLDataFactory fact = manager.getOWLDataFactory();
+
+		// On crée la relation ConceptScheme
+		
+		OWLObjectProperty hasBroader = fact.getOWLObjectProperty(IRI
+				.create(iriSKOS + "#inScheme"));
+		OWLAxiom assertion = fact.getOWLObjectPropertyAssertionAxiom(
+				hasBroader, classe, scheme);
+
+		AddAxiom addAxiomChange = new AddAxiom(targetOntology, assertion);
+		manager.applyChange(addAxiomChange);
+	}
+	
+	/**
+	 * Cette méthode permet de créer l'ontologie SKOS cible à partir de l'ontologie OWL d'origine
+	 */
 	public void creeSKOSOntologie() {
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
@@ -162,6 +268,13 @@ public class SKOSBuilder {
 
 		// On initialise l'ontologie cible.
 		initTargetOnto();
+		
+		// On crée l'entite Scheme
+		IRI iriProject = foundIriProject();
+		
+		IRI iriClasseSKOS = IRI.create(iriSKOS+"#ConceptScheme");
+		
+		OWLNamedIndividual scheme = addIndividual(iriClasseSKOS, IRI.create(iriProject + "#"+ "BCBSarcomes"));
 		
 		Set<OWLClass> listClassOnto = originalOntology.getClassesInSignature();
 		for (OWLClass cls : listClassOnto) {
@@ -177,8 +290,9 @@ public class SKOSBuilder {
 			IRI iriClasse = cls.getIRI();
 
 			// 1 - Transformation en SKOS:Concept
-			OWLIndividual individuConcept = fact
-					.getOWLNamedIndividual(iriClasse);
+			OWLNamedIndividual individuConcept = addIndividual(IRI.create(iriClasseSKOS+"#Concept"), iriClasse);
+			//OWLNamedIndividual individuConcept = fact
+			//		.getOWLNamedIndividual(iriClasse);
 
 			// 2 - On récupère les sous-classes de la classe référence
 			// Si la liste à une taille de 0, c'est que la classe n'est mère
@@ -200,7 +314,7 @@ public class SKOSBuilder {
 					// Il n'y a qu'un seul élément dans le Set
 					for (OWLClass curseurClasse : listeClasse) {
 						// On crée l'individu correspondant
-						OWLIndividual individuConceptAssocie = fact
+						OWLNamedIndividual individuConceptAssocie = fact
 								.getOWLNamedIndividual(curseurClasse.getIRI());
 						// On crée la relation Broader
 						addBroader(individuConcept, individuConceptAssocie);
@@ -208,12 +322,19 @@ public class SKOSBuilder {
 						addPrefLabel(individuConcept);
 						// On ajoute le prefLable au concept fils
 						addPrefLabel(individuConceptAssocie);
+						// On ajoute le lien avec le schéma pour le concept Père
+						addScheme(individuConcept, scheme);
+						// On ajoute le lien avec le schéma pour le concept fils
+						addScheme(individuConceptAssocie, scheme);
 					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * Cette méthode permet d'initialiser l'ontologie cible (SKOS)
+	 */
 	public void initTargetOnto() {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		try {
