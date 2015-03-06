@@ -35,22 +35,42 @@ public class SKOSBuilder {
 	private IRI iriRDFS = IRI.create("http://www.w3.org/2000/01/rdf-schema");
 	private IRI iriSKOS = IRI.create("http://www.w3.org/2004/02/skos/core");
 
+	/**
+	 * Getter de OriginalOntology
+	 * @return L'ontologie d'origine (OWL)
+	 */
 	public OWLOntology getOriginalOntology() {
 		return originalOntology;
 	}
 
+	/**
+	 * Setter de l'ontologie d'origine
+	 * @param originalOntology L'ontologie d'orgine (OWL)
+	 */
 	public void setOriginalOntology(OWLOntology originalOntology) {
 		this.originalOntology = originalOntology;
 	}
 
+	/**
+	 * Getter de l'ontologie cible (SKOS)
+	 * @return Ontologie cible (SKOS)
+	 */
 	public OWLOntology getTargetOntology() {
 		return targetOntology;
 	}
 
+	/**
+	 * Setter de l'ontologie cible (SKOS)
+	 * @param targetOntology Ontologie cible (SKOS)
+	 */
 	public void setTargetOntology(OWLOntology targetOntology) {
 		this.targetOntology = targetOntology;
 	}
 
+	/**
+	 * Constructeur de la classe SKOSBuilder
+	 * @param ontologie Ontologie d'origine (OWL)
+	 */
 	public SKOSBuilder(OWLOntology ontologie) {
 		this.originalOntology = ontologie;
 	}
@@ -95,9 +115,6 @@ public class SKOSBuilder {
 		Set<OWLAnnotation> listeAnnot = individuClasse.asOWLNamedIndividual()
 				.getAnnotations(originalOntology);
 
-		// Set<OWLAnnotation> listeAnnot =
-		// classe.getAnnotations(originalOntology);
-
 		if (listeAnnot.size() != 0) {
 
 			System.out.println("Dans la boucle (taille > 0)");
@@ -116,12 +133,6 @@ public class SKOSBuilder {
 					System.out.println("Propriété : "
 							+ curseurAnnot.getProperty().getIRI()
 							+ " Valeur : " + annotValeur);
-
-					// Le type de prefLabel est un OWL#AnnotationProperty
-					// ==> il faut bidouiller avec ca.
-					// Il faut faire une annotation de type SKOS:PrefLabel au
-					// lieu de rdfs:label
-					// et la rattacher à l'individu
 
 					// 1 - On crée un OWLAnnotationProperty de type
 					// SKOS:prefLabel
@@ -153,24 +164,6 @@ public class SKOSBuilder {
 							axiomAnnot);
 					manager.applyChange(addAxiomAnnot);
 
-					// On crée un SKOS:prefLabel
-					// OWLIndividual individuPrefLabel = fact
-					// .getOWLNamedIndividual(IRI.create(iriRDF+ "#label"));
-
-					// fact.getOWLAnnotationProperty(IRI.create(iriRDF+
-					// "#label"));
-
-					/*
-					 * 
-					 * OWLObjectProperty prefLabel =
-					 * fact.getOWLObjectProperty(IRI .create(iriSKOS +
-					 * "#prefLabel")); OWLAxiom assertion =
-					 * fact.getOWLObjectPropertyAssertionAxiom(prefLabel,
-					 * individuClasse, individuPrefLabel);
-					 * 
-					 * AddAxiom addAxiomChange = new AddAxiom(ontology,
-					 * assertion); manager.applyChange(addAxiomChange);
-					 */
 				}
 			}
 		}
