@@ -1,4 +1,5 @@
 import transco.ConceptSKOS;
+import transco.Importer;
 import transco.OWLReader;
 import transco.SKOSBuilder;
 import transco.SKOSReader;
@@ -64,15 +65,18 @@ public class Principale {
 		fileOntoRead.chargeOntology(nomFichierOnto);
 		
 		String ontoExterne = "http://www.w3.org/TR/skos-reference/skos-owl1-dl.rdf";
-		fileOntoRead.importOnto(ontoExterne);
+		Importer importer = new Importer(fileOntoRead.getOntology());
+		importer.importOnto(ontoExterne);
 		
 		
 		// On crée les objets SKOS
 		SKOSBuilder skosBuilder = new SKOSBuilder(fileOntoRead.getOntology());
 		skosBuilder.creeSKOSOntologie();
+		// On importe l'ontologie SKOS dans l'ontologie cible
+		Importer importerSKOS = new Importer(skosBuilder.getTargetOntology());
+		importerSKOS.importOnto(ontoExterne);
 		
-		
-		WriteOntology fileOntoWriterOnto = new WriteOntology(skosBuilder.getOntology());
+		WriteOntology fileOntoWriterOnto = new WriteOntology(skosBuilder.getTargetOntology());
 		String nomFichierSortieOnto = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\apresImport.owl";
 		fileOntoWriterOnto.writeFile(nomFichierSortieOnto);
 		
