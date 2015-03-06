@@ -1,6 +1,3 @@
-/**
- * 
- */
 package transco;
 
 import java.util.Set;
