@@ -58,7 +58,12 @@ public class SKOSBuilder {
 		this.originalOntology = ontologie;
 	}
 
-	public void addBroader(OWLIndividual classeMere, OWLIndividual classeFille) {
+	/**
+	 * Cette méthode crée une relation hasBroader entre le concept père et le concept fils
+	 * @param conceptPere
+	 * @param conceptFils
+	 */
+	public void addBroader(OWLIndividual conceptFils, OWLIndividual conceptPere) {
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLDataFactory fact = manager.getOWLDataFactory();
@@ -68,7 +73,7 @@ public class SKOSBuilder {
 		OWLObjectProperty hasBroader = fact.getOWLObjectProperty(IRI
 				.create(iriSKOS + "#broader"));
 		OWLAxiom assertion = fact.getOWLObjectPropertyAssertionAxiom(
-				hasBroader, classeMere, classeFille);
+				hasBroader, conceptFils, conceptPere);
 
 		AddAxiom addAxiomChange = new AddAxiom(targetOntology, assertion);
 		manager.applyChange(addAxiomChange);
@@ -230,11 +235,11 @@ public class SKOSBuilder {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLDataFactory fact = manager.getOWLDataFactory();
 		
-		OWLNamedIndividual scheme = fact
+		OWLNamedIndividual ind = fact
 				.getOWLNamedIndividual(name);
 		
-		addClassAssertion(type, scheme);
-		return scheme;
+		addClassAssertion(type, ind);
+		return ind;
 	}
 	
 	/**
@@ -266,11 +271,14 @@ public class SKOSBuilder {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLDataFactory fact = manager.getOWLDataFactory();
 
+		// On récupère l'iri de l'ontologie cible
+		IRI iriProject = foundIriProject();
+		
 		// On initialise l'ontologie cible.
-		initTargetOnto();
+		initTargetOnto(iriProject);
 		
 		// On crée l'entite Scheme
-		IRI iriProject = foundIriProject();
+		
 		
 		IRI iriClasseSKOS = IRI.create(iriSKOS+"#ConceptScheme");
 		
@@ -289,8 +297,10 @@ public class SKOSBuilder {
 
 			IRI iriClasse = cls.getIRI();
 
+			
+			iriClasseSKOS = IRI.create(iriSKOS+"#Concept");
 			// 1 - Transformation en SKOS:Concept
-			OWLNamedIndividual individuConcept = addIndividual(IRI.create(iriClasseSKOS+"#Concept"), iriClasse);
+			OWLNamedIndividual individuConcept = addIndividual(iriClasseSKOS, iriClasse);
 			//OWLNamedIndividual individuConcept = fact
 			//		.getOWLNamedIndividual(iriClasse);
 
@@ -317,7 +327,7 @@ public class SKOSBuilder {
 						OWLNamedIndividual individuConceptAssocie = fact
 								.getOWLNamedIndividual(curseurClasse.getIRI());
 						// On crée la relation Broader
-						addBroader(individuConcept, individuConceptAssocie);
+						addBroader(individuConceptAssocie, individuConcept);
 						// On ajoute le prefLabel au concept Père
 						addPrefLabel(individuConcept);
 						// On ajoute le prefLable au concept fils
@@ -335,10 +345,10 @@ public class SKOSBuilder {
 	/**
 	 * Cette méthode permet d'initialiser l'ontologie cible (SKOS)
 	 */
-	public void initTargetOnto() {
+	public void initTargetOnto(IRI iriOntology) {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		try {
-			this.targetOntology = manager.createOntology();
+			this.targetOntology = manager.createOntology(iriOntology);
 		} catch (OWLOntologyCreationException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Problème avec l'initialiation de l'ontologie cible.");

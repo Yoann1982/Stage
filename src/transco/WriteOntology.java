@@ -2,7 +2,9 @@ package transco;
 
 import java.io.File;
 import java.util.Collections;
+
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
@@ -55,6 +57,8 @@ public class WriteOntology {
 
 		// OWLXMLOntologyFormat owlxmlFormat = new OWLXMLOntologyFormat();
 		RDFXMLOntologyFormat rdfXMLFormat = new RDFXMLOntologyFormat();
+		
+		OWLXMLOntologyFormat owlXMLFormat = new OWLXMLOntologyFormat();
 
 		managerWriter.saveOntology(ontologie, rdfXMLFormat,
 				IRI.create(file.toURI()));
