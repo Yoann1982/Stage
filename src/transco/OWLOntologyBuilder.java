@@ -21,6 +21,13 @@ import org.semanticweb.skos.SKOSLiteral;
 import org.semanticweb.skos.SKOSUntypedLiteral;
 
 /**
+ * Cette classe permet de constuire une ontologie à partir de données SKOS.
+ * @author Yoann Keravec<br>
+ * Date: 09/03/2015<br>
+ * Institut Bergonié<br>
+ */
+
+/**
  * OWLOntologyBuilder is used to create and maintain the ontology for the
  * alignment
  */
@@ -38,6 +45,7 @@ public class OWLOntologyBuilder {
 			ontology = this.manager.createOntology();
 
 		} catch (Exception ex) {
+			System.err.println("Erreur lors de la création de l'objet OWLOntologyBuilder.");
 			ex.printStackTrace();
 		}
 	}
@@ -134,7 +142,7 @@ public class OWLOntologyBuilder {
 					addComment(owlClass, value);
 					break;
 				case "broader":
-					System.out.println("Transcodage de broader");
+					//System.out.println("Transcodage de broader");
 
 					// Il faut ici construire une relation SubClassOf
 
@@ -175,8 +183,7 @@ public class OWLOntologyBuilder {
 					ajoutSubClassOf(owlClass,classe2);
 					break;
 				case "related":
-					System.out
-							.println("Voir comment on transcode cette balise.");
+					//System.out.println("Voir comment on transcode cette balise.");
 					// On vérifie si la classe reliée existe dans l'ontologie.
 					// Si ce n'est pas le cas, on l'ajoute en la rattachant à
 					// Thing
@@ -187,16 +194,15 @@ public class OWLOntologyBuilder {
 							+ " n'est pas supporté.");
 					break;
 				}
-
 			}
-
 		} catch (Exception ex) {
+			System.err.println("Erreur lors de l'écriture de la classe à partir du concept "+ skosConcept + ".");
 			ex.printStackTrace();
 		}
 	}
 
 	/**
-	 * Get a particular class from the Ontology
+	 * Get a particular class from the Ontology.
 	 * 
 	 * @param className
 	 * @return OWLClass
@@ -207,12 +213,18 @@ public class OWLOntologyBuilder {
 			// URI uri = new URI(uriStr + "#" + className);
 			ontology.getClass();
 		} catch (Exception ex) {
+			System.err.println("Erreur lors de la récupération de la classe OWL.");
 			ex.printStackTrace();
 		}
 		return ret;
 
 	}
 
+	/**
+	 * Cette méthode permet d'ajouter un commentaire à une classe.
+	 * @param owlClass Classe cible
+	 * @param value Commentaire à ajouter
+	 */
 	public void addComment(OWLClass owlClass, String value) {
 		OWLAnnotation commentAnno = fact.getOWLAnnotation(
 				fact.getRDFSComment(), fact.getOWLLiteral(value));
@@ -222,6 +234,11 @@ public class OWLOntologyBuilder {
 		this.manager.applyChange(new AddAxiom(ontology, ax));
 	}
 
+	/**
+	 * Cette méthode permet d'ajouter un label à une classe.
+	 * @param owlClass Classe cible.
+	 * @param value Label à ajouter.
+	 */
 	public void addLabel(OWLClass owlClass, String value) {
 		OWLAnnotation labelAnno = fact.getOWLAnnotation(fact.getRDFSLabel(),
 				fact.getOWLLiteral(value));
@@ -230,11 +247,19 @@ public class OWLOntologyBuilder {
 				labelAnno);
 		this.manager.applyChange(new AddAxiom(ontology, ax));
 	}
-
+	
+	/**
+	 * Getter de ontology.
+	 * @return
+	 */
 	public OWLOntology getOntology() {
 		return ontology;
 	}
 
+	/**
+	 * Setter de Ontology.
+	 * @param onto
+	 */
 	public void setOntology(OWLOntology onto) {
 		this.ontology = onto;
 	}

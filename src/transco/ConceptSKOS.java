@@ -8,6 +8,15 @@ import org.semanticweb.skos.SKOSAnnotation;
 import org.semanticweb.skos.SKOSDataProperty;
 import org.semanticweb.skos.SKOSObjectProperty;
 
+
+/**
+ * Cette classe permet de stocker les données correspondant à un concept SKOS.
+ * @author Yoann Keravec<br>
+ * Date: 09/03/2015<br>
+ * Institut Bergonié<br>
+ */
+
+
 public class ConceptSKOS {
 
 	private SKOSConcept concept;

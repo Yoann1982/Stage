@@ -1,37 +1,53 @@
 package transco;
 
 import java.io.File;
-import java.util.Collections;
-
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.util.OWLOntologyWalker;
-import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitor;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+
+/**
+ * Cette classe permet décrire un fichier RDF/OWL
+ * @author Yoann Keravec<br>
+ * Date: 09/03/2015<br>
+ * Institut Bergonié<br>
+ */
 
 public class WriteOntology {
 
-	OWLOntology ontologie;
+	private OWLOntology ontology;
+
+	/**
+	 * Constructeur de la classe WriteOntology.
+	 * @param ontologie
+	 */
+	public WriteOntology(OWLOntology ontologie) {
+		this.ontology = ontologie;
+	}
 	
-	
-	
+	/**
+	 * Getter de Ontology.
+	 * @return
+	 */
 	public OWLOntology getOntologie() {
-		return ontologie;
+		return ontology;
 	}
 
+	/**
+	 * Setter de Ontology.
+	 * @param ontologie
+	 */
 	public void setOntologie(OWLOntology ontologie) {
-		this.ontologie = ontologie;
+		this.ontology = ontologie;
 	}
 
-	public WriteOntology(OWLOntology onto) {
-		this.ontologie = onto;
-	}
-	
-	public void writeFile(String nomFichier)
-			throws Exception {
+	/**
+	 * Cette méthode permet d'écrire un fichier RDF/OWL.
+	 * @param nomFichier Nom du fichier à écrire.
+	 */
+	public void writeFile(String nomFichier) {
 		// Get hold of an ontology manager
 
 		System.out.println("\n");
@@ -42,7 +58,7 @@ public class WriteOntology {
 		OWLOntologyManager managerWriter = OWLManager
 				.createOWLOntologyManager();
 
-		if (ontologie.isEmpty()) {
+		if (ontology.isEmpty()) {
 			System.out
 					.println("L'ontologie est vide. Pas de fichier à  écrire.");
 		} else {
@@ -58,39 +74,17 @@ public class WriteOntology {
 		
 		//OWLXMLOntologyFormat owlXMLFormat = new OWLXMLOntologyFormat();
 
-		managerWriter.saveOntology(ontologie, rdfXMLFormat,
-				IRI.create(file.toURI()));
+		try {
+			managerWriter.saveOntology(ontology, rdfXMLFormat,
+					IRI.create(file.toURI()));
+		} catch (OWLOntologyStorageException e) {
+			// TODO Auto-generated catch block
+			System.err.println("Erreur lors de l'écriture du fichier RDF.");
+			e.printStackTrace();
+		}
 		System.out.println("Nom du fichier créé : " + nomFichier);
-
 	}
 
-	public void parcoursWalker() {
-
-		System.out.println("DÃ©but du parcours du walker");
-
-		if (ontologie.isEmpty()) {
-			System.out.println("L'ontologie est vide.");
-		} else
-			System.out.println("L'ontologie n'est pas vide.");
-
-		// How to walk the asserted structure of an ontology
-
-		// Create the walker
-		OWLOntologyWalker walker = new OWLOntologyWalker(
-				Collections.singleton(ontologie));
-		// Now ask our walker to walk over the ontology
-		OWLOntologyWalkerVisitor<Object> visitor = new OWLOntologyWalkerVisitor<Object>(
-				walker) {
-			@Override
-			public Object visit(OWLObjectSomeValuesFrom desc) {
-				System.out.println(desc);
-				System.out.println(" " + getCurrentAxiom());
-				return null;
-			}
-		};
-		// Have the walker walk...
-		walker.walkStructure(visitor);
-
-	}
+	
 
 }

@@ -24,9 +24,9 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 /**
  * Cette méthode permet de construire une hiérarchie SKOS à partir d'une
  * OWLOntology
- * 
- * @author y.keravec
- *
+ * @author Yoann Keravec<br>
+ * Date: 09/03/2015<br>
+ * Institut Bergonié<br>
  */
 public class SKOSBuilder {
 
@@ -135,7 +135,6 @@ public class SKOSBuilder {
 							+ " Valeur : " + annotValeur);
 
 					// 1 - On crée un OWLAnnotationProperty de type
-					// SKOS:prefLabel
 					OWLAnnotationProperty propertyPrefLabel = fact
 							.getOWLAnnotationProperty(IRI.create(iriSKOS
 									+ "#prefLabel"));
@@ -181,8 +180,6 @@ public class SKOSBuilder {
 		OWLDataFactory fact = manager.getOWLDataFactory();
 
 		IRI iriClasseFille = null;
-
-		// Set<OWLClass> listClassOnto = originalOntology.getCl;
 
 		Set<OWLClassExpression> listeClasseExpression = fact.getOWLThing()
 				.getSubClasses(originalOntology);
@@ -294,6 +291,23 @@ public class SKOSBuilder {
 	}
 
 	/**
+	 * Cette méthode permet d'initialiser l'ontologie cible (SKOS)
+	 * @param iriOntology
+	 *            : Correspond à l'IRI de l'ontologie cible à initialiser
+	 */
+	public void initTargetOnto(IRI iriOntology) {
+		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+		try {
+			this.targetOntology = manager.createOntology(iriOntology);
+		} catch (OWLOntologyCreationException e) {
+			// TODO Auto-generated catch block
+			System.err
+					.println("Problème avec l'initialiation de l'ontologie cible.");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Cette méthode permet de créer l'ontologie SKOS cible à partir de
 	 * l'ontologie OWL d'origine
 	 */
@@ -369,20 +383,4 @@ public class SKOSBuilder {
 			}
 		}
 	}
-
-	/**
-	 * Cette méthode permet d'initialiser l'ontologie cible (SKOS)
-	 */
-	public void initTargetOnto(IRI iriOntology) {
-		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		try {
-			this.targetOntology = manager.createOntology(iriOntology);
-		} catch (OWLOntologyCreationException e) {
-			// TODO Auto-generated catch block
-			System.out
-					.println("Problème avec l'initialiation de l'ontologie cible.");
-			e.printStackTrace();
-		}
-	}
-
 }

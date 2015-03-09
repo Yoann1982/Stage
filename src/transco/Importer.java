@@ -9,6 +9,13 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
+/**
+ * Cette méthode permet d'importer une ontologie externe au sein d'une autre ontologie.
+ * @author Yoann Keravec<br>
+ * Date: 09/03/2015<br>
+ * Institut Bergonié<br>
+ */
+
 public class Importer {
 
 	private OWLOntology ontology;
