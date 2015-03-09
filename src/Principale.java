@@ -17,8 +17,11 @@ public class Principale {
 
 	/**
 	 * Cette méthode permet d'effectuer le transcodage d'un fichier SKOS en OWL.
-	 * @param input Fichier en entrée.
-	 * @param output Fichier en sortie.
+	 * 
+	 * @param input
+	 *            Fichier en entrée.
+	 * @param output
+	 *            Fichier en sortie.
 	 */
 	public static void skosToOWL(String input, String output) {
 
@@ -38,15 +41,19 @@ public class Principale {
 		WriteOntology fileOntoWriter = new WriteOntology(builder.getOntology());
 		fileOntoWriter.writeFile(output);
 	}
+
 	// END skosToOWL
 
 	/**
 	 * Cette méthode permet de transcoder un fichier OWL en SKOS.
-	 * @param input Fichier en entrée.
-	 * @param output Fichier en sortie.
+	 * 
+	 * @param input
+	 *            Fichier en entrée.
+	 * @param output
+	 *            Fichier en sortie.
 	 */
 	public static void OWLToSkos(String input, String output) {
-		
+
 		OWLReader fileOntoRead = new OWLReader();
 		fileOntoRead.chargeOntology(input);
 
@@ -66,30 +73,66 @@ public class Principale {
 		fileOntoWriterOnto.writeFile(output);
 
 	}
-	
+
+	public static void afficheMessageErreur() {
+		System.err
+				.println("Argument 1 : type de transcodage : 1 : skostoowl ou 2 : owltoskos");
+		System.err.println("Argument 2 : Nom du fichier en entrée");
+		System.err.println("Argument 3 : Nom du fichier en sortie");
+	}
+
 	/**
+	 * La main prend trois argument: Argument 1 : type de transcodage : 1 :
+	 * skostoowl ou 2 : owltoskos Argument 2 : Nom du fichier en entrée Argument
+	 * 3 : Nom du fichier en sortie
+	 * 
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 
-		// Version Linux
-		// String nomFichier = "file:/home/yoann/BERGONIE/canals.skos";
-		// Version Windows
-		String nomFichier = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\canals.skos";
+		// On vérifie que l'on a le bon nombre d'argument
+		if (args.length != 3) {
+			System.err
+					.println("Erreur : Nombre d'arguments en entrée incorrect.");
+			System.err.println("Vous devez saisir 3 arguments :");
+			afficheMessageErreur();
+			System.exit(1);
+		} else {
+			
+			System.out.println("Type de transcodage : " + args[0]);
+			System.out.println("Fichier en entrée : " + args[1]);
+			System.out.println("Fichier en sortie : " + args[2]);
+			if (!(args[0].equals("1") || args[0].equals("2"))) {
+				System.err
+						.println("La valeur du premier argument est incorrect : ");
+				afficheMessageErreur();
+			} else {
+				if (args[0].equals("1")) {
+					// Transcodage SKOS To OLW
+					// Version Linux
+					// String nomFichier = "file:/home/yoann/BERGONIE/canals.skos";
+					// Version Windows
+					//String nomFichier = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\canals.skos";
 
-		// Version Linux
-		// String nomFichierSortie = "/home/yoann/BERGONIE/OUT/ontologie.owl";
-		// Version Windows
-		String nomFichierSortie = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\ontologie.owl";
+					// Version Linux
+					// String nomFichierSortie =
+					// "/home/yoann/BERGONIE/OUT/ontologie.owl";
+					// Version Windows
+					//String nomFichierSortie = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\ontologie.owl";
 
-		skosToOWL(nomFichier, nomFichierSortie);
+					skosToOWL(args[1], args[2]);
+					
+				} else {
+					// Transcodage OWL To SKOS
+					// Partie chargement ontologie, import & écriture
 
-		// Partie chargement ontologie, import & écriture
-
-		String nomFichierOnto = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OWL\\bcbsarcoma_v3.owl";
-		String fichierSKOSOutput = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\skosOutput.owl";
-		OWLToSkos(nomFichierOnto, fichierSKOSOutput);
+					//String nomFichierOnto = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OWL\\bcbsarcoma_v3.owl";
+					//String fichierSKOSOutput = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\skosOutput.owl";
+					OWLToSkos(args[1], args[2]);
+				}
+			}
+		}
 	}
 
 }
