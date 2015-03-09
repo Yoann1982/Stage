@@ -11,15 +11,15 @@ import transco.OWLOntologyBuilder;
  * ou un transcodage OWLToSKOS.
  * 
  * @author Yoann Keravec Date: 09/03/2015<br>
- *         Institut Bergonié<br>
+ *         Institut BergoniÃ©<br>
  */
 public class Principale {
 
 	/**
-	 * Cette méthode permet d'effectuer le transcodage d'un fichier SKOS en OWL.
+	 * Cette mï¿½thode permet d'effectuer le transcodage d'un fichier SKOS en OWL.
 	 * 
 	 * @param input
-	 *            Fichier en entrée.
+	 *            Fichier en entrÃ©e.
 	 * @param output
 	 *            Fichier en sortie.
 	 */
@@ -29,11 +29,11 @@ public class Principale {
 		SKOSReader reader = new SKOSReader();
 		reader.loadFile(input);
 
-		// On crée une instance de l'objet qui va permettre de créer une
-		// ontologie à partir de la structure de données.
+		// On crï¿½e une instance de l'objet qui va permettre de crï¿½er une
+		// ontologie ï¿½ partir de la structure de donnï¿½es.
 		OWLOntologyBuilder builder = new OWLOntologyBuilder();
 
-		// On parcours la structure de données pour alimenter l'ontologie créée.
+		// On parcours la structure de donnï¿½es pour alimenter l'ontologie crï¿½ï¿½e.
 		for (ConceptSKOS conceptCur : reader.getListConceptSKOS()) {
 			builder.createClass(conceptCur);
 		}
@@ -45,10 +45,10 @@ public class Principale {
 	// END skosToOWL
 
 	/**
-	 * Cette méthode permet de transcoder un fichier OWL en SKOS.
+	 * Cette mÃ©thode permet de transcoder un fichier OWL en SKOS.
 	 * 
 	 * @param input
-	 *            Fichier en entrée.
+	 *            Fichier en entrÃ©e.
 	 * @param output
 	 *            Fichier en sortie.
 	 */
@@ -61,7 +61,7 @@ public class Principale {
 		Importer importer = new Importer(fileOntoRead.getOntology());
 		importer.importOnto(ontoExterne);
 
-		// On crée les objets SKOS
+		// On crï¿½e les objets SKOS
 		SKOSBuilder skosBuilder = new SKOSBuilder(fileOntoRead.getOntology());
 		skosBuilder.creeSKOSOntologie();
 		// On importe l'ontologie SKOS dans l'ontologie cible
@@ -77,13 +77,13 @@ public class Principale {
 	public static void afficheMessageErreur() {
 		System.err
 				.println("Argument 1 : type de transcodage : 1 : skostoowl ou 2 : owltoskos");
-		System.err.println("Argument 2 : Nom du fichier en entrée");
+		System.err.println("Argument 2 : Nom du fichier en entrÃ©e");
 		System.err.println("Argument 3 : Nom du fichier en sortie");
 	}
 
 	/**
 	 * La main prend trois argument: Argument 1 : type de transcodage : 1 :
-	 * skostoowl ou 2 : owltoskos Argument 2 : Nom du fichier en entrée Argument
+	 * skostoowl ou 2 : owltoskos Argument 2 : Nom du fichier en entrï¿½e Argument
 	 * 3 : Nom du fichier en sortie
 	 * 
 	 * @param args
@@ -91,17 +91,17 @@ public class Principale {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		// On vérifie que l'on a le bon nombre d'argument
+		// On vï¿½rifie que l'on a le bon nombre d'argument
 		if (args.length != 3) {
 			System.err
-					.println("Erreur : Nombre d'arguments en entrée incorrect.");
+					.println("Erreur : Nombre d'arguments en entrÃ©e incorrect.");
 			System.err.println("Vous devez saisir 3 arguments :");
 			afficheMessageErreur();
 			System.exit(1);
 		} else {
 			
 			System.out.println("Type de transcodage : " + args[0]);
-			System.out.println("Fichier en entrée : " + args[1]);
+			System.out.println("Fichier en entrÃ©e : " + args[1]);
 			System.out.println("Fichier en sortie : " + args[2]);
 			if (!(args[0].equals("1") || args[0].equals("2"))) {
 				System.err
@@ -125,7 +125,7 @@ public class Principale {
 					
 				} else {
 					// Transcodage OWL To SKOS
-					// Partie chargement ontologie, import & écriture
+					// Partie chargement ontologie, import & Ã©criture
 
 					//String nomFichierOnto = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OWL\\bcbsarcoma_v3.owl";
 					//String fichierSKOSOutput = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\skosOutput.owl";

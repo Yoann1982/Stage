@@ -9,10 +9,10 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 /**
- * Cette classe permet décrire un fichier RDF/OWL
+ * Cette classe permet d'Ã©crire un fichier RDF/OWL
  * @author Yoann Keravec<br>
  * Date: 09/03/2015<br>
- * Institut Bergonié<br>
+ * Institut BergoniÃ©<br>
  */
 
 public class WriteOntology {
@@ -44,15 +44,15 @@ public class WriteOntology {
 	}
 
 	/**
-	 * Cette méthode permet d'écrire un fichier RDF/OWL.
-	 * @param nomFichier Nom du fichier à écrire.
+	 * Cette mÃ©thode permet d'Ã©crire un fichier RDF/OWL.
+	 * @param nomFichier Nom du fichier Ã  Ã©crire.
 	 */
 	public void writeFile(String nomFichier) {
 		// Get hold of an ontology manager
 
 		System.out.println("\n");
 		System.out
-				.println("*************** Traitement d'écriture du fichier OWL *******************");
+				.println("*************** Traitement d'Ã©criture du fichier OWL *******************");
 		System.out.println("");
 
 		OWLOntologyManager managerWriter = OWLManager
@@ -60,10 +60,10 @@ public class WriteOntology {
 
 		if (ontology.isEmpty()) {
 			System.out
-					.println("L'ontologie est vide. Pas de fichier à  écrire.");
+					.println("L'ontologie est vide. Pas de fichier Ã  Ã©crire.");
 		} else {
 			System.out
-					.println("L'ontologie n'est pas vide. Il est possible d'écrire un fichier OWL.");
+					.println("L'ontologie n'est pas vide. Il est possible d'Ã©crire un fichier OWL.");
 		}
 
 		// Now save a local copy of the ontology. (Specify a path appropriate to
@@ -79,12 +79,9 @@ public class WriteOntology {
 					IRI.create(file.toURI()));
 		} catch (OWLOntologyStorageException e) {
 			// TODO Auto-generated catch block
-			System.err.println("Erreur lors de l'écriture du fichier RDF.");
+			System.err.println("Erreur lors de l'Ã©criture du fichier RDF.");
 			e.printStackTrace();
 		}
-		System.out.println("Nom du fichier créé : " + nomFichier);
+		System.out.println("Nom du fichier crÃ©Ã© : " + nomFichier);
 	}
-
-	
-
 }

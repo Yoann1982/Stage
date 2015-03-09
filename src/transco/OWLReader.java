@@ -1,6 +1,3 @@
-/**
- * 
- */
 package transco;
 
 import java.io.File;
@@ -17,10 +14,10 @@ import org.semanticweb.owlapi.util.OWLOntologyWalker;
 import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitor;
 
 /**
- * Cette méthode permet le chargement d'un fichier OWL en mémoire
+ * Cette mÃ©thode permet le chargement d'un fichier OWL en mÃ©moire
  * @author Yoann Keravec<br>
  * Date: 09/03/2015<br>
- * Institut Bergonié<br>
+ * Institut BergoniÃ©<br>
  */
 
 public class OWLReader {
@@ -28,7 +25,7 @@ public class OWLReader {
 	private OWLOntology ontology;
 
 	/**
-	 * Cette méthode permet de récupérer l'ontologie chargée.
+	 * Cette mÃ©thode permet de rÃ©cupÃ©rer l'ontologie chargÃ©e.
 	 * 
 	 * @return Une ontologie.
 	 */
@@ -37,7 +34,7 @@ public class OWLReader {
 	}
 
 	/**
-	 * Cette méthode permet de charger une ontologie en mémoire.
+	 * Cette mÃ©thode permet de charger une ontologie en mÃ©moire.
 	 * 
 	 * @param ontologie
 	 */
@@ -46,7 +43,7 @@ public class OWLReader {
 	}
 
 	/**
-	 * Cette méthode permet de charger en mémoire une ontologie à partir d'un fichier OWL
+	 * Cette mÃ©thode permet de charger en mÃ©moire une ontologie Ã  partir d'un fichier OWL
 	 * @param nomFichier Fichier OWL
 	 * @throws OWLOntologyCreationException
 	 */
@@ -65,11 +62,11 @@ public class OWLReader {
 	}
 
 	/**
-	 * Cette méthode permet de parcourir une ontologie.
+	 * Cette mÃ©thode permet de parcourir une ontologie.
 	 */
 	public void parcoursWalker() {
 
-		System.out.println("Début du parcours du walker");
+		System.out.println("DÃ©but du parcours du walker");
 
 		if (ontology.isEmpty()) {
 			System.out.println("L'ontologie est vide.");

@@ -21,10 +21,10 @@ import org.semanticweb.skos.SKOSLiteral;
 import org.semanticweb.skos.SKOSUntypedLiteral;
 
 /**
- * Cette classe permet de constuire une ontologie ‡ partir de donnÈes SKOS.
+ * Cette classe permet de constuire une ontologie √† partir de donn√©es SKOS.
  * @author Yoann Keravec<br>
  * Date: 09/03/2015<br>
- * Institut BergoniÈ<br>
+ * Institut Bergoni√©<br>
  */
 
 /**
@@ -45,7 +45,7 @@ public class OWLOntologyBuilder {
 			ontology = this.manager.createOntology();
 
 		} catch (Exception ex) {
-			System.err.println("Erreur lors de la crÈation de l'objet OWLOntologyBuilder.");
+			System.err.println("Erreur lors de la cr√©ation de l'objet OWLOntologyBuilder.");
 			ex.printStackTrace();
 		}
 	}
@@ -66,20 +66,20 @@ public class OWLOntologyBuilder {
 		try {
 
 			System.out.println("\n");
-			System.out.println("*************** Traitement de crÈation des classes *******************");
+			System.out.println("*************** Traitement de cr√©ation des classes *******************");
 			System.out.println("");
 			
 			// On parcours le contenu du ConceptSKOS
 
 			// 1 - Traitement du Concept
-			// On crÈe l'objet OWLClass associÈ au SKOS Concept
+			// On cr√©e l'objet OWLClass associ√© au SKOS Concept
 			SKOSConcept concept = skosConcept.getConcept();
 			URI uriConcept = concept.getURI();
 			owlClass = fact.getOWLClass(IRI.create(uriConcept));
 
 			
-			// On vÈrifie s'il est dÈj‡ prÈsent dans l'ontologie.
-			// Si ce n'est pas le cas, on le rattache ‡ Thing
+			// On v√©rifie s'il est d√©j√† pr√©sent dans l'ontologie.
+			// Si ce n'est pas le cas, on le rattache √† Thing
 			ajouteURIAThing(uriConcept);
 			
 			// 2 - On parcours la liste d'annotations
@@ -88,13 +88,13 @@ public class OWLOntologyBuilder {
 
 			for (SKOSAnnotation curAnnot : listAnnot) {
 
-				// On regarde la classe propriÈtaire de l'annotation
+				// On regarde la classe propri√©taire de l'annotation
 				String typeAnnot = curAnnot.getURI().getFragment();
 
 				String lang = "";
 				String value = "";
 				URI uriClasse2 = null;
-				// On rÈcupËre la valeur (si pas une classe)
+				// On r√©cup√®re la valeur (si pas une classe)
 
 				if (curAnnot.isAnnotationByConstant()) {
 
@@ -115,12 +115,12 @@ public class OWLOntologyBuilder {
 					value = entity.getURI().getFragment();
 					// l'URI si une classe
 					SKOSEntity entity2 = curAnnot.getAnnotationValue();
-					// On rÈcupËre l'URI de la seconde classe correspondant ‡ la relation
+					// On r√©cup√®re l'URI de la seconde classe correspondant √† la relation
 					// partie Range
 					uriClasse2 = entity2.getURI();
 				}
 
-				System.out.print("Le type d'annotation traitÈe : " + typeAnnot+". \t");
+				System.out.print("Le type d'annotation trait√©e : " + typeAnnot+". \t");
 				System.out.println("La valeur de l'annotation : " + value);
 
 				// On transcode en fonction du type d'annotation
@@ -150,10 +150,10 @@ public class OWLOntologyBuilder {
 					 * 1 - On regarde si la classe est SubClassOf Thing Si c'est
 					 * le cas, on supprime cet axiome
 					 * 
-					 * 2 - On construit la deuxiËme classe si elle n'existe pas.
-					 * On la rattache ‡† Thing 3 - On crÈe la relation
-					 * SubClassOf entre la classe que l'on traite et cette
-					 * deuxiËme classe.
+					 * 2 - On construit la deuxi√®me classe si elle n'existe pas.
+					 * On la rattache √† Thing 
+					 * 3 - On cr√©e la relation SubClassOf entre la classe que l'on traite et cette
+					 * deuxi√®me classe.
 					 */
 
 					// 1 - On regarde si la classe est SubClassOf Thing
@@ -163,40 +163,40 @@ public class OWLOntologyBuilder {
 							.getOWLSubClassOfAxiom(owlClass, fact.getOWLThing());
 					if (rechercheThing.getSuperClass() == null) {
 						System.out
-								.println("La classe n'est pas rattachÈe ‡ Thing.");
+								.println("La classe n'est pas rattach√©e √† Thing.");
 					} else {
 						System.out
-								.println("La classe traitÈe est rattachÈe ‡ Thing. Suppression de la relation.");
+								.println("La classe trait√©e est rattach√©e √† Thing. Suppression de la relation.");
 						RemoveAxiom removeAxiom = new RemoveAxiom(ontology,
 								rechercheThing);
 						manager.applyChange(removeAxiom);
 					}
 
-					// 2 - Il faut construire la deuxiËme classe si elle n'existe pas
+					// 2 - Il faut construire la deuxi√®me classe si elle n'existe pas
 
 					OWLClass classe2 = fact.getOWLClass(IRI.create(uriClasse2));
 
-					// On recherche dans l'ontologie si la classe est dÈj‡ prÈsente
+					// On recherche dans l'ontologie si la classe est d√©j√† pr√©sente
 					ajouteURIAThing(uriClasse2);
 
-					// 3 - On crÈe l'axiome SubClassOf entre owlClass et classe2
+					// 3 - On cr√©e l'axiome SubClassOf entre owlClass et classe2
 					ajoutSubClassOf(owlClass,classe2);
 					break;
 				case "related":
 					//System.out.println("Voir comment on transcode cette balise.");
-					// On vÈrifie si la classe reliÈe existe dans l'ontologie.
-					// Si ce n'est pas le cas, on l'ajoute en la rattachant ‡
+					// On v√©rifie si la classe reli√©e existe dans l'ontologie.
+					// Si ce n'est pas le cas, on l'ajoute en la rattachant √†
 					// Thing
 					ajouteURIAThing(uriClasse2);
 					break;
 				default:
 					System.out.println("Le type " + typeAnnot
-							+ " n'est pas supportÈ.");
+							+ " n'est pas support√©.");
 					break;
 				}
 			}
 		} catch (Exception ex) {
-			System.err.println("Erreur lors de l'Ècriture de la classe ‡ partir du concept "+ skosConcept + ".");
+			System.err.println("Erreur lors de l'√©criture de la classe √† partir du concept "+ skosConcept + ".");
 			ex.printStackTrace();
 		}
 	}
@@ -213,7 +213,7 @@ public class OWLOntologyBuilder {
 			// URI uri = new URI(uriStr + "#" + className);
 			ontology.getClass();
 		} catch (Exception ex) {
-			System.err.println("Erreur lors de la rÈcupÈration de la classe OWL.");
+			System.err.println("Erreur lors de la r√©cup√©ration de la classe OWL.");
 			ex.printStackTrace();
 		}
 		return ret;
@@ -221,9 +221,9 @@ public class OWLOntologyBuilder {
 	}
 
 	/**
-	 * Cette mÈthode permet d'ajouter un commentaire ‡ une classe.
+	 * Cette m√©thode permet d'ajouter un commentaire √† une classe.
 	 * @param owlClass Classe cible
-	 * @param value Commentaire ‡ ajouter
+	 * @param value Commentaire √† ajouter
 	 */
 	public void addComment(OWLClass owlClass, String value) {
 		OWLAnnotation commentAnno = fact.getOWLAnnotation(
@@ -235,9 +235,9 @@ public class OWLOntologyBuilder {
 	}
 
 	/**
-	 * Cette mÈthode permet d'ajouter un label ‡ une classe.
+	 * Cette m√©thode permet d'ajouter un label √† une classe.
 	 * @param owlClass Classe cible.
-	 * @param value Label ‡ ajouter.
+	 * @param value Label √† ajouter.
 	 */
 	public void addLabel(OWLClass owlClass, String value) {
 		OWLAnnotation labelAnno = fact.getOWLAnnotation(fact.getRDFSLabel(),
@@ -265,10 +265,10 @@ public class OWLOntologyBuilder {
 	}
 
 	/**
-	 * Cette mÈthode recherche dans l'ontologie si la classe est dÈj‡ prÈsente.
+	 * Cette m√©thode recherche dans l'ontologie si la classe est d√©j√† pr√©sente.
 	 * Elle retourne vraie dans ce cas.
 	 * @param classeRecherchee
-	 * @return True si prÈsent, False sinon
+	 * @return True si pr√©sent, False sinon
 	 */
 	public boolean isPresent(OWLClass classeRecherchee) {
 
@@ -277,7 +277,7 @@ public class OWLOntologyBuilder {
 		for (OWLClass cls : listClassOnto) {
 			if (cls.getIRI().equals(classeRecherchee.getIRI())) {
 				System.out
-						.println("La classe est dÈj‡ prÈsente. On ne rajoute pas la classe.");
+						.println("La classe est d√©j√† pr√©sente. On ne rajoute pas la classe.");
 				dejaPresent = true;
 				break;
 			}
@@ -286,7 +286,7 @@ public class OWLOntologyBuilder {
 	}
 	
 	/**
-	 * Cette mÈthode permet d'ajouter un axiom SubClassOf
+	 * Cette m√©thode permet d'ajouter un axiom SubClassOf
 	 * @param classeSub
 	 * @param superClasse
 	 */
@@ -298,15 +298,15 @@ public class OWLOntologyBuilder {
 	}
 	
 	/**
-	 * Cette mÈthode vÈrifie si l'ontologie contient une classe correspond ‡ l'UTI en entrÈe
-	 * Si aucune classe n'est retrouvÈe, elle est rattachÈe ‡ Thing (SubClassOf)
+	 * Cette m√©thode v√©rifie si l'ontologie contient une classe correspond √† l'URI en entr√©e
+	 * Si aucune classe n'est retrouv√©e, elle est rattach√©e √† Thing (SubClassOf)
 	 * @param uriAAjouter
 	 */
 	public void ajouteURIAThing(URI uriAAjouter) {
 		OWLClass classeRelated = fact.getOWLClass(IRI.create(uriAAjouter));
 		boolean dejaPresent = isPresent(classeRelated);
 		if (!dejaPresent) {
-			System.out.println("On rattache la classe ‡ Thing.");
+			System.out.println("On rattache la classe √† Thing.");
 			OWLClass thing = fact.getOWLThing();
 			// Si on on ne la trouve pas :
 			ajoutSubClassOf(classeRelated,thing);

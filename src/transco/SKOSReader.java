@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Cette classe permet le chargement d'un fichier SKOS au d'une structure SKOSDataset
+ * Cette classe permet le chargement d'un fichier SKOS au sein d'une structure SKOSDataset
  * @author Yoann Keravec<br>
  * Date: 09/03/2015<br>
- * Institut Bergonié<br>
+ * Institut BergoniÃ©<br>
  */
 public class SKOSReader {
 
@@ -53,7 +53,7 @@ public class SKOSReader {
 	}
 
 	/**
-	 * Cette méthode prend un fichier en entrée et charge son contenu dans une
+	 * Cette mÃ©thode prend un fichier en entrÃ©e et charge son contenu dans une
 	 * structure SKOSDataset.
 	 * @param fileInput
 	 */
@@ -88,7 +88,7 @@ public class SKOSReader {
 	// End loadFile.
 
 	/**
-	 * Cette méthode permet de charger les informations d'un SKOSConcept
+	 * Cette mÃ©thode permet de charger les informations d'un SKOSConcept
 	 * la liste de ConceptSKOS de la classe SKOSReader. 
 	 * @param conceptSKOS
 	 */

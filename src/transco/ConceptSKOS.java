@@ -10,10 +10,10 @@ import org.semanticweb.skos.SKOSObjectProperty;
 
 
 /**
- * Cette classe permet de stocker les données correspondant à un concept SKOS.
+ * Cette classe permet de stocker les donnÃ©es correspondant Ã  un concept SKOS.
  * @author Yoann Keravec<br>
  * Date: 09/03/2015<br>
- * Institut Bergonié<br>
+ * Institut BergoniÃ©<br>
  */
 
 
