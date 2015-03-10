@@ -181,18 +181,20 @@ public class SKOSBuilder {
 
 		IRI iriClasseFille = null;
 
-		Set<OWLClassExpression> listeClasseExpression = fact.getOWLThing()
-				.getSubClasses(originalOntology);
+		//Set<OWLClassExpression> listeClasseExpression = fact.getOWLThing()
+		//		.getSubClasses(originalOntology);
 
+		Set<OWLClass> listClassOnto = originalOntology.getClassesInSignature();
+		
 		// Si la liste de sous classe est vide, on ne traite pas (c'est que
 		// Concept n'est père d'aucun autre concept
 
-		if (listeClasseExpression.size() != 0) {
+		if (listClassOnto.size() != 0) {
 
 			// On va pour chaque relation SubClassOf retrouvée, créer un
 			// équivalent SKOS:Broader
-			for (OWLClassExpression curseur : listeClasseExpression) {
-				iriClasseFille = curseur.asOWLClass().getIRI();
+			for (OWLClass cls : listClassOnto) {
+				iriClasseFille = cls.getIRI();
 				System.out.println("IRI classe : " + iriClasseFille);
 				System.out.println("IRI namespace : "
 						+ iriClasseFille.getNamespace());

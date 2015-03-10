@@ -1,5 +1,18 @@
+import java.util.Set;
+
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLOntology;
+
 import transco.ConceptSKOS;
 import transco.Importer;
+import transco.OWLOntologyBuilderNoSKOSAPI;
 import transco.OWLReader;
 import transco.SKOSBuilder;
 import transco.SKOSReader;
@@ -16,7 +29,7 @@ import transco.OWLOntologyBuilder;
 public class Principale {
 
 	/**
-	 * Cette m�thode permet d'effectuer le transcodage d'un fichier SKOS en OWL.
+	 * Cette méthode permet d'effectuer le transcodage d'un fichier SKOS en OWL.
 	 * 
 	 * @param input
 	 *            Fichier en entrée.
@@ -29,11 +42,12 @@ public class Principale {
 		SKOSReader reader = new SKOSReader();
 		reader.loadFile(input);
 
-		// On cr�e une instance de l'objet qui va permettre de cr�er une
-		// ontologie � partir de la structure de donn�es.
+		// On crée une instance de l'objet qui va permettre de créer une
+		// ontologie à partir de la structure de données.
 		OWLOntologyBuilder builder = new OWLOntologyBuilder();
-
-		// On parcours la structure de donn�es pour alimenter l'ontologie cr��e.
+		
+		
+		// On parcours la structure de données pour alimenter l'ontologie créée.
 		for (ConceptSKOS conceptCur : reader.getListConceptSKOS()) {
 			builder.createClass(conceptCur);
 		}
@@ -44,6 +58,31 @@ public class Principale {
 
 	// END skosToOWL
 
+	
+	/**
+	 * Cette méthode permet d'effectuer le transcodage d'un fichier SKOS en OWL.
+	 * 
+	 * @param input
+	 *            Fichier en entrée.
+	 * @param output
+	 *            Fichier en sortie.
+	 */
+	public static void skosToOWL2(String input, String output) {
+
+		// On lit le fichier qui alimente une structure de données interne
+		OWLReader reader = new OWLReader();
+		reader.loadOntology(input);
+
+		// On crée une instance de l'objet qui va permettre de créer une
+		// ontologie à partir de la structure de données.
+		OWLOntologyBuilderNoSKOSAPI builder = new OWLOntologyBuilderNoSKOSAPI(reader.getOntology());
+		builder.createOntology();
+		WriteOntology fileOntoWriter = new WriteOntology(builder.getTargetOntology());
+		fileOntoWriter.writeFile(output);
+	}
+
+	// END skosToOWL
+	
 	/**
 	 * Cette méthode permet de transcoder un fichier OWL en SKOS.
 	 * 
@@ -55,13 +94,13 @@ public class Principale {
 	public static void OWLToSkos(String input, String output) {
 
 		OWLReader fileOntoRead = new OWLReader();
-		fileOntoRead.chargeOntology(input);
+		fileOntoRead.loadOntology(input);
 
 		String ontoExterne = "http://www.w3.org/TR/skos-reference/skos-owl1-dl.rdf";
 		Importer importer = new Importer(fileOntoRead.getOntology());
 		importer.importOnto(ontoExterne);
 
-		// On cr�e les objets SKOS
+		// On crée les objets SKOS
 		SKOSBuilder skosBuilder = new SKOSBuilder(fileOntoRead.getOntology());
 		skosBuilder.creeSKOSOntologie();
 		// On importe l'ontologie SKOS dans l'ontologie cible
@@ -74,6 +113,80 @@ public class Principale {
 
 	}
 
+	public static OWLReader loadOWLFile(String input) {
+		OWLReader fileOntoRead = new OWLReader();
+		fileOntoRead.loadOntology(input);
+		return fileOntoRead;
+	}
+	
+	public static void readContentOfOntology(OWLOntology onto) {
+		
+		Set<OWLNamedIndividual> listClassOnto = onto.getIndividualsInSignature();
+		
+		for (OWLNamedIndividual cls : listClassOnto) {
+			System.out.println("INDIVIDU : " + cls.toString());
+			Set<OWLAnnotation> listeAnnot = cls.getAnnotations(onto);
+			Set<OWLAxiom> listeAxiom = cls.getReferencingAxioms(onto);
+			for (OWLAxiom curAxiom : listeAxiom ) {
+				System.out.println("Axiom : " + curAxiom.toString());
+				System.out.println("Axiom Type : " + curAxiom.getAxiomType());
+				System.out.println("Axiom Class : " + curAxiom.getClass());
+				System.out.println("Signature : " + curAxiom.getSignature().size());
+				Set<OWLEntity> listeEntity = curAxiom.getSignature();
+				IRI iriEntity = null;
+				for (OWLEntity curEntity : listeEntity) {
+					System.out.println("ENTITY : " + curEntity.toString());
+					System.out.println("Type de l'entité : " + curEntity.getEntityType());
+					String typeEntity = curEntity.getEntityType().toString();
+					switch (typeEntity) {
+					case "ObjectProperty":
+						// On crée un objet ObjectProperty
+						iriEntity = curEntity.asOWLObjectProperty().getIRI();
+						System.out.println("IRI : "+ iriEntity);
+						// En fonction du code ...
+						break;
+					case "NamedIndividual":
+						// On récupère l'IRI de l'entité NamedIndividual
+						iriEntity = curEntity.asOWLNamedIndividual().getIRI();
+						//On crée une classe ayant cet IRI
+						System.out.println("IRI : "+ iriEntity);
+						break;
+					default:
+						System.out.println("Le type " + typeEntity
+								+ " n'est pas supporté.");
+						break;
+					}				}
+				
+				Set<OWLObjectProperty> listeObProp = curAxiom.getObjectPropertiesInSignature();
+								
+				for (OWLObjectProperty curOb : listeObProp) {
+					System.out.println("Obj Prop : " + curOb);
+					//System.out.println("Domain : " + curOb.);
+				}
+			}
+		}
+
+		Set<OWLClass> listeClasse = onto.getClassesInSignature();
+		System.out.println("Taille Classe : " + listeClasse.size());
+		for (OWLClass curClass : listeClasse) {
+			System.out.println("Classe ; " + curClass.asOWLClass());
+			Set<OWLNamedIndividual> listeIndiv = curClass.asOWLClass().getIndividualsInSignature();
+			for (OWLNamedIndividual clsIndiv : listeIndiv) {
+				Set<OWLAnnotation> listeAnnot = clsIndiv.getAnnotations(onto);
+				System.out.println("Taille liste annot : " + listeAnnot.size());
+				for (OWLAnnotation curAnnot : listeAnnot) {
+					System.out.println("Property ; " + curAnnot.getProperty().toString());
+					System.out.println("Value ; " + curAnnot.getValue().toString());
+				}
+			}
+		}		
+		
+	}
+	
+	
+	/**
+	 * Cette méthode permet d'afficher un rappel sur les arguments à utiliser en entrée
+	 */
 	public static void afficheMessageErreur() {
 		System.err
 				.println("Argument 1 : type de transcodage : 1 : skostoowl ou 2 : owltoskos");
@@ -83,7 +196,7 @@ public class Principale {
 
 	/**
 	 * La main prend trois argument: Argument 1 : type de transcodage : 1 :
-	 * skostoowl ou 2 : owltoskos Argument 2 : Nom du fichier en entr�e Argument
+	 * skostoowl ou 2 : owltoskos Argument 2 : Nom du fichier en entrée Argument
 	 * 3 : Nom du fichier en sortie
 	 * 
 	 * @param args
@@ -91,7 +204,7 @@ public class Principale {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		// On v�rifie que l'on a le bon nombre d'argument
+		// On vérifie que l'on a le bon nombre d'argument
 		if (args.length != 3) {
 			System.err
 					.println("Erreur : Nombre d'arguments en entrée incorrect.");
@@ -121,7 +234,9 @@ public class Principale {
 					// Version Windows
 					//String nomFichierSortie = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\ontologie.owl";
 
-					skosToOWL(args[1], args[2]);
+					skosToOWL2(args[1], args[2]);
+					//readContentOfOntology(loadOWLFile(args[1]).getOntology());
+
 					
 				} else {
 					// Transcodage OWL To SKOS

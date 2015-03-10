@@ -72,8 +72,9 @@ public class SKOSReader {
 			System.out.println("Fichier = " + fileInput);
 			URI uriFichier = new File(fileInput).toURI();
 			this.dataset = manager.loadDataset(uriFichier);
-
 			for (SKOSConcept concept : dataset.getSKOSConcepts()) {
+				System.out.println("SKOSConcept : " + concept.getURI());
+				System.out.println("TAILLE : " + dataset.getSKOSAnnotations(concept).size());
 				writeConceptSKOS(concept);
 			}
 

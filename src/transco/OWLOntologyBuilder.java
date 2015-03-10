@@ -65,10 +65,6 @@ public class OWLOntologyBuilder {
 
 		try {
 
-			System.out.println("\n");
-			System.out.println("*************** Traitement de création des classes *******************");
-			System.out.println("");
-			
 			// On parcours le contenu du ConceptSKOS
 
 			// 1 - Traitement du Concept
@@ -80,7 +76,7 @@ public class OWLOntologyBuilder {
 			
 			// On vérifie s'il est déjà présent dans l'ontologie.
 			// Si ce n'est pas le cas, on le rattache à Thing
-			ajouteURIAThing(uriConcept);
+			addURIAThing(uriConcept);
 			
 			// 2 - On parcours la liste d'annotations
 
@@ -91,6 +87,12 @@ public class OWLOntologyBuilder {
 				// On regarde la classe propriétaire de l'annotation
 				String typeAnnot = curAnnot.getURI().getFragment();
 
+				//DEBUG :
+				if (!(typeAnnot.equals("prefLabel") || typeAnnot.equals("altLabel"))) {
+					System.out.println(typeAnnot);	
+				}
+				
+				
 				String lang = "";
 				String value = "";
 				URI uriClasse2 = null;
@@ -120,8 +122,8 @@ public class OWLOntologyBuilder {
 					uriClasse2 = entity2.getURI();
 				}
 
-				System.out.print("Le type d'annotation traitée : " + typeAnnot+". \t");
-				System.out.println("La valeur de l'annotation : " + value);
+				//System.out.print("Le type d'annotation traitée : " + typeAnnot+". \t");
+				//System.out.println("La valeur de l'annotation : " + value);
 
 				// On transcode en fonction du type d'annotation
 				switch (typeAnnot) {
@@ -142,6 +144,11 @@ public class OWLOntologyBuilder {
 					addComment(owlClass, value);
 					break;
 				case "broader":
+					
+					System.out.print("Le type d'annotation traitée : " + typeAnnot+". \t");
+					System.out.println("La valeur de l'annotation : " + value);
+	
+					
 					//System.out.println("Transcodage de broader");
 
 					// Il faut ici construire une relation SubClassOf
@@ -162,9 +169,11 @@ public class OWLOntologyBuilder {
 					OWLSubClassOfAxiom rechercheThing = fact
 							.getOWLSubClassOfAxiom(owlClass, fact.getOWLThing());
 					if (rechercheThing.getSuperClass() == null) {
+						
 						System.out
 								.println("La classe n'est pas rattachée à Thing.");
 					} else {
+						
 						System.out
 								.println("La classe traitée est rattachée à Thing. Suppression de la relation.");
 						RemoveAxiom removeAxiom = new RemoveAxiom(ontology,
@@ -177,17 +186,17 @@ public class OWLOntologyBuilder {
 					OWLClass classe2 = fact.getOWLClass(IRI.create(uriClasse2));
 
 					// On recherche dans l'ontologie si la classe est déjà présente
-					ajouteURIAThing(uriClasse2);
+					addURIAThing(uriClasse2);
 
 					// 3 - On crée l'axiome SubClassOf entre owlClass et classe2
-					ajoutSubClassOf(owlClass,classe2);
+					addSubClassOf(owlClass,classe2);
 					break;
 				case "related":
 					//System.out.println("Voir comment on transcode cette balise.");
 					// On vérifie si la classe reliée existe dans l'ontologie.
 					// Si ce n'est pas le cas, on l'ajoute en la rattachant à
 					// Thing
-					ajouteURIAThing(uriClasse2);
+					addURIAThing(uriClasse2);
 					break;
 				default:
 					System.out.println("Le type " + typeAnnot
@@ -276,8 +285,7 @@ public class OWLOntologyBuilder {
 		boolean dejaPresent = false;
 		for (OWLClass cls : listClassOnto) {
 			if (cls.getIRI().equals(classeRecherchee.getIRI())) {
-				System.out
-						.println("La classe est déjà présente. On ne rajoute pas la classe.");
+				//System.out.println("La classe est déjà présente. On ne rajoute pas la classe.");
 				dejaPresent = true;
 				break;
 			}
@@ -290,7 +298,7 @@ public class OWLOntologyBuilder {
 	 * @param classeSub
 	 * @param superClasse
 	 */
-	public void ajoutSubClassOf(OWLClass classeSub, OWLClass superClasse) {
+	public void addSubClassOf(OWLClass classeSub, OWLClass superClasse) {
 		OWLAxiom axiomThing = fact.getOWLSubClassOfAxiom(
 				classeSub, superClasse);
 		AddAxiom addAxiomThing = new AddAxiom(ontology, axiomThing);
@@ -302,14 +310,14 @@ public class OWLOntologyBuilder {
 	 * Si aucune classe n'est retrouvée, elle est rattachée à Thing (SubClassOf)
 	 * @param uriAAjouter
 	 */
-	public void ajouteURIAThing(URI uriAAjouter) {
+	public void addURIAThing(URI uriAAjouter) {
 		OWLClass classeRelated = fact.getOWLClass(IRI.create(uriAAjouter));
 		boolean dejaPresent = isPresent(classeRelated);
 		if (!dejaPresent) {
-			System.out.println("On rattache la classe à Thing.");
+			//System.out.println("On rattache la classe à Thing.");
 			OWLClass thing = fact.getOWLThing();
 			// Si on on ne la trouve pas :
-			ajoutSubClassOf(classeRelated,thing);
+			addSubClassOf(classeRelated,thing);
 		}
 	}
 	

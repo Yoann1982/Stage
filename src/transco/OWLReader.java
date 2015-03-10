@@ -47,7 +47,7 @@ public class OWLReader {
 	 * @param nomFichier Fichier OWL
 	 * @throws OWLOntologyCreationException
 	 */
-	public void chargeOntology(String nomFichier) {
+	public void loadOntology(String nomFichier) {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
 		URI uriFichier = new File(nomFichier).toURI();
