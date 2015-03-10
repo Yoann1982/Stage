@@ -9,7 +9,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 /**
- * Cette classe permet d'écrire un fichier RDF/OWL
+ * Cette classe permet d'écrire un fichier RDF/OWL.
  * 
  * @author Yoann Keravec<br>
  *         Date: 09/03/2015<br>
@@ -23,7 +23,7 @@ public class WriteOntology {
 	/**
 	 * Constructeur de la classe WriteOntology.
 	 * 
-	 * @param ontologie
+	 * @param ontologie @see OWLOntology
 	 */
 	public WriteOntology(OWLOntology ontologie) {
 		this.ontology = ontologie;
@@ -32,7 +32,7 @@ public class WriteOntology {
 	/**
 	 * Getter de Ontology.
 	 * 
-	 * @return
+	 * @return @see OWLOntology
 	 */
 	public OWLOntology getOntologie() {
 		return ontology;
@@ -41,7 +41,7 @@ public class WriteOntology {
 	/**
 	 * Setter de Ontology.
 	 * 
-	 * @param ontologie
+	 * @param ontologie @see OWLOntology
 	 */
 	public void setOntologie(OWLOntology ontologie) {
 		this.ontology = ontologie;
@@ -87,7 +87,6 @@ public class WriteOntology {
 				managerWriter.saveOntology(ontology, rdfXMLFormat,
 						IRI.create(file.toURI()));
 			} catch (OWLOntologyStorageException e) {
-				// TODO Auto-generated catch block
 				System.err.println("Erreur lors de l'écriture du fichier RDF.");
 				e.printStackTrace();
 			}

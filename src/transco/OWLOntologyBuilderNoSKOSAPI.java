@@ -20,7 +20,7 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 
 /**
- * Cette classe permet de construire une ontologie à partir d'une structure SKOS
+ * Cette classe permet de construire une ontologie à partir d'une structure SKOS.
  * 
  * @author Yoann Keravec<br>
  *         Date: 10/03/2015<br>
@@ -33,6 +33,9 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 	private IRI iriProp = null;
 	private IRI iriIndiv = null;
 
+	/**
+	 * Constructeur de la classe. Crée une ontologie d'origine vide.
+	 */
 	public OWLOntologyBuilderNoSKOSAPI() {
 
 		try {
@@ -48,6 +51,10 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 		}
 	}
 
+	/**
+	 * Constructeur de la classe. Charge l'ontology d'origine à partir de l'ontologie en paramètre.
+	 * @param onto @see OWLOntology
+	 */
 	public OWLOntologyBuilderNoSKOSAPI(OWLOntology onto) {
 
 		try {
@@ -64,10 +71,10 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 	}
 
 	/**
-	 * Cette méthode permet d'ajouter un axiom SubClassOf
+	 * Cette méthode permet d'ajouter un axiom SubClassOf.
 	 * 
-	 * @param classeSub
-	 * @param superClasse
+	 * @param classeSub @see OWLClass
+	 * @param superClasse @see OWLClass
 	 */
 	public void addSubClassOf(OWLClass classeSub, OWLClass superClasse) {
 		OWLAxiom axiomThing = fact
@@ -80,7 +87,7 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 	 * Cette méthode recherche dans l'ontologie si la classe est déjà présente.
 	 * Elle retourne vraie dans ce cas.
 	 * 
-	 * @param classeRecherchee
+	 * @param classeRecherchee @see OWLClass 
 	 * @return True si présent, False sinon
 	 */
 	public boolean isPresent(OWLClass classeRecherchee) {
@@ -101,9 +108,9 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 	/**
 	 * Cette méthode vérifie si l'ontologie contient une classe correspond à
 	 * l'URI en entrée Si aucune classe n'est retrouvée, elle est rattachée à
-	 * Thing (SubClassOf)
+	 * Thing (SubClassOf).
 	 * 
-	 * @param uriAAjouter
+	 * @param uriAAjouter @see URI
 	 */
 	public void addURIAThing(URI uriAAjouter) {
 		OWLClass classeRelated = fact.getOWLClass(IRI.create(uriAAjouter));
@@ -119,9 +126,9 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 	/**
 	 * Cette méthode vérifie si l'ontologie contient une classe correspond à
 	 * l'URI en entrée Si aucune classe n'est retrouvée, elle est rattachée à
-	 * Thing (SubClassOf)
+	 * Thing (SubClassOf).
 	 * 
-	 * @param uriAAjouter
+	 * @param uriAAjouter @see URI
 	 */
 	public void addToThing(OWLClass classeRelated) {
 		boolean dejaPresent = isPresent(classeRelated);
@@ -137,7 +144,7 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 	/**
 	 * Cette méthode permet d'ajouter un commentaire à une classe.
 	 * 
-	 * @param owlClass
+	 * @param owlClass @see OWLClass
 	 *            Classe cible
 	 * @param value
 	 *            Commentaire à ajouter
@@ -154,7 +161,7 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 	/**
 	 * Cette méthode permet d'ajouter un label à une classe.
 	 * 
-	 * @param owlClass
+	 * @param owlClass @see OWLClass
 	 *            Classe cible.
 	 * @param value
 	 *            Label à ajouter.
@@ -170,21 +177,21 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 
 	/**
 	 * Cette méthode ajoute dans l'ontologie cible un axiom de type
-	 * ObjectProperty
+	 * ObjectProperty.
 	 * 
 	 * @param iriObjProp
-	 *            IRI de la relation
+	 *            IRI de la relation @see IRI
 	 * @param domain
-	 *            Classe correspondante au domain de la relation
+	 *            Classe correspondante au domain de la relation @see OWLClass
 	 * @param range
-	 *            Classe correspondante au range de la relation
+	 *            Classe correspondante au range de la relation @see OWLClass
 	 */
 	public void addObjectProperty(IRI iriObjProp, OWLClass domain,
 			OWLClass range) {
 		// 1 - if broader
 		if (iriObjProp != null
 				&& iriObjProp.toURI().getFragment().equals("broader")) {
-			/**
+			/*
 			 * 1 - On regarde si la classe est SubClassOf Thing Si c'est le cas,
 			 * on supprime cet axiome
 			 * 
@@ -222,7 +229,7 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 	 * (ainsi que les classes associées).
 	 * 
 	 * @param individu
-	 *            L'individu que l'on traite.
+	 *            L'individu que l'on traite. @see OWLNamedIndividual
 	 */
 	public void addRelation(OWLNamedIndividual individu) {
 		Set<OWLAxiom> listeAxiom = individu
@@ -254,6 +261,11 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 		}
 	}
 
+	/**
+	 * Cette méthode permet d'ajouter une annotation dans l'ontologie cible 
+	 * à la classe correspondante à l'individu en entrée.
+	 * @param individu @see OWLNamedIndividual
+	 */
 	public void addAnnotation(OWLNamedIndividual individu) {
 		Set<OWLAnnotation> listAnnotIndiv = individu
 				.getAnnotations(originalOntology);
@@ -267,7 +279,6 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 					|| typeAnnotation.equals("prefLabel")
 					|| typeAnnotation.equals("altLabel")
 					|| typeAnnotation.equals("scopeNote")) {
-				System.out.println("Annotation : " + curAnnotIndiv);
 
 				OWLLiteral litteral = (OWLLiteral) curAnnotIndiv.getValue();
 
@@ -280,8 +291,6 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 
 				// On crée la classe à laquelle on veut rattacher l'annotation
 				OWLClass classeAnot = fact.getOWLClass(iriIndiv);
-
-				System.out.println("CLASSE : " + classeAnot);
 
 				switch (typeAnnot) {
 				case "prefLabel":
@@ -297,20 +306,21 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 					addComment(classeAnot, value);
 					break;
 				case "scopeNote":
-					System.out.println("Transcodage de scopeNote -> comment");
-					System.out.println("Classe Anot  : " + classeAnot);
-					System.out.println("Value : " + value);
+					//System.out.println("Transcodage de scopeNote -> comment");
 					addComment(classeAnot, value);
 					break;
 				default:
-					System.out.println("Le type " + typeAnnot
-							+ " n'est pas supporté.");
+					//System.out.println("Le type " + typeAnnot
+					//		+ " n'est pas supporté.");
 					break;
 				}
 			}
 		}
 	}
 
+	/**
+	 * Cette méthode crée l'ontologie cible à partir de l'ontologie d'origine.
+	 */
 	public void createOntology() {
 
 		// On récupère l'iri de l'ontologie cible
@@ -324,8 +334,6 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 		for (OWLNamedIndividual indivCursor : listClassOnto) {
 
 			iriIndiv = indivCursor.getIRI();
-
-			System.out.println("INDIV = " + iriIndiv);
 
 			// On traite dans un premier temps les axioms pour créer les
 			// SubClassOf

@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
  * Cette classe permet de construire une hiérarchie SKOS à partir d'une
- * OWLOntology
+ * OWLOntology.
  * @author Yoann Keravec<br>
  * Date: 09/03/2015<br>
  * Institut Bergonié<br>
@@ -34,8 +34,8 @@ public class SKOSBuilder extends Builder {
 
 	
 	/**
-	 * Constructeur de la classe SKOSBuilder
-	 * @param ontologie Ontologie d'origine (OWL)
+	 * Constructeur de la classe SKOSBuilder.
+	 * @param ontologie Ontologie d'origine (OWL) @see OWLOntology.
 	 */
 	public SKOSBuilder(OWLOntology ontologie) {
 		this.originalOntology = ontologie;
@@ -43,10 +43,10 @@ public class SKOSBuilder extends Builder {
 
 	/**
 	 * Cette méthode crée une relation hasBroader entre le concept père et le
-	 * concept fils
+	 * concept fils.
 	 * 
-	 * @param conceptPere
-	 * @param conceptFils
+	 * @param conceptPere @see OWLIndividual
+	 * @param conceptFils @see OWLIndividual
 	 */
 	public void addBroader(OWLIndividual conceptFils, OWLIndividual conceptPere) {
 
@@ -66,9 +66,9 @@ public class SKOSBuilder extends Builder {
 
 	/**
 	 * Cette méthode permet d'ajouter le prefLable au concept SKOS à partir du
-	 * label de la classe OWL d'origine
+	 * label de la classe OWL d'origine.
 	 * 
-	 * @param individuClasse
+	 * @param individuClasse @see OWLIndividual
 	 */
 	public void addPrefLabel(OWLIndividual individuClasse) {
 
@@ -82,23 +82,12 @@ public class SKOSBuilder extends Builder {
 				.getAnnotations(originalOntology);
 
 		if (listeAnnot.size() != 0) {
-
-			System.out.println("Dans la boucle (taille > 0)");
-
 			for (OWLAnnotation curseurAnnot : listeAnnot) {
-				System.out.println("Propriété : "
-						+ curseurAnnot.getProperty().getIRI());
-				System.out.println("IRI Label : "
-						+ IRI.create(iriRDFS + "#label"));
 				// On récupère le type de propriété rdfs:label
 				if (curseurAnnot.getProperty().getIRI()
 						.equals(IRI.create(iriRDFS + "#label"))) {
 					// on récupère la valeur
 					annotValeur = curseurAnnot.getValue();
-
-					System.out.println("Propriété : "
-							+ curseurAnnot.getProperty().getIRI()
-							+ " Valeur : " + annotValeur);
 
 					// 1 - On crée un OWLAnnotationProperty de type
 					OWLAnnotationProperty propertyPrefLabel = fact
@@ -116,7 +105,6 @@ public class SKOSBuilder extends Builder {
 					// individuClasse.asOWLAnonymousIndividual();
 					IRI iriIndividu = individuClasse.asOWLNamedIndividual()
 							.getIRI();
-					System.out.println("IRI Indiv : " + iriIndividu);
 
 					// 4 - On crée l'axiom d'annotation
 					OWLAnnotationAssertionAxiom axiomAnnot = fact
@@ -138,10 +126,10 @@ public class SKOSBuilder extends Builder {
 
 
 	/**
-	 * Cette méthode permet de récupérer la class OWLClass associé à l'URI
+	 * Cette méthode permet de récupérer la class OWLClass associé à l'URI.
 	 * 
-	 * @param type
-	 * @return OWLClass : la classe associée à l'URI
+	 * @param type @see IRI
+	 * @return OWLClass : la classe associée à l'URI.
 	 */
 	public OWLClass recupClassByIRI(IRI type) {
 
@@ -154,12 +142,12 @@ public class SKOSBuilder extends Builder {
 
 	/**
 	 * Cette méthode permet d'ajouter dans l'ontologie un individu du type
-	 * indiqué en entrée
+	 * indiqué en entrée.
 	 * 
-	 * @param type
-	 *            : La classe à laquelle correspond l'individu
+	 * @param iriClasse
+	 *            : La classe à laquelle correspond l'individu @see IRI
 	 * @param individu
-	 *            : OWLNamedIndividual l'individu qui instancie la classe (type)
+	 *            : @see OWLNamedIndividual l'individu qui instancie la classe (type)
 	 */
 	public void addClassAssertion(IRI iriClasse, OWLNamedIndividual individu) {
 
@@ -175,13 +163,13 @@ public class SKOSBuilder extends Builder {
 
 	/**
 	 * Cette méthode permet d'ajouter un individu dans l'ontologie Elle retourne
-	 * l'individu correspondant
+	 * l'individu correspondant.
 	 * 
 	 * @param type
-	 *            : Type (Classe) de l'individu
+	 *            : Type (Classe) de l'individu @see IRI.
 	 * @param name
-	 *            : Nom de l'individu
-	 * @return
+	 *            : Nom de l'individu @see IRI.
+	 * @return @see OWLNamedIndividual L'individu ajouté.
 	 */
 	public OWLNamedIndividual addIndividual(IRI type, IRI name) {
 
@@ -196,12 +184,12 @@ public class SKOSBuilder extends Builder {
 
 	/**
 	 * Cette méthode permet d'ajouter une relation inScheme entre un Concept et
-	 * un ConceptScheme
+	 * un ConceptScheme.
 	 * 
 	 * @param classe
-	 *            : Correspond au Concept SKOS
+	 *            : Correspond au Concept SKOS @see OWLIndividual
 	 * @param scheme
-	 *            : Correspond au ConceptScheme SKOS
+	 *            : Correspond au ConceptScheme SKOS @see OWLIndividual
 	 */
 	public void addScheme(OWLIndividual classe, OWLIndividual scheme) {
 

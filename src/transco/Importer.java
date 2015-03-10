@@ -10,7 +10,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
- * Cette méthode permet d'importer une ontologie externe au sein d'une autre ontologie.
+ * Cette classe permet d'importer une ontologie externe au sein d'une autre ontologie.
  * @author Yoann Keravec<br>
  * Date: 09/03/2015<br>
  * Institut Bergonié<br>
@@ -25,7 +25,8 @@ public class Importer {
 	}
 	
 	/**
-	 * Cette méthode permet d'importer une ontologie externe
+	 * Cette méthode permet d'importer une ontologie externe.
+	 * @param ontoExterne L'ontologie à importer.
 	 */
 	public void importOnto(String ontoExterne) {
 		
@@ -39,16 +40,23 @@ public class Importer {
 		try {
 			this.ontology.getOWLOntologyManager().loadOntology(toImport);
 		} catch (OWLOntologyCreationException e) {
-			// TODO Auto-generated catch block
 			System.out.println("L'import de l'ontologie "+ontoExterne+ " a échoué.");
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Getter de l'attribut ontology.
+	 * @return Une Ontologie
+	 */
 	public OWLOntology getOntology() {
 		return ontology;
 	}
 
+	/**
+	 * Setter de l'attribut ontology.
+	 * @param ontology Une ontologie
+	 */
 	public void setOntology(OWLOntology ontology) {
 		this.ontology = ontology;
 	}

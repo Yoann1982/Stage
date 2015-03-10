@@ -24,35 +24,67 @@ public class Builder {
 	protected OWLDataFactory fact = null;
 	protected OWLOntologyManager manager;
 	protected OWLOntology targetOntology;
-	
+
+	/**
+	 * Getter de targetOntology.
+	 * @return L'ontologie cible
+	 */
 	public OWLOntology getTargetOntology() {
 		return targetOntology;
 	}
 
+	/**
+	 * Setter de targetOntology.
+	 * @param targetOntology L'ontologie cible
+	 */
 	public void setTargetOntology(OWLOntology targetOntology) {
 		this.targetOntology = targetOntology;
 	}
 
+	/**
+	 * Getter de originalOntology.
+	 * @return L'ontologie d'origine
+	 */
 	public OWLOntology getOriginalOntology() {
 		return originalOntology;
 	}
 
+	/**
+	 * Setter de originalOntology.
+	 * @param ontology L'ontologie d'origine
+	 */
 	public void setOriginalOntology(OWLOntology ontology) {
 		this.originalOntology = ontology;
 	}
 
+	/**
+	 * Getter du OWLDataFactory.
+	 * @return @see OWLDataFactory
+	 */
 	public OWLDataFactory getFact() {
 		return fact;
 	}
 
+	/**
+	 * Setter du OWLDataFactory.
+	 * @param fact @see OWLDataFactory
+	 */
 	public void setFact(OWLDataFactory fact) {
 		this.fact = fact;
 	}
 
+	/**
+	 * Getter du manager.
+	 * @return @see OWLOntologyManager
+	 */
 	public OWLOntologyManager getManager() {
 		return manager;
 	}
 
+	/**
+	 * Setter du manager.
+	 * @param manager @see OWLOntologyManager
+	 */
 	public void setManager(OWLOntologyManager manager) {
 		this.manager = manager;
 	}
@@ -60,9 +92,9 @@ public class Builder {
 	
 	/**
 	 * Cette méthode permet de retrouver l'IRI correspondant aux individus
-	 * présents dans l'ontologie d'origine
+	 * présents dans l'ontologie d'origine.
 	 * 
-	 * @return IRI (partie Scheme et SchemeSpecificPart) des classes
+	 * @return @see IRI (partie Scheme et SchemeSpecificPart) des classes
 	 */
 	public IRI foundIriProjectByIndividual() {
 
@@ -88,9 +120,9 @@ public class Builder {
 	
 	/**
 	 * Cette méthode permet de retrouver l'IRI correspondant aux classes
-	 * présentes dans l'ontologie d'origine
+	 * présentes dans l'ontologie d'origine.
 	 * 
-	 * @return IRI (partie Scheme et SchemeSpecificPart) des classes
+	 * @return @see IRI (partie Scheme et SchemeSpecificPart) des classes
 	 */
 	public IRI foundIriProjectByClass() {
 
@@ -115,9 +147,9 @@ public class Builder {
 	}
 	
 	/**
-	 * Cette méthode permet d'initialiser l'ontologie cible (SKOS)
+	 * Cette méthode permet d'initialiser l'ontologie cible (SKOS).
 	 * 
-	 * @param iriOntology
+	 * @param iriOntology @see IRI
 	 *            : Correspond à l'IRI de l'ontologie cible à initialiser
 	 */
 	public void initTargetOnto(IRI iriOntology) {
@@ -125,7 +157,6 @@ public class Builder {
 		try {
 			this.targetOntology = manager.createOntology(iriOntology);
 		} catch (OWLOntologyCreationException e) {
-			// TODO Auto-generated catch block
 			System.err
 					.println("Problème avec l'initialiation de l'ontologie cible.");
 			e.printStackTrace();

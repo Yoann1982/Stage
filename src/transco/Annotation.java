@@ -1,24 +1,24 @@
 package transco;
 
 /**
- * Cette classe permet de stocker les informations correspondantes aux objets SKOSAnnotation
+ * Cette classe permet de stocker les informations correspondantes aux objets SKOSAnnotation.
  * @author y.keravec
  *
  */
 public class Annotation {
 
 	/**
-	 * Cet attribut correspond au nom de la balise
+	 * Cet attribut correspond au nom de la balise.
 	 */
 	private String tagName = null;
 	
 	/**
-	 * Cet attribut correspond à la valeur de la balise
+	 * Cet attribut correspond à la valeur de la balise.
 	 */
 	private String tagValue = null;
 	
 	/**
-	 * Cet attribut correspond à la langue
+	 * Cet attribut correspond à la langue.
 	 */
 	private String tagLang = null;
 
@@ -30,7 +30,7 @@ public class Annotation {
 	}
 	
 	/**
-	 * Getter du nom de la balise
+	 * Getter du nom de la balise.
 	 * @return Nom de la balise
 	 */
 	public String gettagName() {

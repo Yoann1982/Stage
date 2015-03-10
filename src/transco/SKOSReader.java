@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Cette classe permet le chargement d'un fichier SKOS au sein d'une structure SKOSDataset
+ * Cette classe permet le chargement d'un fichier SKOS au sein d'une structure SKOSDataset.
  * @author Yoann Keravec<br>
  * Date: 09/03/2015<br>
  * Institut Bergonié<br>
