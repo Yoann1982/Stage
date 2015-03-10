@@ -18,55 +18,21 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
- * Cette méthode permet de construire une hiérarchie SKOS à partir d'une
+ * Cette classe permet de construire une hiérarchie SKOS à partir d'une
  * OWLOntology
  * @author Yoann Keravec<br>
  * Date: 09/03/2015<br>
  * Institut Bergonié<br>
  */
-public class SKOSBuilder {
+public class SKOSBuilder extends Builder {
 
-	private OWLOntology originalOntology;
-	private OWLOntology targetOntology;
 	private IRI iriRDFS = IRI.create("http://www.w3.org/2000/01/rdf-schema");
 	private IRI iriSKOS = IRI.create("http://www.w3.org/2004/02/skos/core");
 
-	/**
-	 * Getter de OriginalOntology
-	 * @return L'ontologie d'origine (OWL)
-	 */
-	public OWLOntology getOriginalOntology() {
-		return originalOntology;
-	}
-
-	/**
-	 * Setter de l'ontologie d'origine
-	 * @param originalOntology L'ontologie d'orgine (OWL)
-	 */
-	public void setOriginalOntology(OWLOntology originalOntology) {
-		this.originalOntology = originalOntology;
-	}
-
-	/**
-	 * Getter de l'ontologie cible (SKOS)
-	 * @return Ontologie cible (SKOS)
-	 */
-	public OWLOntology getTargetOntology() {
-		return targetOntology;
-	}
-
-	/**
-	 * Setter de l'ontologie cible (SKOS)
-	 * @param targetOntology Ontologie cible (SKOS)
-	 */
-	public void setTargetOntology(OWLOntology targetOntology) {
-		this.targetOntology = targetOntology;
-	}
-
+	
 	/**
 	 * Constructeur de la classe SKOSBuilder
 	 * @param ontologie Ontologie d'origine (OWL)
@@ -169,46 +135,7 @@ public class SKOSBuilder {
 
 	}
 
-	/**
-	 * Cette méthode permet de retrouver l'IRI correspondant aux classes
-	 * présentes dans l'ontologie d'origine
-	 * 
-	 * @return IRI (partie Scheme et SchemeSpecificPart) des classes
-	 */
-	public IRI foundIriProject() {
-		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		OWLDataFactory fact = manager.getOWLDataFactory();
 
-		IRI iriClasseFille = null;
-
-		//Set<OWLClassExpression> listeClasseExpression = fact.getOWLThing()
-		//		.getSubClasses(originalOntology);
-
-		Set<OWLClass> listClassOnto = originalOntology.getClassesInSignature();
-		
-		// Si la liste de sous classe est vide, on ne traite pas (c'est que
-		// Concept n'est père d'aucun autre concept
-
-		if (listClassOnto.size() != 0) {
-
-			// On va pour chaque relation SubClassOf retrouvée, créer un
-			// équivalent SKOS:Broader
-			for (OWLClass cls : listClassOnto) {
-				iriClasseFille = cls.getIRI();
-				System.out.println("IRI classe : " + iriClasseFille);
-				System.out.println("IRI namespace : "
-						+ iriClasseFille.getNamespace());
-				System.out
-						.println("IRI scheme : " + iriClasseFille.getScheme());
-				System.out.println("IRI specifi : "
-						+ iriClasseFille.getScheme() + ":"
-						+ iriClasseFille.toURI().getSchemeSpecificPart());
-				break;
-			}
-		}
-		return IRI.create(iriClasseFille.getScheme() + ":"
-				+ iriClasseFille.toURI().getSchemeSpecificPart());
-	}
 
 	/**
 	 * Cette méthode permet de récupérer la class OWLClass associé à l'URI
@@ -293,23 +220,6 @@ public class SKOSBuilder {
 	}
 
 	/**
-	 * Cette méthode permet d'initialiser l'ontologie cible (SKOS)
-	 * @param iriOntology
-	 *            : Correspond à l'IRI de l'ontologie cible à initialiser
-	 */
-	public void initTargetOnto(IRI iriOntology) {
-		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		try {
-			this.targetOntology = manager.createOntology(iriOntology);
-		} catch (OWLOntologyCreationException e) {
-			// TODO Auto-generated catch block
-			System.err
-					.println("Problème avec l'initialiation de l'ontologie cible.");
-			e.printStackTrace();
-		}
-	}
-	
-	/**
 	 * Cette méthode permet de créer l'ontologie SKOS cible à partir de
 	 * l'ontologie OWL d'origine
 	 */
@@ -319,7 +229,7 @@ public class SKOSBuilder {
 		OWLDataFactory fact = manager.getOWLDataFactory();
 
 		// On récupère l'iri de l'ontologie cible
-		IRI iriProject = foundIriProject();
+		IRI iriProject = foundIriProjectByClass();
 
 		// On initialise l'ontologie cible.
 		initTargetOnto(iriProject);

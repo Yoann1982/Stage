@@ -44,5 +44,15 @@ public class Importer {
 			e.printStackTrace();
 		}
 	}
+
+	public OWLOntology getOntology() {
+		return ontology;
+	}
+
+	public void setOntology(OWLOntology ontology) {
+		this.ontology = ontology;
+	}
+
+
 	
 }
