@@ -87,12 +87,6 @@ public class OWLOntologyBuilder {
 				// On regarde la classe propriétaire de l'annotation
 				String typeAnnot = curAnnot.getURI().getFragment();
 
-				//DEBUG :
-				if (!(typeAnnot.equals("prefLabel") || typeAnnot.equals("altLabel"))) {
-					System.out.println(typeAnnot);	
-				}
-				
-				
 				String lang = "";
 				String value = "";
 				URI uriClasse2 = null;
