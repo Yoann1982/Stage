@@ -1,7 +1,10 @@
 package transco;
 
+import org.semanticweb.owlapi.model.OWLOntologyFormat;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.skosapibinding.SKOSManager;
 import org.semanticweb.skos.*;
+
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -118,6 +121,15 @@ public class SKOSReader {
 		}
 
 		this.listConceptSKOS.add(conceptSKOSLocal);
+	}
+
+	public OWLOntologyManager getManager() {
+		return null;
+	}
+
+	public OWLOntologyFormat getFormat() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

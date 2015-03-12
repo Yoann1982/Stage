@@ -16,6 +16,7 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 
@@ -60,9 +61,7 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 		try {
 			this.manager = OWLManager.createOWLOntologyManager();
 			fact = this.manager.getOWLDataFactory();
-
 			originalOntology = onto;
-
 		} catch (Exception ex) {
 			System.err
 					.println("Erreur lors de la création de l'objet OWLOntologyBuilder.");
@@ -325,6 +324,13 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 
 		// On récupère l'iri de l'ontologie cible
 		IRI iriProject = foundIriProjectByIndividual();
+		createOntology(iriProject);
+	}
+	
+	/**
+	 * Cette méthode crée l'ontologie cible à partir de l'ontologie d'origine.
+	 */
+	public void createOntology(IRI iriProject) {
 
 		// On initialise l'ontologie cible.
 		initTargetOnto(iriProject);
@@ -344,4 +350,5 @@ public class OWLOntologyBuilderNoSKOSAPI extends Builder {
 
 		}
 	}
+	
 }
