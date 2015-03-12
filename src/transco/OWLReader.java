@@ -139,7 +139,7 @@ public class OWLReader {
 	 * @throws OWLOntologyCreationException
 	 */
 	public void loadOntology(String nomFichier, String iriOnto) {	
-		loadOntology(nomFichier, iriOnto, "bcb");
+		loadOntology(nomFichier, iriOnto, "bcbs");
 	}
 
 	/**

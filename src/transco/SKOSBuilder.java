@@ -22,7 +22,6 @@ import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.PrefixManager;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
-import org.semanticweb.owlapi.vocab.PrefixOWLOntologyFormat;
 
 /**
  * Cette classe permet de construire une hiérarchie SKOS à partir d'une
@@ -34,8 +33,8 @@ import org.semanticweb.owlapi.vocab.PrefixOWLOntologyFormat;
 public class SKOSBuilder extends Builder {
 
 	private String iriRDFS = "http://www.w3.org/2000/01/rdf-schema#";
-	private String iriS = "http://www.w3.org/2004/02/skos/core#";
-	private PrefixManager prefixSKOS = new DefaultPrefixManager(iriS);
+	private String iriSKOS = "http://www.w3.org/2004/02/skos/core#";
+	private PrefixManager prefixSKOS = new DefaultPrefixManager(iriSKOS);
 	private PrefixManager prefixOnto;
 	private OWLOntologyFormat format;
 	
@@ -75,11 +74,15 @@ public class SKOSBuilder extends Builder {
 
 	public void addPrefix(IRI iriProject) {
 		
+		System.out.println("IRI PROJECT - : " + iriProject);
+		
 		if (format.isPrefixOWLOntologyFormat()) {
 			Set<String> listePrefix = format.asPrefixOWLOntologyFormat()
 					.getPrefixNames();
 			boolean prefixPresent = false;
 			for (String prefix : listePrefix) {
+				System.out.println("Prefix : " + prefix);
+				System.out.println("IRI du prefix : " + format.asPrefixOWLOntologyFormat().getIRI(prefix));
 				if (iriProject.equals(
 						format.asPrefixOWLOntologyFormat().getIRI(prefix))) {
 					prefixPresent = true;
@@ -173,6 +176,38 @@ public class SKOSBuilder extends Builder {
 							axiomAnnot);
 					manager.applyChange(addAxiomAnnot);
 
+				}
+				else {
+					// On gère toutes les autres annotations
+					// on récupère la valeur
+					annotValeur = curseurAnnot.getValue();
+
+					// 1 - On crée un OWLAnnotationProperty de type
+					OWLAnnotationProperty propertyPrefLabel = fact
+							.getOWLAnnotationProperty(curseurAnnot.getProperty().getIRI().toURI().getFragment(), prefixOnto);
+
+					// 2 - On crée un OWLAnnotation avec ce type et avec la
+					// valeur de l'annotation OWL
+					OWLAnnotation targetAnnot = fact.getOWLAnnotation(
+							propertyPrefLabel, annotValeur);
+
+					// 3 - On transforme l'individu en AnonymousIndividual
+					// qui est une représentation de OWLAnnotationSubject
+					// OWLAnonymousIndividual annotSujet =
+					// individuClasse.asOWLAnonymousIndividual();
+					IRI iriIndividu = individuClasse.asOWLNamedIndividual()
+							.getIRI();
+
+					// 4 - On crée l'axiom d'annotation
+					OWLAnnotationAssertionAxiom axiomAnnot = fact
+							.getOWLAnnotationAssertionAxiom(iriIndividu,
+									targetAnnot);
+
+					// 5 - On crée le addAxiom
+
+					AddAxiom addAxiomAnnot = new AddAxiom(targetOntology,
+							axiomAnnot);
+					manager.applyChange(addAxiomAnnot);
 				}
 			}
 		}
@@ -272,7 +307,9 @@ public class SKOSBuilder extends Builder {
 		// On récupère l'iri de l'ontologie cible
 		IRI iriProject = foundIriProjectByClass();
 
-		addPrefix(iriProject);
+		IRI iriProjectDiese = IRI.create(iriProject.toString()+"#");
+		
+		addPrefix(iriProjectDiese);
 		
 		// On initialise l'ontologie cible.
 		initTargetOnto(iriProject);

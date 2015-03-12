@@ -124,13 +124,14 @@ public class Principale {
 	 * @param output
 	 *            Fichier en sortie.
 	 */
-	public static void OWLToSkos(String input, String output, String iriOnto, String prefix) {
+	public static void OWLToSkos(String input, String output, String iriOnto,
+			String prefix) {
 
 		OWLReader reader = new OWLReader();
 		reader.loadOntology(input, iriOnto, prefix);
 		buildOnto(reader, output);
 	}
-	
+
 	/**
 	 * Cette méthode permet de transcoder un fichier OWL en SKOS.
 	 * 
@@ -197,16 +198,23 @@ public class Principale {
 			System.exit(1);
 		} else {
 
-			if (args.length > 3) {
+			if (args.length > 4) {
 				System.out.println("Type de transcodage : " + args[0]);
 				System.out.println("Fichier en entrée : " + args[1]);
 				System.out.println("Fichier en sortie : " + args[2]);
 				System.out.println("IRI de l'ontologie : " + args[3]);
 				System.out.println("Prefix de l'ontologie : " + args[4]);
 			} else {
-				System.out.println("Type de transcodage : " + args[0]);
-				System.out.println("Fichier en entrée : " + args[1]);
-				System.out.println("Fichier en sortie : " + args[2]);
+				if (args.length > 3) {
+					System.out.println("Type de transcodage : " + args[0]);
+					System.out.println("Fichier en entrée : " + args[1]);
+					System.out.println("Fichier en sortie : " + args[2]);
+					System.out.println("IRI de l'ontologie : " + args[3]);
+				} else {
+					System.out.println("Type de transcodage : " + args[0]);
+					System.out.println("Fichier en entrée : " + args[1]);
+					System.out.println("Fichier en sortie : " + args[2]);
+				}
 			}
 			if (!(args[0].equals("1") || args[0].equals("2"))) {
 				System.err
