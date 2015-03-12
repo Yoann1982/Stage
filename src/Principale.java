@@ -59,7 +59,6 @@ public class Principale {
 		OWLReader reader = new OWLReader();
 		reader.loadOntology(input);
 
-		
 		// On crée une instance de l'objet qui va permettre de créer une
 		// ontologie à partir de la structure de données.
 		OWLOntologyBuilderNoSKOSAPI builder = new OWLOntologyBuilderNoSKOSAPI(
