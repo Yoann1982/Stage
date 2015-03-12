@@ -14,6 +14,7 @@ import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.util.OWLOntologyWalker;
 import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitor;
+import org.semanticweb.owlapi.vocab.PrefixOWLOntologyFormat;
 
 /**
  * Cette méthode permet le chargement d'un fichier OWL en mémoire
@@ -63,6 +64,29 @@ public class OWLReader {
 		this.ontology = ontologie;
 	}
 	
+	
+	/**
+	 * Cette méthode vérifie s'il y a des prefix "vide" et les supprime du format
+	 */
+	public void cleanFormat() {
+		
+		PrefixOWLOntologyFormat formatCopy = new PrefixOWLOntologyFormat();
+		formatCopy.copyPrefixesFrom(format.asPrefixOWLOntologyFormat());
+		
+		format.asPrefixOWLOntologyFormat().clearPrefixes();
+		
+		if (formatCopy.isPrefixOWLOntologyFormat()) {
+			Set<String> listePrefix = formatCopy.asPrefixOWLOntologyFormat()
+					.getPrefixNames();
+			for (String prefix : listePrefix) {
+				if (!prefix.equals(":")) {
+					// On le remet dans le format
+					format.asPrefixOWLOntologyFormat().setPrefix(prefix,formatCopy.asPrefixOWLOntologyFormat().getIRI(prefix).toString());
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Cette méthode permet de charger en mémoire une ontologie à partir d'un
 	 * fichier OWL Elle vérifie si l'IRI en entrée est listée dans les prefix de
@@ -83,6 +107,9 @@ public class OWLReader {
 			// On récupère le formalisme de l'ontologie traitée
 			format = manager.getOntologyFormat(ontology);
 
+			// on supprime les prefix vide
+			cleanFormat();
+			
 			// On vérifie s'il s'agit d'un format qui accepte les prefixes.
 			// Dans ce cas, on va récupérer la liste de préfix et vérifier
 			// S'il y en a un qui correspond à l'IRI indiquée en paramètre.

@@ -113,7 +113,7 @@ public class Principale {
 
 		WriteOntology fileOntoWriterOnto = new WriteOntology(
 				importerSKOS.getOntology());
-		fileOntoWriterOnto.writeFileRDFOWL(output, skosBuilder.getFormat());
+		fileOntoWriterOnto.writeFile(output, skosBuilder.getFormat());
 	}
 
 	/**
