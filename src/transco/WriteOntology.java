@@ -1,7 +1,6 @@
 package transco;
 
 import java.io.File;
-import java.util.Set;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
