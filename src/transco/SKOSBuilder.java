@@ -26,9 +26,10 @@ import org.semanticweb.owlapi.util.DefaultPrefixManager;
 /**
  * Cette classe permet de construire une hiérarchie SKOS à partir d'une
  * OWLOntology.
+ * 
  * @author Yoann Keravec<br>
- * Date: 09/03/2015<br>
- * Institut Bergonié<br>
+ *         Date: 09/03/2015<br>
+ *         Institut Bergonié<br>
  */
 public class SKOSBuilder extends Builder {
 
@@ -37,54 +38,95 @@ public class SKOSBuilder extends Builder {
 	private PrefixManager prefixSKOS = new DefaultPrefixManager(iriSKOS);
 	private PrefixManager prefixOnto;
 	private OWLOntologyFormat format;
-	
-	
-	
+
+	/**
+	 * Getter de l'attribut format
+	 * 
+	 * @return @see OWLOntologyFormat.
+	 */
 	public OWLOntologyFormat getFormat() {
 		return format;
 	}
 
+	/**
+	 * Setter de l'attribut format
+	 * 
+	 * @param @see OWLOntologyFormat format
+	 */
 	public void setFormat(OWLOntologyFormat format) {
 		this.format = format;
 	}
 
+	/**
+	 * Getter de l'attribut prefixOnto. Il correspond au PrefixManager de
+	 * l'ontologie à construire.
+	 * 
+	 * @return @PrefixManager de l'ontologie.
+	 */
 	public PrefixManager getPrefixOnto() {
 		return prefixOnto;
 	}
 
+	/**
+	 * Setter de l'attribut prefixOnto. Il correspond au PrefixManager de
+	 * l'ontologie à construire.
+	 * 
+	 * @param @PrefixManager prefixOnto
+	 */
 	public void setPrefixOnto(PrefixManager prefixOnto) {
 		this.prefixOnto = prefixOnto;
 	}
 
+	/**
+	 * Getter de l'attribut prefixSKOS. Le PrefixManager correspond au préfixe
+	 * SKOS.
+	 * 
+	 * @return @see PrefixManager
+	 */
 	public PrefixManager getPrefixSKOS() {
 		return prefixSKOS;
 	}
 
+	/**
+	 * Setter de l'attribut prefixSKOS. Le PrefixManager correspond au préfixe
+	 * SKOS.
+	 * 
+	 * @param @see PrefixManager prefixSKOS
+	 */
 	public void setPrefixSKOS(PrefixManager prefixSKOS) {
 		this.prefixSKOS = prefixSKOS;
 	}
 
 	/**
 	 * Constructeur de la classe SKOSBuilder.
-	 * @param ontologie Ontologie d'origine (OWL) @see OWLOntology.
+	 * 
+	 * @param ontologie
+	 *            Ontologie d'origine (OWL) @see OWLOntology.
 	 */
 	public SKOSBuilder(OWLOntology ontologie) {
 		this.originalOntology = ontologie;
 	}
 
-	public void addPrefix(IRI iriProject) {
-		
-		System.out.println("IRI PROJECT - : " + iriProject);
-		
+	/**
+	 * Cette méthode permet d'ajouter un prefix au sein du format
+	 * (OWLOntologyFormat) d'une ontologie. Une recherche est effectuée au sein
+	 * de l'attribut format de la classe afin de vérifier si un préfixe
+	 * correspondant à l'IRI en entrée existe. Si aucun préfixe n'est retrouvé,
+	 * un préfixe est ajouté au format.
+	 * 
+	 * @param @IRI iriProject IRI recherchée
+	 * @param @prefixEntree Valeur du préfixe ajouté si l'IRI n'est pas retrouvé
+	 *        dans le format.
+	 */
+	public void addPrefix(IRI iriProject, String prefixEntree) {
+
 		if (format.isPrefixOWLOntologyFormat()) {
 			Set<String> listePrefix = format.asPrefixOWLOntologyFormat()
 					.getPrefixNames();
 			boolean prefixPresent = false;
 			for (String prefix : listePrefix) {
-				System.out.println("Prefix : " + prefix);
-				System.out.println("IRI du prefix : " + format.asPrefixOWLOntologyFormat().getIRI(prefix));
-				if (iriProject.equals(
-						format.asPrefixOWLOntologyFormat().getIRI(prefix))) {
+				if (iriProject.equals(format.asPrefixOWLOntologyFormat()
+						.getIRI(prefix))) {
 					prefixPresent = true;
 					break;
 				}
@@ -92,22 +134,24 @@ public class SKOSBuilder extends Builder {
 			// Si on n'a pas retrouvé de prefix associé, on l'ajoute
 			if (!prefixPresent) {
 				if (iriProject.toString().contains("#")) {
-					format.asPrefixOWLOntologyFormat().setPrefix("bcbs",
+					format.asPrefixOWLOntologyFormat().setPrefix(prefixEntree,
 							iriProject.toString());
 				} else {
-					format.asPrefixOWLOntologyFormat().setPrefix("bcbs",
+					format.asPrefixOWLOntologyFormat().setPrefix(prefixEntree,
 							iriProject.toString() + "#");
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Cette méthode crée une relation hasBroader entre le concept père et le
 	 * concept fils.
 	 * 
-	 * @param conceptPere @see OWLIndividual
-	 * @param conceptFils @see OWLIndividual
+	 * @param conceptPere
+	 * @see OWLIndividual
+	 * @param conceptFils
+	 * @see OWLIndividual
 	 */
 	public void addBroader(OWLIndividual conceptFils, OWLIndividual conceptPere) {
 
@@ -116,7 +160,8 @@ public class SKOSBuilder extends Builder {
 
 		// On crée la relation broader
 
-		OWLObjectProperty hasBroader = fact.getOWLObjectProperty("broader", prefixSKOS);
+		OWLObjectProperty hasBroader = fact.getOWLObjectProperty("broader",
+				prefixSKOS);
 		OWLAxiom assertion = fact.getOWLObjectPropertyAssertionAxiom(
 				hasBroader, conceptFils, conceptPere);
 
@@ -128,7 +173,8 @@ public class SKOSBuilder extends Builder {
 	 * Cette méthode permet d'ajouter le prefLable au concept SKOS à partir du
 	 * label de la classe OWL d'origine.
 	 * 
-	 * @param individuClasse @see OWLIndividual
+	 * @param individuClasse
+	 * @see OWLIndividual
 	 */
 	public void addPrefLabel(OWLIndividual individuClasse) {
 
@@ -176,15 +222,16 @@ public class SKOSBuilder extends Builder {
 							axiomAnnot);
 					manager.applyChange(addAxiomAnnot);
 
-				}
-				else {
+				} else {
 					// On gère toutes les autres annotations
 					// on récupère la valeur
 					annotValeur = curseurAnnot.getValue();
 
 					// 1 - On crée un OWLAnnotationProperty de type
 					OWLAnnotationProperty propertyPrefLabel = fact
-							.getOWLAnnotationProperty(curseurAnnot.getProperty().getIRI().toURI().getFragment(), prefixOnto);
+							.getOWLAnnotationProperty(curseurAnnot
+									.getProperty().getIRI().toURI()
+									.getFragment(), prefixOnto);
 
 					// 2 - On crée un OWLAnnotation avec ce type et avec la
 					// valeur de l'annotation OWL
@@ -214,12 +261,11 @@ public class SKOSBuilder extends Builder {
 
 	}
 
-
-
 	/**
 	 * Cette méthode permet de récupérer la class OWLClass associé à l'URI.
 	 * 
-	 * @param type @see IRI
+	 * @param type
+	 * @see IRI
 	 * @return OWLClass : la classe associée à l'URI.
 	 */
 	public OWLClass recupClassByIRI(IRI type) {
@@ -232,15 +278,19 @@ public class SKOSBuilder extends Builder {
 	}
 
 	/**
-	 * Cette méthode permet d'ajouter dans l'ontologie un individu du type
-	 * indiqué en entrée.
+	 * Cette méthode permet d'ajouter dans l'ontologie un individu de la classe
+	 * indiqué en paramètre Cette classe est défini par un préfixe et un nom de
+	 * classe.
 	 * 
-	 * @param iriClasse
-	 *            : La classe à laquelle correspond l'individu @see IRI
+	 * @param prefixClasse
+	 * @see PrefixManager correspondant à la classe.
+	 * @param classe
+	 *            La classe à laquelle correspond l'individu.
 	 * @param individu
-	 *            : @see OWLNamedIndividual l'individu qui instancie la classe (type)
+	 * @see OWLNamedIndividual l'individu qui instancie la classe (type)
 	 */
-	public void addClassAssertion(PrefixManager prefixClasse, String classe, OWLNamedIndividual individu) {
+	public void addClassAssertion(PrefixManager prefixClasse, String classe,
+			OWLNamedIndividual individu) {
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLDataFactory fact = manager.getOWLDataFactory();
@@ -253,20 +303,27 @@ public class SKOSBuilder extends Builder {
 	}
 
 	/**
-	 * Cette méthode permet d'ajouter un individu dans l'ontologie Elle retourne
-	 * l'individu correspondant.
+	 * Cette méthode permet d'ajouter un individu dans l'ontologie. L'individu
+	 * est défini par son préfixe (prefixIndividu) et son nom (nomIndividu). La
+	 * classe qu'il instancie est définie par son préfixe (prefixClasse) et son
+	 * nom (classe). Elle retourne l'individu correspondant.
 	 * 
-	 * @param type
-	 *            : Type (Classe) de l'individu @see IRI.
+	 * @param prefixClasse
+	 * @see PrefixManager de la classe de l'individu à ajouter.
+	 * @param class nom de la classe de l'individu à ajouter.
+	 * @param prefixIndividu
+	 * @see PrefixManager de l'individu à ajouter.
 	 * @param name
-	 *            : Nom de l'individu @see IRI.
+	 *            : Nom de l'individu à ajouter.
 	 * @return @see OWLNamedIndividual L'individu ajouté.
 	 */
-	public OWLNamedIndividual addIndividual(PrefixManager prefixClasse, String classe, PrefixManager prefix, String name) {
+	public OWLNamedIndividual addIndividual(PrefixManager prefixClasse,
+			String classe, PrefixManager prefixIndividu, String nameIndividu) {
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLDataFactory fact = manager.getOWLDataFactory();
-		OWLNamedIndividual ind = fact.getOWLNamedIndividual(name, prefix);
+		OWLNamedIndividual ind = fact.getOWLNamedIndividual(nameIndividu,
+				prefixIndividu);
 		addClassAssertion(prefixClasse, classe, ind);
 		return ind;
 	}
@@ -287,7 +344,8 @@ public class SKOSBuilder extends Builder {
 
 		// On crée la relation ConceptScheme
 
-		OWLObjectProperty hasBroader = fact.getOWLObjectProperty("inScheme", prefixSKOS);
+		OWLObjectProperty hasBroader = fact.getOWLObjectProperty("inScheme",
+				prefixSKOS);
 		OWLAxiom assertion = fact.getOWLObjectPropertyAssertionAxiom(
 				hasBroader, classe, scheme);
 
@@ -307,33 +365,34 @@ public class SKOSBuilder extends Builder {
 		// On récupère l'iri de l'ontologie cible
 		IRI iriProject = foundIriProjectByClass();
 
-		IRI iriProjectDiese = IRI.create(iriProject.toString()+"#");
-		
-		addPrefix(iriProjectDiese);
-		
+		IRI iriProjectDiese = IRI.create(iriProject.toString() + "#");
+
+		addPrefix(iriProjectDiese, "bcbs");
+
 		// On initialise l'ontologie cible.
 		initTargetOnto(iriProject);
 
-		prefixOnto = new DefaultPrefixManager(iriProject.toString()+"#");
-		
-		OWLNamedIndividual scheme = addIndividual(prefixSKOS, "ConceptScheme", prefixSKOS, "BCBSarcomes");
+		prefixOnto = new DefaultPrefixManager(iriProject.toString() + "#");
+
+		OWLNamedIndividual scheme = addIndividual(prefixSKOS, "ConceptScheme",
+				prefixSKOS, "BCBSarcomes");
 
 		Set<OWLClass> listClassOnto = originalOntology.getClassesInSignature();
 		for (OWLClass cls : listClassOnto) {
 
 			/*
-			 * Pour chaque classe lue, on va : 
-			 * 1 - La transformer en Individual de SKOS:Concept 
-			 * 2 - Récupérer sa relation SubClassOf 
-			 * 3 - Récupérer la classe associée 
-			 * 4 - Transformer celle-ci en Individual de SKOS:Concept si pas déjà fait 
-			 * 5 - Créer une relation de type broader entre les deux concepts
+			 * Pour chaque classe lue, on va : 1 - La transformer en Individual
+			 * de SKOS:Concept 2 - Récupérer sa relation SubClassOf 3 -
+			 * Récupérer la classe associée 4 - Transformer celle-ci en
+			 * Individual de SKOS:Concept si pas déjà fait 5 - Créer une
+			 * relation de type broader entre les deux concepts
 			 */
 
 			String iriClasse = cls.getIRI().toURI().getFragment();
-			
+
 			// 1 - Transformation en SKOS:Concept
-			OWLNamedIndividual individuConcept = addIndividual(prefixSKOS, "Concept", prefixOnto, iriClasse);
+			OWLNamedIndividual individuConcept = addIndividual(prefixSKOS,
+					"Concept", prefixOnto, iriClasse);
 
 			// 2 - On récupère les sous-classes de la classe référence
 			// Si la liste à une taille de 0, c'est que la classe n'est mère
@@ -369,6 +428,6 @@ public class SKOSBuilder extends Builder {
 					// }
 				}
 			}
-		}			
+		}
 	}
 }

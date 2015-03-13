@@ -22,11 +22,12 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 public class WriteOntology {
 
 	private OWLOntology ontology;
-	
+
 	/**
 	 * Constructeur de la classe WriteOntology.
 	 * 
-	 * @param ontologie @see OWLOntology
+	 * @param ontologie
+	 * @see OWLOntology
 	 */
 	public WriteOntology(OWLOntology ontologie) {
 		this.ontology = ontologie;
@@ -44,7 +45,8 @@ public class WriteOntology {
 	/**
 	 * Setter de Ontology.
 	 * 
-	 * @param ontologie @see OWLOntology
+	 * @param ontologie
+	 * @see OWLOntology
 	 */
 	public void setOntologie(OWLOntology ontologie) {
 		this.ontology = ontologie;
@@ -52,8 +54,11 @@ public class WriteOntology {
 
 	/**
 	 * Cette méthode permet d'écrire un fichier au format indiqué en paramètre.
+	 * 
 	 * @param nomFichier
 	 *            Nom du fichier à écrire.
+	 * @param formatEntree
+	 * @see OWLOntologyFormat Format à utiliser pour le fichier en sortie.
 	 */
 	public void writeFile(String nomFichier, OWLOntologyFormat formatEntree) {
 		// Get hold of an ontology manager
@@ -72,47 +77,41 @@ public class WriteOntology {
 				System.out
 						.println("L'ontologie est vide. Pas de fichier à écrire.");
 			} else {
-				System.out
-						.println("L'ontologie n'est pas vide. Il est possible d'écrire un fichier OWL.");
-			}
+				// Now save a local copy of the ontology. (Specify a path
+				// appropriate to
+				// your setup)
+				File file = new File(nomFichier);
 
-			// Now save a local copy of the ontology. (Specify a path
-			// appropriate to
-			// your setup)
-			File file = new File(nomFichier);
-
-			try {
-				System.out.println("Format du fichier : " + formatEntree);
-				managerWriter.saveOntology(ontology, formatEntree,
-						IRI.create(file.toURI()));
-			} catch (OWLOntologyStorageException e) {
-				System.err.println("Erreur lors de l'écriture du fichier RDF.");
-				e.printStackTrace();
+				try {
+					System.out.println("Format du fichier : " + formatEntree);
+					managerWriter.saveOntology(ontology, formatEntree,
+							IRI.create(file.toURI()));
+				} catch (OWLOntologyStorageException e) {
+					System.err
+							.println("Erreur lors de l'écriture du fichier RDF.");
+					e.printStackTrace();
+				}
+				System.out.println("Nom du fichier créé : " + nomFichier);
 			}
-			System.out.println("Nom du fichier créé : " + nomFichier);
 		}
 	}
-	
+
 	/**
-	 * Cette méthode permet d'écrire un fichier RDF/OWL.
-	 * Les préfix définis dans le format en entrée sont recopiés.
+	 * Cette méthode permet d'écrire un fichier RDF/OWL. Les préfix définis dans
+	 * le format en entrée sont recopiés.
 	 * 
 	 * @param nomFichier
 	 *            Nom du fichier à écrire.
+	 * @param format
+	 * @see OWLOntologyFormat contenant la liste de prefix à récupérer pour le
+	 *      format de sortie.
 	 */
 	public void writeFileRDFOWL(String nomFichier, OWLOntologyFormat format) {
 
-			RDFXMLOntologyFormat rdfXMLFormat = new RDFXMLOntologyFormat();
-			
-			rdfXMLFormat.asPrefixOWLOntologyFormat().copyPrefixesFrom(format.asPrefixOWLOntologyFormat());
-			System.out.println("ECRITURE FICHIER");
-			System.out.println("FORMAT : " + format);
-			Set<String> nouvelleListe = format.asPrefixOWLOntologyFormat().getPrefixNames();
-			System.out.println("PREFIX : " + format.asPrefixOWLOntologyFormat().getPrefixNames());
-			for (String pref : nouvelleListe) {
-				System.out.println("IRI de "+ pref + " : " + format.asPrefixOWLOntologyFormat().getIRI(pref));
-			}
-			writeFile(nomFichier, rdfXMLFormat);
-			
+		RDFXMLOntologyFormat rdfXMLFormat = new RDFXMLOntologyFormat();
+
+		rdfXMLFormat.asPrefixOWLOntologyFormat().copyPrefixesFrom(
+				format.asPrefixOWLOntologyFormat());
+		writeFile(nomFichier, rdfXMLFormat);
 	}
 }

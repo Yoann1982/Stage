@@ -2,12 +2,12 @@ import org.semanticweb.owlapi.model.IRI;
 
 import transco.ConceptSKOS;
 import transco.Importer;
-import transco.OWLOntologyBuilderNoSKOSAPI;
+import transco.OWLOntologyBuilder;
 import transco.OWLReader;
 import transco.SKOSBuilder;
 import transco.SKOSReader;
 import transco.WriteOntology;
-import transco.OWLOntologyBuilder;
+import transco.OWLOntologyBuilderSKOSAPI;
 
 /**
  * Cette classe contient la main et permet d'effectuer un transcodage SKOSToOWL
@@ -35,7 +35,7 @@ public class Principale {
 
 		// On crée une instance de l'objet qui va permettre de créer une
 		// ontologie à partir de la structure de données.
-		OWLOntologyBuilder builder = new OWLOntologyBuilder();
+		OWLOntologyBuilderSKOSAPI builder = new OWLOntologyBuilderSKOSAPI();
 
 		// On parcours la structure de données pour alimenter l'ontologie créée.
 		for (ConceptSKOS conceptCur : reader.getListConceptSKOS()) {
@@ -64,7 +64,7 @@ public class Principale {
 
 		// On crée une instance de l'objet qui va permettre de créer une
 		// ontologie à partir de la structure de données.
-		OWLOntologyBuilderNoSKOSAPI builder = new OWLOntologyBuilderNoSKOSAPI(
+		OWLOntologyBuilder builder = new OWLOntologyBuilder(
 				reader.getOntology());
 		builder.createOntology();
 		WriteOntology fileOntoWriter = new WriteOntology(
@@ -72,13 +72,21 @@ public class Principale {
 		fileOntoWriter.writeFileRDFOWL(output, reader.getFormat());
 	}
 
+	// END skosToOWL
+
 	/**
 	 * Cette méthode permet d'effectuer le transcodage d'un fichier SKOS en OWL.
+	 * Cette méthode contient dans sa signature, une chaîne de caractères
+	 * correspondant à l'IRI de l'ontologie à constuire.
 	 * 
 	 * @param input
 	 *            Fichier en entrée.
 	 * @param output
 	 *            Fichier en sortie.
+	 * @param iriOnto
+	 *            Chaîne de caractères correspondant à l'IRI de l'ontologie à
+	 *            construire. Exemple : http://bcbsarcoma/
+	 * 
 	 */
 	public static void skosToOWL2(String input, String output, String iriOnto) {
 
@@ -88,7 +96,7 @@ public class Principale {
 
 		// On crée une instance de l'objet qui va permettre de créer une
 		// ontologie à partir de la structure de données.
-		OWLOntologyBuilderNoSKOSAPI builder = new OWLOntologyBuilderNoSKOSAPI(
+		OWLOntologyBuilder builder = new OWLOntologyBuilder(
 				reader.getOntology());
 		builder.createOntology(IRI.create(iriOnto));
 		WriteOntology fileOntoWriter = new WriteOntology(
@@ -98,6 +106,17 @@ public class Principale {
 
 	// END skosToOWL2
 
+	/**
+	 * Cette méthode permet de construire une ontologie à partir d'un OWLReader
+	 * et une chaîne de caractères correspondant au chemin absolu du fichier de
+	 * sortie.
+	 * 
+	 * @param reader
+	 * @see OWLReader. Objet contenant le contenu de l'ontologie à transcrire
+	 * @param output
+	 *            Chaîne de caractères correspondant au chemin absolu du fichier
+	 *            de sortie.
+	 */
 	private static void buildOnto(OWLReader reader, String output) {
 		String ontoExterne = "http://www.w3.org/TR/skos-reference/skos-owl1-dl.rdf";
 		Importer importer = new Importer(reader.getOntology());
@@ -117,12 +136,21 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode permet de transcoder un fichier OWL en SKOS.
+	 * Cette méthode permet de transcoder un fichier OWL en SKOS. Elle contient
+	 * en paramètre d'entrée une chaîne de caractère correspondant à l'IRI de
+	 * l'ontologie à constuire (ex : http://bcbsarcoma/) et le prefixe
+	 * correspondant à cette ontologie (ex: bcb).
 	 * 
 	 * @param input
 	 *            Fichier en entrée.
 	 * @param output
 	 *            Fichier en sortie.
+	 * @param iriOnto
+	 *            Chaîne de caractères correspondant à l'IRI de l'ontologie à
+	 *            constuire.
+	 * @param prefix
+	 *            Chaîne de caractères contenant la valeur du prefix
+	 *            correspondant à l'IRI.
 	 */
 	public static void OWLToSkos(String input, String output, String iriOnto,
 			String prefix) {
@@ -133,12 +161,17 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode permet de transcoder un fichier OWL en SKOS.
+	 * Cette méthode permet de transcoder un fichier OWL en SKOS. Elle contient
+	 * en paramètre d'entrée une chaîne de caractère correspondant à l'IRI de
+	 * l'ontologie à constuire (ex : http://bcbsarcoma/).
 	 * 
 	 * @param input
 	 *            Fichier en entrée.
 	 * @param output
 	 *            Fichier en sortie.
+	 * @param iriOnto
+	 *            Chaîne de caractères correspondant à l'IRI de l'ontologie à
+	 *            constuire.
 	 */
 	public static void OWLToSkos(String input, String output, String iriOnto) {
 
@@ -176,11 +209,11 @@ public class Principale {
 		System.err.println("Argument 5 facultatif : Prefix de l'ontologie");
 	}
 
-	/*
-	 * La main prend trois argument: Argument 1 : type de transcodage : 1 :
-	 * skostoowl ou 2 : owltoskos Argument 2 : Nom du fichier en entrée Argument
-	 * 3 : Nom du fichier en sortie 4 : Iri de l'ontologie 5 : Prefix de
-	 * l'ontologie
+	/**
+	 * La main prend trois argument: \n Argument 1 : type de transcodage : 1 :
+	 * skostoowl ou 2 : owltoskos \n Argument 2 : Nom du fichier en entrée
+	 * Argument \n 3 : Nom du fichier en sortie \n 4 : Iri de l'ontologie \n 5 :
+	 * Prefix de l'ontologie \n
 	 * 
 	 * @param args
 	 * 
