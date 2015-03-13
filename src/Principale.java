@@ -4,8 +4,10 @@ import transco.ConceptSKOS;
 import transco.Importer;
 import transco.OWLOntologyBuilder;
 import transco.OWLReader;
+import transco.OWLToSKOS;
 import transco.SKOSBuilder;
 import transco.SKOSReader;
+import transco.SKOSToOWL;
 import transco.WriteOntology;
 import transco.OWLOntologyBuilderSKOSAPI;
 
@@ -47,154 +49,6 @@ public class Principale {
 	}
 
 	// END skosToOWL
-
-	/**
-	 * Cette méthode permet d'effectuer le transcodage d'un fichier SKOS en OWL.
-	 * 
-	 * @param input
-	 *            Fichier en entrée.
-	 * @param output
-	 *            Fichier en sortie.
-	 */
-	public static void skosToOWL2(String input, String output) {
-
-		// On lit le fichier qui alimente une structure de données interne
-		OWLReader reader = new OWLReader();
-		reader.loadOntology(input);
-
-		// On crée une instance de l'objet qui va permettre de créer une
-		// ontologie à partir de la structure de données.
-		OWLOntologyBuilder builder = new OWLOntologyBuilder(
-				reader.getOntology());
-		builder.createOntology();
-		WriteOntology fileOntoWriter = new WriteOntology(
-				builder.getTargetOntology());
-		fileOntoWriter.writeFileRDFOWL(output, reader.getFormat());
-	}
-
-	// END skosToOWL
-
-	/**
-	 * Cette méthode permet d'effectuer le transcodage d'un fichier SKOS en OWL.
-	 * Cette méthode contient dans sa signature, une chaîne de caractères
-	 * correspondant à l'IRI de l'ontologie à constuire.
-	 * 
-	 * @param input
-	 *            Fichier en entrée.
-	 * @param output
-	 *            Fichier en sortie.
-	 * @param iriOnto
-	 *            Chaîne de caractères correspondant à l'IRI de l'ontologie à
-	 *            construire. Exemple : http://bcbsarcoma/
-	 * 
-	 */
-	public static void skosToOWL2(String input, String output, String iriOnto) {
-
-		// On lit le fichier qui alimente une structure de données interne
-		OWLReader reader = new OWLReader();
-		reader.loadOntology(input, iriOnto);
-
-		// On crée une instance de l'objet qui va permettre de créer une
-		// ontologie à partir de la structure de données.
-		OWLOntologyBuilder builder = new OWLOntologyBuilder(
-				reader.getOntology());
-		builder.createOntology(IRI.create(iriOnto));
-		WriteOntology fileOntoWriter = new WriteOntology(
-				builder.getTargetOntology());
-		fileOntoWriter.writeFile(output, reader.getFormat());
-	}
-
-	// END skosToOWL2
-
-	/**
-	 * Cette méthode permet de construire une ontologie à partir d'un OWLReader
-	 * et une chaîne de caractères correspondant au chemin absolu du fichier de
-	 * sortie.
-	 * 
-	 * @param reader
-	 * @see OWLReader. Objet contenant le contenu de l'ontologie à transcrire
-	 * @param output
-	 *            Chaîne de caractères correspondant au chemin absolu du fichier
-	 *            de sortie.
-	 */
-	private static void buildOnto(OWLReader reader, String output) {
-		String ontoExterne = "http://www.w3.org/TR/skos-reference/skos-owl1-dl.rdf";
-		Importer importer = new Importer(reader.getOntology());
-		importer.importOnto(ontoExterne);
-
-		// On crée les objets SKOS
-		SKOSBuilder skosBuilder = new SKOSBuilder(reader.getOntology());
-		skosBuilder.setFormat(reader.getFormat());
-		skosBuilder.createSKOSOntologie();
-		// On importe l'ontologie SKOS dans l'ontologie cible
-		Importer importerSKOS = new Importer(skosBuilder.getTargetOntology());
-		importerSKOS.importOnto(ontoExterne);
-
-		WriteOntology fileOntoWriterOnto = new WriteOntology(
-				importerSKOS.getOntology());
-		fileOntoWriterOnto.writeFile(output, skosBuilder.getFormat());
-	}
-
-	/**
-	 * Cette méthode permet de transcoder un fichier OWL en SKOS. Elle contient
-	 * en paramètre d'entrée une chaîne de caractère correspondant à l'IRI de
-	 * l'ontologie à constuire (ex : http://bcbsarcoma/) et le prefixe
-	 * correspondant à cette ontologie (ex: bcb).
-	 * 
-	 * @param input
-	 *            Fichier en entrée.
-	 * @param output
-	 *            Fichier en sortie.
-	 * @param iriOnto
-	 *            Chaîne de caractères correspondant à l'IRI de l'ontologie à
-	 *            constuire.
-	 * @param prefix
-	 *            Chaîne de caractères contenant la valeur du prefix
-	 *            correspondant à l'IRI.
-	 */
-	public static void OWLToSkos(String input, String output, String iriOnto,
-			String prefix) {
-
-		OWLReader reader = new OWLReader();
-		reader.loadOntology(input, iriOnto, prefix);
-		buildOnto(reader, output);
-	}
-
-	/**
-	 * Cette méthode permet de transcoder un fichier OWL en SKOS. Elle contient
-	 * en paramètre d'entrée une chaîne de caractère correspondant à l'IRI de
-	 * l'ontologie à constuire (ex : http://bcbsarcoma/).
-	 * 
-	 * @param input
-	 *            Fichier en entrée.
-	 * @param output
-	 *            Fichier en sortie.
-	 * @param iriOnto
-	 *            Chaîne de caractères correspondant à l'IRI de l'ontologie à
-	 *            constuire.
-	 */
-	public static void OWLToSkos(String input, String output, String iriOnto) {
-
-		OWLReader reader = new OWLReader();
-		reader.loadOntology(input, iriOnto);
-		buildOnto(reader, output);
-	}
-
-	/**
-	 * Cette méthode permet de transcoder un fichier OWL en SKOS.
-	 * 
-	 * @param input
-	 *            Fichier en entrée.
-	 * @param output
-	 *            Fichier en sortie.
-	 */
-	public static void OWLToSkos(String input, String output) {
-
-		OWLReader reader = new OWLReader();
-		reader.loadOntology(input);
-		buildOnto(reader, output);
-
-	}
 
 	/**
 	 * Cette méthode permet d'afficher un rappel sur les arguments à utiliser en
@@ -254,19 +108,21 @@ public class Principale {
 						.println("La valeur du premier argument est incorrect : ");
 				afficheMessageErreur();
 			} else {
+				SKOSToOWL transcoSKOSToOWL;
 				if (args[0].equals("1")) {
 					if (args.length < 4)
-						skosToOWL2(args[1], args[2]);
+						transcoSKOSToOWL = new SKOSToOWL(args[1], args[2]);
 					else
-						skosToOWL2(args[1], args[2], args[3]);
+						transcoSKOSToOWL = new SKOSToOWL(args[1], args[2], args[3]);
 
 				} else {
+					OWLToSKOS transcoOWLToSKOS;
 					if (args.length < 4)
-						OWLToSkos(args[1], args[2]);
+						transcoOWLToSKOS = new OWLToSKOS(args[1], args[2]);
 					else if (args.length < 5)
-						OWLToSkos(args[1], args[2], args[3]);
+						transcoOWLToSKOS = new OWLToSKOS(args[1], args[2], args[3]);
 					else
-						OWLToSkos(args[1], args[2], args[3], args[4]);
+						transcoOWLToSKOS = new OWLToSKOS(args[1], args[2], args[3], args[4]);
 				}
 			}
 		}
