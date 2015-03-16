@@ -219,8 +219,8 @@ public class OWLOntologyBuilder extends Builder {
 			// dans l'ontologie
 			addToThing(range);
 
-			// 3 - On crée l'axiome SubClassOf entre owlClass et
-			// classe2
+			// 3 - On crée l'axiome SubClassOf entre domain et
+			// range
 			addSubClassOf(domain, range);
 		}
 	}

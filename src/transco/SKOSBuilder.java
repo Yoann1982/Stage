@@ -344,10 +344,10 @@ public class SKOSBuilder extends Builder {
 
 		// On crée la relation ConceptScheme
 
-		OWLObjectProperty hasBroader = fact.getOWLObjectProperty("inScheme",
+		OWLObjectProperty inScheme = fact.getOWLObjectProperty("inScheme",
 				prefixSKOS);
 		OWLAxiom assertion = fact.getOWLObjectPropertyAssertionAxiom(
-				hasBroader, classe, scheme);
+				inScheme, classe, scheme);
 
 		AddAxiom addAxiomChange = new AddAxiom(targetOntology, assertion);
 		manager.applyChange(addAxiomChange);
@@ -375,7 +375,7 @@ public class SKOSBuilder extends Builder {
 		prefixOnto = new DefaultPrefixManager(iriProject.toString() + "#");
 
 		OWLNamedIndividual scheme = addIndividual(prefixSKOS, "ConceptScheme",
-				prefixSKOS, "BCBSarcomes");
+				prefixOnto, "BCBSarcomes");
 
 		Set<OWLClass> listClassOnto = originalOntology.getClassesInSignature();
 		for (OWLClass cls : listClassOnto) {

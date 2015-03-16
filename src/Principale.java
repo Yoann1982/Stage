@@ -1,3 +1,5 @@
+import load.SKOSToI2B2Builder;
+
 import org.semanticweb.owlapi.model.IRI;
 
 import transco.ConceptSKOS;
@@ -75,6 +77,14 @@ public class Principale {
 	 */
 	public static void main(String[] args) throws Exception {
 
+		//I2B2 test
+		// Chargement du fichier SKOS
+		OWLReader reader = new OWLReader();
+		reader.loadOntology("C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\skosSortiePrefix.owl");
+		SKOSToI2B2Builder loader = new SKOSToI2B2Builder(reader.getOntology());
+		loader.load();
+		
+		/*
 		// On vérifie que l'on a le bon nombre d'argument
 		if (args.length < 3) {
 			System.err
@@ -126,6 +136,7 @@ public class Principale {
 				}
 			}
 		}
+		*/
 	}
 
 }
