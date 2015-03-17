@@ -5,22 +5,21 @@ import transco.OWLReader;
 public class SKOSToI2B2 {
 
 	
-	public SKOSToI2B2 () {
+	public SKOSToI2B2 (String inputFile) {
 		//I2B2 test
 				// Chargement du fichier SKOS
 				OWLReader reader = new OWLReader();
-				reader.loadOntology("C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\skosSortiePrefix.owl");
-				//reader.loadOntology("C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\skosSortiePrefixLight.owl");
-				//SKOSToI2B2Builder loader = new SKOSToI2B2Builder(reader.getOntology());
-				//loader.load();
-				
+				reader.loadOntology(inputFile);
+								
 				// On résonne
 				Resonneur resonneur = new Resonneur(reader.getOntology());
-				//resonneur.testUnsatisfiableClasses(loader.getOriginalOntology());
-				//resonneur.testUnsatisfiableClasses(resonneur.findOnIndividual());
 				SKOSToI2B2Builder loader = new SKOSToI2B2Builder(resonneur.findPropertyAssertion());
-				
+
+				// On charge les données dans I2B2
 				loader.load();
+				
+				// On exporte le fichier SQL
+				
 				//WriteOntology fileOntoWriterOnto = new WriteOntology(
 				//		resonneur.findPropertyAssertion());
 				
