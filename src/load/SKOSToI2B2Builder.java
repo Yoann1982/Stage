@@ -8,15 +8,12 @@ import java.util.Set;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -139,7 +136,6 @@ public class SKOSToI2B2Builder extends Builder {
 
 	public void load() {
 
-		
 		System.out.println("Création des niveaux 0.");
 		// Chargement d'un résoneur pour pouvoir trouver les broader mais
 		// également les narrower
@@ -147,7 +143,7 @@ public class SKOSToI2B2Builder extends Builder {
 		// Recherche des ConceptScheme et création au niveau 0
 		int niveau = 0;
 		findAndCreateConceptScheme(niveau);
-		
+
 		System.out.println("Création des niveaux 1 et supérieur.");
 
 		// Recherche du Concept I2B2 et créations des enregistrements à partir
@@ -160,23 +156,28 @@ public class SKOSToI2B2Builder extends Builder {
 		// On recherche l'IRI de l'ontologie
 		IRI iriProject = foundIriProjectByIndividual();
 		// On crée le préfixe associé
-		prefixOnto = new DefaultPrefixManager(iriProject.toString() + "#");
+		if (iriProject != null) {
+			prefixOnto = new DefaultPrefixManager(iriProject.toString() + "#");
+			// On cherche l'individu correspondant à #2 (SarcomaBcb)
 
-		// On cherche l'individu correspondant à #1 (I2B2)
+			OWLNamedIndividual indivI2B2 = rechercheIndividu("2",
+					iriProject.toString() + "#");
 
-		OWLNamedIndividual indivI2B2 = rechercheIndividu("1",
-				iriProject.toString() + "#");
+			// OWLNamedIndividual indivI2B2 =
+			// fact.getOWLNamedIndividual("1",prefixOnto);
 
-		// OWLNamedIndividual indivI2B2 =
-		// fact.getOWLNamedIndividual("1",prefixOnto);
+			// On parcours les narrower de cet individu et on crée un
+			// enregistrement
+			// de niveau inférieur
+			List<OWLIndividual> listeNarrowers = getNarrowers(indivI2B2);
 
-		// On parcours les narrower de cet individu et on crée un enregistrement
-		// de niveau inférieur
-		List<OWLIndividual> listeNarrowers = getNarrowers(indivI2B2);
-
-		// creation des enregistrement
-		if (!listeNarrowers.isEmpty())
-			createNarrowers(listeNarrowers, niveau);
+			// creation des enregistrement
+			if (listeNarrowers != null && !listeNarrowers.isEmpty())
+				createNarrowers(listeNarrowers, niveau);
+		} else {
+			System.out
+					.println("L'IRI du projet n'a pu être trouvée. Arrêt des traitements.");
+		}
 	}
 
 	public OWLNamedIndividual rechercheIndividu(String individu,
@@ -214,8 +215,8 @@ public class SKOSToI2B2Builder extends Builder {
 	 */
 	public void createRecord(OWLIndividual individu, int niveau) {
 
-		 System.out.println("Création de l'enregistrement : " + individu +
-		 " au niveau " + niveau + ".");
+		System.out.println("Création de l'enregistrement : " + individu
+				+ " au niveau " + niveau + ".");
 
 	}
 
@@ -229,7 +230,7 @@ public class SKOSToI2B2Builder extends Builder {
 	public List<OWLIndividual> getNarrowers(OWLIndividual individu) {
 
 		List<OWLIndividual> listeIndiv = null;
-		listeIndiv = findIndividualsByObjectProperty("broader", individu,
+		listeIndiv = findIndividualsByObjectProperty("narrower", individu,
 				prefixSKOS);
 		return listeIndiv;
 	}
@@ -268,4 +269,14 @@ public class SKOSToI2B2Builder extends Builder {
 		else
 			return null;
 	}
+	
+	/**
+	 * Cette méthode permet de liste tous les ObjectProperty de l'ontologie.
+	 */
+	public void listOP() {
+		System.out.println("OP : " + originalOntology.getObjectPropertiesInSignature());
+	}
+	
+	
+	
 }

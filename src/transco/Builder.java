@@ -114,8 +114,10 @@ public class Builder {
 				break;
 			}
 		}
+		if (iriClasseFille != null)
 		return IRI.create(iriClasseFille.getScheme() + ":"
 				+ iriClasseFille.toURI().getSchemeSpecificPart());
+		else return iriClasseFille;
 	}
 	
 	/**

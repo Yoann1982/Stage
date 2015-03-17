@@ -1,3 +1,4 @@
+import load.Resonneur;
 import load.SKOSToI2B2Builder;
 
 import org.semanticweb.owlapi.model.IRI;
@@ -81,8 +82,21 @@ public class Principale {
 		// Chargement du fichier SKOS
 		OWLReader reader = new OWLReader();
 		reader.loadOntology("C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\skosSortiePrefix.owl");
-		SKOSToI2B2Builder loader = new SKOSToI2B2Builder(reader.getOntology());
+		//reader.loadOntology("C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\skosSortiePrefixLight.owl");
+		//SKOSToI2B2Builder loader = new SKOSToI2B2Builder(reader.getOntology());
+		//loader.load();
+		
+		// On résonne
+		Resonneur resonneur = new Resonneur(reader.getOntology());
+		//resonneur.testUnsatisfiableClasses(loader.getOriginalOntology());
+		//resonneur.testUnsatisfiableClasses(resonneur.findOnIndividual());
+		SKOSToI2B2Builder loader = new SKOSToI2B2Builder(resonneur.findPropertyAssertion());
+		
 		loader.load();
+		//WriteOntology fileOntoWriterOnto = new WriteOntology(
+		//		resonneur.findPropertyAssertion());
+		
+		//fileOntoWriterOnto.writeFile("C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\inferred.owl", reader.getFormat());
 		
 		/*
 		// On vérifie que l'on a le bon nombre d'argument
