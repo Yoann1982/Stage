@@ -2,21 +2,11 @@ package load;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.PrefixManager;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
 
@@ -31,7 +21,7 @@ import transco.Builder;
  */
 public class SKOSToI2B2Builder extends Builder {
 
-	private List<Metadata> listeMetadata;
+	private List<Metadata> listeMetadata = new ArrayList<Metadata>();
 	private PrefixManager prefixOnto;
 	private String iriSKOS = "http://www.w3.org/2004/02/skos/core#";
 	private PrefixManager prefixSKOS = new DefaultPrefixManager(iriSKOS);
@@ -57,8 +47,14 @@ public class SKOSToI2B2Builder extends Builder {
 	 * Cette méthode permet de créer un enregistrement Metadata et de le stocker
 	 * dans la liste d'enregistrement de la classe
 	 */
-	public void createMetadataRecord() {
+	public Metadata createMetadataRecord(OWLIndividual individu, int niveau) {
+		Metadata metadata = new Metadata();
+		metadata.setcHLevel(niveau);
+		metadata.setcFullName(individu.asOWLNamedIndividual().getIRI().toString());
+		metadata.setcName(getPrefLabel(individu));
+		System.out.println("HLEVEL : " + niveau + " FullName : " + individu.asOWLNamedIndividual().getIRI().toString() + " Name : " + getPrefLabel(individu));
 
+		return metadata;
 	}
 
 	/**
@@ -82,49 +78,7 @@ public class SKOSToI2B2Builder extends Builder {
 
 	}
 
-	public List<OWLIndividual> findSchemeByObjectProperty(String op,
-			PrefixManager prefix) {
-		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		OWLDataFactory fact = manager.getOWLDataFactory();
-
-		// On récupère les individus liés à l'individu en entrée par la relation
-		// "op" en entrée.
-
-		// On récupère la liste des individus de l'ontologie
-		Set<OWLNamedIndividual> listeIndividu = originalOntology
-				.getIndividualsInSignature();
-		List<OWLIndividual> listeIndividuSortie = new ArrayList<OWLIndividual>();
-
-		// Pour chacun des individus, on récupère la liste des Axioms de
-		// l'ontologie dans lequel il intervient
-		for (OWLNamedIndividual curseurIndiv : listeIndividu) {
-
-			Set<OWLIndividualAxiom> listeAxiom = originalOntology
-					.getAxioms(curseurIndiv);
-			for (OWLIndividualAxiom curAxio : listeAxiom) {
-				// On ne traite que les Class Assertion pour rechercher les
-				// scheme.
-				if (curAxio.isOfType(AxiomType.CLASS_ASSERTION)) {
-
-					// on change le type en OWLClassAssertionAxiom pour pouvoir
-					// utiliser ses méthodes
-					OWLClassAssertionAxiom classAxiom = (OWLClassAssertionAxiom) curAxio;
-					// On ne traite que les concept Scheme.
-					if (classAxiom.getClassExpression().asOWLClass().getIRI()
-							.equals(IRI.create(prefix.getDefaultPrefix() + op))) {
-
-						System.out.println("Scheme retrouvé : "
-								+ classAxiom.getIndividual());
-						listeIndividuSortie.add(classAxiom.getIndividual());
-						// on sort de la boucle for curAxio car il ne peut avoir
-						// plus d'une occurence pour le type op
-						break;
-					}
-				}
-			}
-		}
-		return listeIndividuSortie;
-	}
+	
 
 	/**
 	 * Cette méthode récursive permet de créer les enregistrements
@@ -180,22 +134,6 @@ public class SKOSToI2B2Builder extends Builder {
 		}
 	}
 
-	public OWLNamedIndividual rechercheIndividu(String individu,
-			String iriProject) {
-		OWLNamedIndividual individuSortie = null;
-
-		Set<OWLNamedIndividual> listIndivOnto = originalOntology
-				.getIndividualsInSignature();
-
-		for (OWLNamedIndividual indivCursor : listIndivOnto) {
-			if (indivCursor.getIRI().equals(IRI.create(iriProject + individu))) {
-				individuSortie = indivCursor;
-				break;
-			}
-		}
-		return individuSortie;
-	}
-
 	public void createNarrowers(List<OWLIndividual> listeIndiv, int niveau) {
 		// OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		// OWLDataFactory fact = manager.getOWLDataFactory();
@@ -215,59 +153,11 @@ public class SKOSToI2B2Builder extends Builder {
 	 */
 	public void createRecord(OWLIndividual individu, int niveau) {
 
-		System.out.println("Création de l'enregistrement : " + individu
-				+ " au niveau " + niveau + ".");
+		//System.out.println("Création de l'enregistrement : " + individu
+		//		+ " au niveau " + niveau + ".");
+		// Création des metadata
+		listeMetadata.add(createMetadataRecord(individu, niveau));
 
-	}
-
-	/**
-	 * Cette méthode renvoie la liste d'individu narrower de l'individu en
-	 * entrée.
-	 * 
-	 * @param individu
-	 * @return
-	 */
-	public List<OWLIndividual> getNarrowers(OWLIndividual individu) {
-
-		List<OWLIndividual> listeIndiv = null;
-		listeIndiv = findIndividualsByObjectProperty("narrower", individu,
-				prefixSKOS);
-		return listeIndiv;
-	}
-
-	/**
-	 * Cette méthode permet de retrouver les individu liés à l'individu en
-	 * entrée par la relation op ayant le prefix.
-	 * 
-	 * @param op
-	 * @param individu
-	 * @param prefix
-	 * @return
-	 */
-	public List<OWLIndividual> findIndividualsByObjectProperty(String op,
-			OWLIndividual individu, PrefixManager prefix) {
-		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		OWLDataFactory fact = manager.getOWLDataFactory();
-
-		// On récupère les individus liés à l'individu en entrée par la relation
-		// "op" en entrée.
-
-		OWLObjectProperty objProp = fact.getOWLObjectProperty(op, prefix);
-		Map<OWLObjectPropertyExpression, Set<OWLIndividual>> mapping = individu
-				.getObjectPropertyValues(getOriginalOntology());
-
-		// Recherche dans le mapping avec la clé qui correspond à l'object
-		// property
-		// On récupère la liste d'individual qui sont liés à l'invidu en entrée
-		// par l'object property
-		Set<OWLIndividual> listeIndiv = null;
-		if (mapping != null && !mapping.isEmpty()) {
-			listeIndiv = mapping.get(objProp);
-		}
-		if (listeIndiv != null && !listeIndiv.isEmpty())
-			return new ArrayList<OWLIndividual>(listeIndiv);
-		else
-			return null;
 	}
 	
 	/**
