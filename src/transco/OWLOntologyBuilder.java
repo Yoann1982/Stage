@@ -70,7 +70,7 @@ public class OWLOntologyBuilder extends Builder {
 	public void createOntology() {
 
 		// On récupère l'iri de l'ontologie cible
-		IRI iriProject = foundIriProjectByIndividual();
+		iriProject = foundIriProjectByIndividual();
 		createOntology(iriProject);
 	}
 

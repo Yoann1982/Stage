@@ -46,7 +46,7 @@ public class SKOSBuilder extends Builder {
 		OWLDataFactory fact = manager.getOWLDataFactory();
 
 		// On récupère l'iri de l'ontologie cible
-		IRI iriProject = foundIriProjectByClass();
+		iriProject = foundIriProjectByClass();
 
 		IRI iriProjectDiese = IRI.create(iriProject.toString() + "#");
 

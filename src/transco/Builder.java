@@ -58,6 +58,7 @@ public class Builder {
 	protected OWLClass classeSecondaire = null;
 	protected IRI iriProp = null;
 	protected IRI iriIndiv = null;
+	protected IRI iriProject = null;
 
 	/**
 	 * Getter de l'attribut format
@@ -765,24 +766,22 @@ public class Builder {
 	}
 
 	/**
-	 * Cette méthode permet de récuperer le prefLabel d'un individu.
-	 * 
+	 * Cette méthode permet de retrouver une annotation d'un individu avec une IRI et le nom de la balise
 	 * @param individu
+	 * @param iri
+	 * @param balise
 	 * @return
 	 */
-	public String getPrefLabel(OWLIndividual individu) {
-
+	public String getAnnotation(OWLIndividual individu, PrefixManager prefix, String balise) {
 		OWLAnnotationValue annotValeur = null;
 
 		// récupération des annotations
 		Set<OWLAnnotation> listeAnnot = individu.asOWLNamedIndividual()
 				.getAnnotations(originalOntology);
-
 		if (listeAnnot.size() != 0) {
 			for (OWLAnnotation curseurAnnot : listeAnnot) {
-				// On récupère le type de propriété rdfs:label
 				if (curseurAnnot.getProperty().getIRI()
-						.equals(IRI.create(iriSKOS + "prefLabel"))) {
+						.equals(IRI.create(prefix.getDefaultPrefix() + balise))) {
 					// on récupère la valeur
 					annotValeur = curseurAnnot.getValue();
 					break;
@@ -795,7 +794,7 @@ public class Builder {
 		else
 			return null;
 	}
-
+		
 	public OWLNamedIndividual rechercheIndividu(String individu,
 			String iriProject) {
 		OWLNamedIndividual individuSortie = null;
