@@ -59,8 +59,6 @@ public class MetadataToCSV {
 
 		String cHlevel = stringNull(meta.getcHLevel());
 
-		
-		
 		String cFullname = stringNull(meta.getcFullName());
 		String cName = stringNull(meta.getcName());
 		String synonym = stringNull(meta.getcSynonym());
@@ -214,5 +212,11 @@ public class MetadataToCSV {
 			System.out.println("Erreur --" + ioe.toString());
 		}
 	}
+	
+	public void checkFormat() {
+		
+		
+	}
+	
 
 }

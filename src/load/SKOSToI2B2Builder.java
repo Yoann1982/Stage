@@ -36,17 +36,12 @@ public class SKOSToI2B2Builder extends Builder {
 		this.originalOntology = ontologie;
 	}
 
-	
-	
 	/*
 	 * Principe de la classe Chargement du fichier en entrée à l'aide de la
 	 * classe OWLReader Recherche du ConceptScheme pour initialiser le niveau 0
 	 * Recherche au sein de l'ontologie du concept "I2B2" Traitement récursif
 	 * sur les fils pour créer les enregistrements => méthode dédiée
 	 */
-	
-	
-	
 
 	/**
 	 * Cette méthode permet de créer un enregistrement Metadata et de le stocker
@@ -55,6 +50,7 @@ public class SKOSToI2B2Builder extends Builder {
 	public Metadata createMetadataRecord(OWLIndividual individu, int niveau,
 			String hierarchie, boolean isNoeud) {
 		Metadata metadata = new Metadata();
+		Metadata2 metadata2 = new Metadata2();
 
 		String prefLabel = getAnnotation(individu, prefixSKOS, "prefLabel");
 		String basecode = getAnnotation(individu, prefixOnto, "C_BASECODE");
@@ -64,15 +60,28 @@ public class SKOSToI2B2Builder extends Builder {
 		String fullname = cPath + "\\" + cSymbol + "\\";
 
 		metadata.setcHLevel(niveau);
+		metadata2.put("C_HLEVEL", niveau);
+
 		metadata.setcFullName(fullname);
+		metadata2.put("C_FULLNAME", fullname);
+
 		metadata.setcName(prefLabel);
+		metadata2.put("C_NAME", prefLabel);
+
 		metadata.setcSynonym("N");
+		metadata2.put("C_SYNONYM_CD", "N");
+
 		if (isNoeud)
-			metadata.setcVisualAttributes("FA");
+			// metadata.setcVisualAttributes("FA");
+			metadata2.put("C_VISUALATTRIBUTES", "FA");
 		else
-			metadata.setcVisualAttributes("LA");
+			// metadata.setcVisualAttributes("LA");
+			metadata2.put("C_VISUALATTRIBUTES", "LA");
+
 		metadata.setcBaseCode(basecode);
+		metadata2.put("C_BASECODE", basecode);
 		metadata.setSourceSystem(inputFile);
+		metadata2.put("SOUCESYSTEM_CD", inputFile);
 		metadata.setcPath(cPath);
 		metadata.setcSymbol(cSymbol);
 		metadata.setcFactTableColumn("concept_cd");
@@ -83,16 +92,16 @@ public class SKOSToI2B2Builder extends Builder {
 		metadata.setcDimCode(fullname);
 		metadata.setcTooltip(tooltip);
 		metadata.setmAppliedPath("@");
-		
+
 		if (niveau == 0 || niveau == 1) {
-		System.out.print("HLEVEL : " + niveau + "\t");
-		System.out.print("FullName : " + fullname + "\t");
-		System.out.print("Name : " + prefLabel + "\t");
-		System.out.print("Basecode : " + basecode);
-		System.out.print("SourceSystem : " + inputFile + "\t");
-		System.out.print("C_PATH : " + cPath + "\t");
-		System.out.print("C_SYMBOL : " + cSymbol + "\t");
-		System.out.print("\n"); 
+			System.out.print("HLEVEL : " + niveau + "\t");
+			System.out.print("FullName : " + fullname + "\t");
+			System.out.print("Name : " + prefLabel + "\t");
+			System.out.print("Basecode : " + basecode);
+			System.out.print("SourceSystem : " + inputFile + "\t");
+			System.out.print("C_PATH : " + cPath + "\t");
+			System.out.print("C_SYMBOL : " + cSymbol + "\t");
+			System.out.print("\n");
 		}
 		return metadata;
 	}
@@ -104,16 +113,13 @@ public class SKOSToI2B2Builder extends Builder {
 		return listeMetadata;
 	}
 
-
-
 	/**
-	 * @param listeMetadata the listeMetadata to set
+	 * @param listeMetadata
+	 *            the listeMetadata to set
 	 */
 	public void setListeMetadata(List<Metadata> listeMetadata) {
 		this.listeMetadata = listeMetadata;
 	}
-
-
 
 	/**
 	 * @return the inputFile
@@ -175,7 +181,7 @@ public class SKOSToI2B2Builder extends Builder {
 
 			// Recherche des ConceptScheme et création au niveau 0
 			int niveau = 0;
-			//findAndCreateConceptScheme(niveau);
+			// findAndCreateConceptScheme(niveau);
 
 			System.out.println("Création des niveaux 1 et supérieur.");
 
@@ -192,12 +198,11 @@ public class SKOSToI2B2Builder extends Builder {
 			OWLNamedIndividual i2b2 = rechercheIndividu("1",
 					prefixOnto.getDefaultPrefix());
 
-			
 			createRecord(i2b2, niveau, "", true);
-			
+
 			String hierarchie = "\\"
 					+ getAnnotation(i2b2, prefixSKOS, "prefLabel");
-			
+
 			// On parcours les narrower de cet individu et on crée un
 			// enregistrement
 			// de niveau inférieur
