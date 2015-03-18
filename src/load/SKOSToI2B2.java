@@ -18,6 +18,9 @@ public class SKOSToI2B2 {
 				// On charge les données dans I2B2
 				loader.load();
 				
+				// On exporte le résultat dans un CSV
+				MetadataToCSV fichierCSV = new MetadataToCSV("C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\metadata.csv", loader.getListeMetadata(),";","C:\\Users\\y.keravec\\Documents\\BERGONIE\\SPECIFICATIONS\\formatMetadataTable.csv");
+				
 				// On exporte le fichier SQL
 				
 				//WriteOntology fileOntoWriterOnto = new WriteOntology(

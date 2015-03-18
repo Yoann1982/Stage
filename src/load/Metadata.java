@@ -11,12 +11,12 @@ import java.sql.Date;
 
 public class Metadata {
 
-	private int cHLevel; // Correspond à C_HLEVEL
+	private Integer cHLevel; // Correspond à C_HLEVEL
 	private String cFullName; // Correspond à C_FULLNAME
 	private String cName; // Correspond à C_NAME
-	private char cSynonym; // Correspond à C_SYNONYM_CD
+	private String cSynonym; // Correspond à C_SYNONYM_CD
 	private String cVisualAttributes; // Correspond à C_VISUALATTRIBUTES
-	private int cTotalNum; //C_TOTALNUM
+	private Integer cTotalNum; //C_TOTALNUM
 	private String cBaseCode; // Correspond à C_BASECODE
 	private String cMetaDataXML; // Correspond à C_METADATAXML
 	private String cFactTableColumn; // Correspond à C_FACTTABLECOLUMN
@@ -39,7 +39,7 @@ public class Metadata {
 	/**
 	 * @return the cHLevel
 	 */
-	public int getcHLevel() {
+	public Integer getcHLevel() {
 		return cHLevel;
 	}
 	/**
@@ -75,13 +75,13 @@ public class Metadata {
 	/**
 	 * @return the cSynonym
 	 */
-	public char getcSynonym() {
+	public String getcSynonym() {
 		return cSynonym;
 	}
 	/**
 	 * @param cSynonym the cSynonym to set
 	 */
-	public void setcSynonym(char cSynonym) {
+	public void setcSynonym(String cSynonym) {
 		this.cSynonym = cSynonym;
 	}
 	/**
@@ -99,7 +99,7 @@ public class Metadata {
 	/**
 	 * @return the cTotalNum
 	 */
-	public int getcTotalNum() {
+	public Integer getcTotalNum() {
 		return cTotalNum;
 	}
 	/**

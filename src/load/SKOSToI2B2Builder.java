@@ -36,12 +36,17 @@ public class SKOSToI2B2Builder extends Builder {
 		this.originalOntology = ontologie;
 	}
 
+	
+	
 	/*
 	 * Principe de la classe Chargement du fichier en entrée à l'aide de la
 	 * classe OWLReader Recherche du ConceptScheme pour initialiser le niveau 0
 	 * Recherche au sein de l'ontologie du concept "I2B2" Traitement récursif
 	 * sur les fils pour créer les enregistrements => méthode dédiée
 	 */
+	
+	
+	
 
 	/**
 	 * Cette méthode permet de créer un enregistrement Metadata et de le stocker
@@ -61,7 +66,7 @@ public class SKOSToI2B2Builder extends Builder {
 		metadata.setcHLevel(niveau);
 		metadata.setcFullName(fullname);
 		metadata.setcName(prefLabel);
-		metadata.setcSynonym('N');
+		metadata.setcSynonym("N");
 		if (isNoeud)
 			metadata.setcVisualAttributes("FA");
 		else
@@ -78,6 +83,8 @@ public class SKOSToI2B2Builder extends Builder {
 		metadata.setcDimCode(fullname);
 		metadata.setcTooltip(tooltip);
 		metadata.setmAppliedPath("@");
+		
+		if (niveau == 0 || niveau == 1) {
 		System.out.print("HLEVEL : " + niveau + "\t");
 		System.out.print("FullName : " + fullname + "\t");
 		System.out.print("Name : " + prefLabel + "\t");
@@ -85,9 +92,28 @@ public class SKOSToI2B2Builder extends Builder {
 		System.out.print("SourceSystem : " + inputFile + "\t");
 		System.out.print("C_PATH : " + cPath + "\t");
 		System.out.print("C_SYMBOL : " + cSymbol + "\t");
-		System.out.print("\n");
+		System.out.print("\n"); 
+		}
 		return metadata;
 	}
+
+	/**
+	 * @return the listeMetadata
+	 */
+	public List<Metadata> getListeMetadata() {
+		return listeMetadata;
+	}
+
+
+
+	/**
+	 * @param listeMetadata the listeMetadata to set
+	 */
+	public void setListeMetadata(List<Metadata> listeMetadata) {
+		this.listeMetadata = listeMetadata;
+	}
+
+
 
 	/**
 	 * @return the inputFile
@@ -149,7 +175,7 @@ public class SKOSToI2B2Builder extends Builder {
 
 			// Recherche des ConceptScheme et création au niveau 0
 			int niveau = 0;
-			findAndCreateConceptScheme(niveau);
+			//findAndCreateConceptScheme(niveau);
 
 			System.out.println("Création des niveaux 1 et supérieur.");
 
@@ -166,12 +192,12 @@ public class SKOSToI2B2Builder extends Builder {
 			OWLNamedIndividual i2b2 = rechercheIndividu("1",
 					prefixOnto.getDefaultPrefix());
 
+			
+			createRecord(i2b2, niveau, "", true);
+			
 			String hierarchie = "\\"
 					+ getAnnotation(i2b2, prefixSKOS, "prefLabel");
-
-			// OWLNamedIndividual indivI2B2 =
-			// fact.getOWLNamedIndividual("1",prefixOnto);
-
+			
 			// On parcours les narrower de cet individu et on crée un
 			// enregistrement
 			// de niveau inférieur
