@@ -6,10 +6,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Cette classe contient les méthodes permettant de préparer les Metadata pour
+ * leur exports vers une table, une fichier SQL, un fichier CSV, etc.
+ * 
+ * @author Yoann Keravec Date: 19/03/2015<br>
+ *         Institut Bergonié<br>
+ */
+
 public class Exporter {
 
 	protected List<FormatTable> listeFormat = new ArrayList<FormatTable>();
-	
+
 	public String stringNull(Object valeur) {
 
 		if (valeur == null)
@@ -17,7 +25,7 @@ public class Exporter {
 		else
 			return valeur.toString();
 	}
-	
+
 	public boolean checkFormat(FormatTable format, Object valeur) {
 
 		// On parcours la liste de format pour retrouver les colonnes à traiter
@@ -29,7 +37,6 @@ public class Exporter {
 
 		boolean formatOK = true;
 		if (valeur != null) {
-
 
 			String classe = valeur.getClass().toString();
 			classe = classe.substring(classe.lastIndexOf(".") + 1);
@@ -66,7 +73,7 @@ public class Exporter {
 		}
 		return formatOK;
 	}
-	
+
 	public int getTaille(String type) {
 
 		int taille = -1;
@@ -97,7 +104,7 @@ public class Exporter {
 			System.err.println("Erreur : le format de la colonne est inconnu.");
 		return taille;
 	}
-	
+
 	public String getType(String type) {
 
 		String typeSortie = null;
@@ -117,7 +124,7 @@ public class Exporter {
 		return typeSortie;
 
 	}
-	
+
 	/**
 	 * Cette méthode permet de charger le contenu du fichier paramètre décrivant
 	 * le format de la table Metadata
@@ -178,5 +185,5 @@ public class Exporter {
 			System.out.println("Erreur --" + ioe.toString());
 		}
 	}
-	
+
 }
