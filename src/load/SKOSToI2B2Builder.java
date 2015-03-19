@@ -147,7 +147,7 @@ public class SKOSToI2B2Builder extends Builder {
 		metadata2.put("C_PATH", cPath);
 		metadata2.put("C_SYMBOL", cSymbol);
 
-		return metadata2;
+		return metadata2; //
 	}
 
 	/**
