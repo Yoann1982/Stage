@@ -11,7 +11,8 @@ import org.semanticweb.owlapi.model.IRI;
 public class SKOSToOWL {
 
 	/**
-	 * Ce constructeur permet d'effectuer le transcodage d'un fichier SKOS en OWL.
+	 * Ce constructeur permet d'effectuer le transcodage d'un fichier SKOS en
+	 * OWL.
 	 * 
 	 * @param input
 	 *            Fichier en entrée.
@@ -24,19 +25,12 @@ public class SKOSToOWL {
 		OWLReader reader = new OWLReader();
 		reader.loadOntology(input);
 
-		// On crée une instance de l'objet qui va permettre de créer une
-		// ontologie à partir de la structure de données.
-		OWLOntologyBuilder builder = new OWLOntologyBuilder(
-				reader.getOntology());
-		builder.createOntology();
-		WriteOntology fileOntoWriter = new WriteOntology(
-				builder.getTargetOntology());
-		fileOntoWriter.writeFileRDFOWL(output, reader.getFormat());
+		buildOnto(reader, output, null);
 	}
 
 	/**
-	 * Ce constructeur permet d'effectuer le transcodage d'un fichier SKOS en OWL.
-	 * Cette méthode contient dans sa signature, une chaîne de caractères
+	 * Ce constructeur permet d'effectuer le transcodage d'un fichier SKOS en
+	 * OWL. Cette méthode contient dans sa signature, une chaîne de caractères
 	 * correspondant à l'IRI de l'ontologie à constuire.
 	 * 
 	 * @param input
@@ -53,14 +47,26 @@ public class SKOSToOWL {
 		// On lit le fichier qui alimente une structure de données interne
 		OWLReader reader = new OWLReader();
 		reader.loadOntology(input, iriOnto);
+		buildOnto(reader, output, iriOnto);
+	}
+
+	public SKOSToOWL(String input, String output, String iriOnto, String prefix) {
+
+		OWLReader reader = new OWLReader();
+		reader.loadOntology(input, iriOnto, prefix);
+		buildOnto(reader, output, iriOnto);
+	}
+
+	public void buildOnto(OWLReader reader, String output, String iriProject) {
 
 		// On crée une instance de l'objet qui va permettre de créer une
 		// ontologie à partir de la structure de données.
 		OWLOntologyBuilder builder = new OWLOntologyBuilder(
 				reader.getOntology());
-		builder.createOntology(IRI.create(iriOnto));
+		builder.createOntology(IRI.create(iriProject));
 		WriteOntology fileOntoWriter = new WriteOntology(
 				builder.getTargetOntology());
 		fileOntoWriter.writeFile(output, reader.getFormat());
-	}	
+	}
+
 }

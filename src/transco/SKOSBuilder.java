@@ -22,8 +22,6 @@ import org.semanticweb.owlapi.util.DefaultPrefixManager;
  */
 public class SKOSBuilder extends Builder {
 
-	
-
 	/**
 	 * Constructeur de la classe SKOSBuilder.
 	 * 
@@ -34,19 +32,25 @@ public class SKOSBuilder extends Builder {
 		this.originalOntology = ontologie;
 	}
 
-
+	/**
+	 * Cette méthode permet de créer l'ontologie SKOS cible à partir de l'ontologie OWL d'origine.
+	 * L'IRI est récupérée à partir du contenu du fichier en entrée.
+	 */
+	public void createSKOSOntologie() {
+		// On récupère l'iri de l'ontologie cible
+		iriProject = foundIriProjectByClass();
+		createSKOSOntologie(iriProject);
+	}
 
 	/**
 	 * Cette méthode permet de créer l'ontologie SKOS cible à partir de
-	 * l'ontologie OWL d'origine
+	 * l'ontologie OWL d'origine.
+	 * L'IRI considéré est celle indiquée en paramètre d'entrée.
 	 */
-	public void createSKOSOntologie() {
+	public void createSKOSOntologie(IRI iriProject) {
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLDataFactory fact = manager.getOWLDataFactory();
-
-		// On récupère l'iri de l'ontologie cible
-		iriProject = foundIriProjectByClass();
 
 		IRI iriProjectDiese = IRI.create(iriProject.toString() + "#");
 

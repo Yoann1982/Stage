@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import load.Resonneur;
 import load.SKOSToI2B2;
 import load.SKOSToI2B2Builder;
@@ -110,10 +115,8 @@ public class Principale {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length == 0) {
-			System.err.println("Erreur : Saisissez les arguments en entrée.");
-			System.err
-					.println("Vous devez saisir 3 arguments obligatoire et un argument facultatif :");
-			afficheMessageErreur();
+			// On ouvre le menu
+			menu();
 		} else {
 			switch (args[0]) {
 			case "1":
@@ -151,8 +154,156 @@ public class Principale {
 						.println("La valeur du premier argument est incorrect : ");
 				afficheMessageErreur();
 				break;
-
 			}
 		}
 	}
+
+	public static void menu() {
+
+		String swValue;
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		while (true) {
+			System.out
+					.println("===================[     MENU     ]======================");
+			System.out
+					.println("| Quelle opération souhaitez-vous effectuer ?           |");
+			System.out
+					.println("| 1 - Transcodage SKOS to OWL                           |");
+			System.out
+					.println("| 2 - Transcodage OWL to SKOS                           |");
+			System.out
+					.println("| 3 - Chargement SKOS to I2B2                           |");
+			System.out
+					.println("| 4 - Quitter                                           |");
+			System.out
+					.println("=========================================================");
+
+			try {
+				swValue = br.readLine();
+
+				switch (swValue) {
+				case "1":
+					menuSKOSToOWL();
+					break;
+				case "2":
+					menuOWLToSKOS();
+					break;
+				case "3":
+					menuSKOSToI2B2();
+					break;
+				case "4":
+					System.exit(0);
+				default:
+					System.out
+							.println("Votre choix est invalide, recommencez!");
+					break;
+				}
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	public static void menuSKOSToOWL() {
+		menuTransco(1);
+	}
+
+	public static void menuOWLToSKOS() {
+		menuTransco(2);
+	}
+
+	public static void menuTransco(int typeTransco) {
+		if (typeTransco == 1)
+			System.out
+					.println("===================[     MENU SKOS TO OWL    ]======================");
+		else
+			System.out
+					.println("===================[     MENU OWL TO SKOS    ]======================");
+		System.out.println("Nom du fichier en entrée :");
+		String fichierEntree = choixUtilisateur();
+		checkFile(fichierEntree, true);
+		System.out.println("Nom du fichier en sortie :");
+		String fichierSortie = choixUtilisateur();
+		checkFile(fichierEntree, false);
+		System.out.println("Nom de l'IRI (facultatif) :");
+		String iri = choixUtilisateur();
+		System.out.println("Nom du prefixe (facultatif) :");
+		String prefix = choixUtilisateur();
+		System.out.println("Transcodage en cours ...");
+		if (typeTransco == 1) {
+			// SKOS To OWL
+			SKOSToOWL transcoSKOSToOWL;
+			if (iri == null || iri.isEmpty())
+				transcoSKOSToOWL = new SKOSToOWL(fichierEntree, fichierSortie);
+			else if (prefix == null || prefix.isEmpty())
+				transcoSKOSToOWL = new SKOSToOWL(fichierEntree, fichierSortie,
+						iri);
+			else
+				transcoSKOSToOWL = new SKOSToOWL(fichierEntree, fichierSortie,
+						iri, prefix);
+		} else {
+			OWLToSKOS transcoOWLToSKOS;
+			if (iri == null || iri.isEmpty())
+				transcoOWLToSKOS = new OWLToSKOS(fichierEntree, fichierSortie);
+			else if (prefix == null || prefix.isEmpty())
+				transcoOWLToSKOS = new OWLToSKOS(fichierEntree, fichierSortie,
+						iri);
+			else
+				transcoOWLToSKOS = new OWLToSKOS(fichierEntree, fichierSortie,
+						iri, prefix);
+		}
+
+	}
+
+	/**
+	 * Cette méthode permet de vérifier si le nom de fichier saisie est bien
+	 * saisie et permet d'effectuer un test d'existence au besoin Le deuxième
+	 * paramètre prend true pour faire le test d'existence, false sinon.
+	 * 
+	 * @param fichierEntree
+	 * @param existence
+	 */
+	public static void checkFile(String fichierEntree, boolean existence) {
+		if (existence) {
+			if (!new File(fichierEntree).exists()) {
+				System.out.println("Le fichier saisie n'existe pas.");
+				System.out
+						.println("Veuillez-saisir de nouveau le nom du fichier.");
+				fichierEntree = null;
+			}
+		}
+		while (fichierEntree == null || fichierEntree.trim().isEmpty()) {
+			System.out.println("Veuillez saisir un fichier à lire.");
+			System.out.println("Nom du fichier en entrée :");
+			fichierEntree = choixUtilisateur();
+			if (existence) {
+				if (!new File(fichierEntree).exists()) {
+					System.out.println("Le fichier saisie n'existe pas.");
+					System.out
+							.println("Veuillez-saisir de nouveau le nom du fichier.");
+					fichierEntree = null;
+				}
+			}
+		}
+	}
+
+	public static void menuSKOSToI2B2() {
+
+	}
+
+	public static String choixUtilisateur() {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		String choixUtilisateur = null;
+
+		try {
+			choixUtilisateur = br.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return choixUtilisateur;
+	}
+
 }

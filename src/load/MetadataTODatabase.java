@@ -6,6 +6,6 @@ package load;
  *
  */
 
-public class MetadataTODatabase {
+public class MetadataTODatabase extends Exporter {
 
 }

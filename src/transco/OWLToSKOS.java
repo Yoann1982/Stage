@@ -1,5 +1,8 @@
 package transco;
 
+import org.semanticweb.owlapi.model.IRI;
+
+
 /**
  * Cette classe gère le transcodage OWL vers SKOS
  * 
@@ -19,7 +22,8 @@ public class OWLToSKOS {
 	 *            Chaîne de caractères correspondant au chemin absolu du fichier
 	 *            de sortie.
 	 */
-	private static void buildOnto(OWLReader reader, String output) {
+	private static void buildOnto(OWLReader reader, String output,
+			String iriProject) {
 		String ontoExterne = "http://www.w3.org/TR/skos-reference/skos-owl1-dl.rdf";
 		Importer importer = new Importer(reader.getOntology());
 		importer.importOnto(ontoExterne);
@@ -27,7 +31,10 @@ public class OWLToSKOS {
 		// On crée les objets SKOS
 		SKOSBuilder skosBuilder = new SKOSBuilder(reader.getOntology());
 		skosBuilder.setFormat(reader.getFormat());
-		skosBuilder.createSKOSOntologie();
+		if (iriProject == null)
+			skosBuilder.createSKOSOntologie();
+		else
+			skosBuilder.createSKOSOntologie(IRI.create(iriProject));
 		// On importe l'ontologie SKOS dans l'ontologie cible
 		Importer importerSKOS = new Importer(skosBuilder.getTargetOntology());
 		importerSKOS.importOnto(ontoExterne);
@@ -38,9 +45,9 @@ public class OWLToSKOS {
 	}
 
 	/**
-	 * Ce constructeur permet de transcoder un fichier OWL en SKOS. Elle contient
-	 * en paramètre d'entrée une chaîne de caractère correspondant à l'IRI de
-	 * l'ontologie à constuire (ex : http://bcbsarcoma/) et le prefixe
+	 * Ce constructeur permet de transcoder un fichier OWL en SKOS. Elle
+	 * contient en paramètre d'entrée une chaîne de caractère correspondant à
+	 * l'IRI de l'ontologie à constuire (ex : http://bcbsarcoma/) et le prefixe
 	 * correspondant à cette ontologie (ex: bcb).
 	 * 
 	 * @param input
@@ -58,13 +65,13 @@ public class OWLToSKOS {
 
 		OWLReader reader = new OWLReader();
 		reader.loadOntology(input, iriOnto, prefix);
-		buildOnto(reader, output);
+		buildOnto(reader, output, iriOnto);
 	}
 
 	/**
-	 * Ce constructeur permet de transcoder un fichier OWL en SKOS. Elle contient
-	 * en paramètre d'entrée une chaîne de caractère correspondant à l'IRI de
-	 * l'ontologie à constuire (ex : http://bcbsarcoma/).
+	 * Ce constructeur permet de transcoder un fichier OWL en SKOS. Elle
+	 * contient en paramètre d'entrée une chaîne de caractère correspondant à
+	 * l'IRI de l'ontologie à constuire (ex : http://bcbsarcoma/).
 	 * 
 	 * @param input
 	 *            Fichier en entrée.
@@ -78,7 +85,7 @@ public class OWLToSKOS {
 
 		OWLReader reader = new OWLReader();
 		reader.loadOntology(input, iriOnto);
-		buildOnto(reader, output);
+		buildOnto(reader, output, iriOnto);
 	}
 
 	/**
@@ -93,9 +100,8 @@ public class OWLToSKOS {
 
 		OWLReader reader = new OWLReader();
 		reader.loadOntology(input);
-		buildOnto(reader, output);
+		buildOnto(reader, output, null);
 
 	}
 
-	
 }

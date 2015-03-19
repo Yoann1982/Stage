@@ -18,6 +18,22 @@ public class Exporter {
 
 	protected List<FormatTable> listeFormat = new ArrayList<FormatTable>();
 
+	public String entoureGuillemet(Object valeur) {
+
+		String sortie = "";
+		
+		if (valeur != null) {
+			String classe = valeur.getClass().toString();
+			classe = classe.substring(classe.lastIndexOf(".") + 1);
+			
+			if (classe.equalsIgnoreCase("String"))  {
+				sortie =  "'" + valeur.toString() + "'";
+				return sortie;
+			} else return valeur.toString();
+			
+		} else return null;	
+	}
+	
 	public String stringNull(Object valeur) {
 
 		if (valeur == null)

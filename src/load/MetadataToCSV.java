@@ -1,5 +1,6 @@
 package load;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -43,7 +44,7 @@ public class MetadataToCSV extends Exporter {
 			for (Metadata meta : listeMetadata) {
 				writeRecord(meta, separator);
 			}
-			System.out.println("Fichier CVS écrit : " + fichierCSV);
+			System.out.println("Fichier CVS écrit : " + new File(fichierCSV).getCanonicalPath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
