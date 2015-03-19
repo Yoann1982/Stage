@@ -45,8 +45,7 @@ public class MetadataToSQLLoader extends Exporter {
 			// Ligne complète
 			ligne += listeColonnes + "\n";
 			
-			// Génération du fichier CSV associé
-			MetadataToCSV csv = new MetadataToCSV(fichierLoader, listeMetadata, separator, fichierFormat);
+			new MetadataToCSV(fichierLoader, listeMetadata, separator, fichierFormat);
 
 			// Ecriture des lignes
 			try {

@@ -6,12 +6,8 @@ import java.io.InputStreamReader;
 import load.SKOSToI2B2;
 
 
-import transco.ConceptSKOS;
 import transco.OWLToSKOS;
-import transco.SKOSReader;
 import transco.SKOSToOWL;
-import transco.WriteOntology;
-import transco.OWLOntologyBuilderSKOSAPI;
 
 /**
  * Cette classe contient la main et permet d'effectuer un transcodage SKOSToOWL
@@ -22,36 +18,7 @@ import transco.OWLOntologyBuilderSKOSAPI;
  */
 public class Principale {
 
-	/**
-	 * Cette méthode permet d'effectuer le transcodage d'un fichier SKOS en OWL.
-	 * 
-	 * @param input
-	 *            Fichier en entrée.
-	 * @param output
-	 *            Fichier en sortie.
-	 */
-
-	public static void skosToOWL(String input, String output) {
-
-		// On lit le fichier qui alimente une structure de données interne
-		SKOSReader reader = new SKOSReader();
-		reader.loadFile(input);
-
-		// On crée une instance de l'objet qui va permettre de créer une
-		// ontologie à partir de la structure de données.
-		OWLOntologyBuilderSKOSAPI builder = new OWLOntologyBuilderSKOSAPI();
-
-		// On parcours la structure de données pour alimenter l'ontologie créée.
-		for (ConceptSKOS conceptCur : reader.getListConceptSKOS()) {
-			builder.createClass(conceptCur);
-		}
-
-		WriteOntology fileOntoWriter = new WriteOntology(builder.getOntology());
-		fileOntoWriter.writeFile(output, reader.getFormat());
-	}
-
-	// END skosToOWL
-
+	
 	/**
 	 * Cette méthode permet d'afficher un rappel sur les arguments à utiliser en
 	 * entrée.
@@ -213,7 +180,9 @@ public class Principale {
 	 * vers I2B2
 	 */
 	public static void menuSKOSToI2B2() {
-
+		System.out
+		.println("===================[     MENU SKOS TO I2B2    ]======================");
+		
 	}
 
 	public static void menuTransco(int typeTransco) {

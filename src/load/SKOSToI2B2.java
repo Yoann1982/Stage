@@ -1,6 +1,5 @@
 package load;
 
-import java.util.List;
 
 import transco.OWLReader;
 
@@ -20,15 +19,13 @@ public class SKOSToI2B2 {
 		// On charge les données dans I2B2
 		loader.load();
 
-		// On exporte le résultat dans un CSV
-		MetadataToCSV fichierCSV = new MetadataToCSV(
+		new MetadataToCSV(
 				"C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\metadata.csv",
 				loader.getListeMetadata(),
 				";",
 				"C:\\Users\\y.keravec\\Documents\\BERGONIE\\SPECIFICATIONS\\formatMetadataTable.csv");
 
-		// On exporte le résultat dans un SQL
-		MetadataToSQL fichierSQL = new MetadataToSQL(
+		new MetadataToSQL(
 				"C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\metadata.sql",
 				loader.getListeMetadata(),
 				"Metadata",
@@ -36,7 +33,7 @@ public class SKOSToI2B2 {
 
 		// On exporte le résultat dans un SQLLoader
 		
-		MetadataToSQLLoader sqlLoader = new MetadataToSQLLoader(
+		new MetadataToSQLLoader(
 		"C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\metadata.ldr",
 		"C:\\\\Users\\\\y.keravec\\\\Documents\\\\BERGONIE\\\\OUT\\\\metadataLoader.csv",
 		";",
