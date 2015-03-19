@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Metadata {
 
-	HashMap metadataMap = new HashMap();
+	HashMap<String, Object> metadataMap = new HashMap<String, Object>();
 	
 	public void put(String key, Object value) {
 		this.metadataMap.put(key,value);
