@@ -3,18 +3,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import load.Resonneur;
 import load.SKOSToI2B2;
-import load.SKOSToI2B2Builder;
 
-import org.semanticweb.owlapi.model.IRI;
 
 import transco.ConceptSKOS;
-import transco.Importer;
-import transco.OWLOntologyBuilder;
-import transco.OWLReader;
 import transco.OWLToSKOS;
-import transco.SKOSBuilder;
 import transco.SKOSReader;
 import transco.SKOSToOWL;
 import transco.WriteOntology;
@@ -121,32 +114,26 @@ public class Principale {
 			switch (args[0]) {
 			case "1":
 				checkArgs(args);
-				// SKOS TO OWL
-				SKOSToOWL transcoSKOSToOWL;
 				if (args.length < 4)
-					transcoSKOSToOWL = new SKOSToOWL(args[1], args[2]);
+					new SKOSToOWL(args[1], args[2]);
 				else
-					transcoSKOSToOWL = new SKOSToOWL(args[1], args[2], args[3]);
+					new SKOSToOWL(args[1], args[2], args[3]);
 				break;
 			case "2":
 				checkArgs(args);
-				// OWL TO SKOS
-				OWLToSKOS transcoOWLToSKOS;
 				if (args.length < 4)
-					transcoOWLToSKOS = new OWLToSKOS(args[1], args[2]);
+					new OWLToSKOS(args[1], args[2]);
 				else if (args.length < 5)
-					transcoOWLToSKOS = new OWLToSKOS(args[1], args[2], args[3]);
+					new OWLToSKOS(args[1], args[2], args[3]);
 				else
-					transcoOWLToSKOS = new OWLToSKOS(args[1], args[2], args[3],
+					new OWLToSKOS(args[1], args[2], args[3],
 							args[4]);
 				break;
 			case "3":
-				// SKOS TO I2B2
-				SKOSToI2B2 loadI2B2;
 				if (args.length < 2)
 					System.err.println("Nombre d'argument incorrect.");
 				else {
-					loadI2B2 = new SKOSToI2B2(args[1]);
+					new SKOSToI2B2(args[1]);
 				}
 				break;
 			default:
@@ -205,12 +192,28 @@ public class Principale {
 		}
 	}
 
+	/**
+	 * Cette méthode gère le menu correspondant à la transcodification SKOS TO
+	 * OWL
+	 */
 	public static void menuSKOSToOWL() {
 		menuTransco(1);
 	}
 
+	/**
+	 * Cette méthode gère le menu correspondant à la transcodification OWL TO
+	 * SKOS
+	 */
 	public static void menuOWLToSKOS() {
 		menuTransco(2);
+	}
+
+	/**
+	 * Cette méthode gère le menu correspondant au chargement d'un fichier SKOS
+	 * vers I2B2
+	 */
+	public static void menuSKOSToI2B2() {
+
 	}
 
 	public static void menuTransco(int typeTransco) {
@@ -232,25 +235,22 @@ public class Principale {
 		String prefix = choixUtilisateur();
 		System.out.println("Transcodage en cours ...");
 		if (typeTransco == 1) {
-			// SKOS To OWL
-			SKOSToOWL transcoSKOSToOWL;
 			if (iri == null || iri.isEmpty())
-				transcoSKOSToOWL = new SKOSToOWL(fichierEntree, fichierSortie);
+				new SKOSToOWL(fichierEntree, fichierSortie);
 			else if (prefix == null || prefix.isEmpty())
-				transcoSKOSToOWL = new SKOSToOWL(fichierEntree, fichierSortie,
+				new SKOSToOWL(fichierEntree, fichierSortie,
 						iri);
 			else
-				transcoSKOSToOWL = new SKOSToOWL(fichierEntree, fichierSortie,
+				new SKOSToOWL(fichierEntree, fichierSortie,
 						iri, prefix);
 		} else {
-			OWLToSKOS transcoOWLToSKOS;
 			if (iri == null || iri.isEmpty())
-				transcoOWLToSKOS = new OWLToSKOS(fichierEntree, fichierSortie);
+				new OWLToSKOS(fichierEntree, fichierSortie);
 			else if (prefix == null || prefix.isEmpty())
-				transcoOWLToSKOS = new OWLToSKOS(fichierEntree, fichierSortie,
+				new OWLToSKOS(fichierEntree, fichierSortie,
 						iri);
 			else
-				transcoOWLToSKOS = new OWLToSKOS(fichierEntree, fichierSortie,
+				new OWLToSKOS(fichierEntree, fichierSortie,
 						iri, prefix);
 		}
 
@@ -288,10 +288,6 @@ public class Principale {
 		}
 	}
 
-	public static void menuSKOSToI2B2() {
-
-	}
-
 	public static String choixUtilisateur() {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -300,7 +296,6 @@ public class Principale {
 		try {
 			choixUtilisateur = br.readLine();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return choixUtilisateur;
