@@ -4,6 +4,7 @@ public class FormatTable {
 
 	private String column;
 	private String type;
+	private int taille;
 	private boolean isNullable;
 	/**
 	 * @return the column
@@ -40,6 +41,18 @@ public class FormatTable {
 	 */
 	public void setNullable(boolean isNullable) {
 		this.isNullable = isNullable;
+	}
+	/**
+	 * @return the taille
+	 */
+	public int getTaille() {
+		return taille;
+	}
+	/**
+	 * @param taille the taille to set
+	 */
+	public void setTaille(int taille) {
+		this.taille = taille;
 	}
 	
 	

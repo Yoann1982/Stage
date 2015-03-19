@@ -1,5 +1,7 @@
 package load;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,7 @@ import transco.Builder;
  */
 public class SKOSToI2B2Builder extends Builder {
 
+	private List<MetadataBIS> listeMetadataBIS = new ArrayList<MetadataBIS>();
 	private List<Metadata> listeMetadata = new ArrayList<Metadata>();
 	private PrefixManager prefixOnto;
 	private String iriSKOS = "http://www.w3.org/2004/02/skos/core#";
@@ -47,10 +50,10 @@ public class SKOSToI2B2Builder extends Builder {
 	 * Cette méthode permet de créer un enregistrement Metadata et de le stocker
 	 * dans la liste d'enregistrement de la classe
 	 */
-	public Metadata createMetadataRecord(OWLIndividual individu, int niveau,
-			String hierarchie, boolean isNoeud) {
-		Metadata metadata = new Metadata();
-		Metadata2 metadata2 = new Metadata2();
+	public MetadataBIS createMetadataBISRecord(OWLIndividual individu,
+			int niveau, String hierarchie, boolean isNoeud) {
+		MetadataBIS metadata = new MetadataBIS();
+		Metadata metadata2 = new Metadata();
 
 		String prefLabel = getAnnotation(individu, prefixSKOS, "prefLabel");
 		String basecode = getAnnotation(individu, prefixOnto, "C_BASECODE");
@@ -70,40 +73,96 @@ public class SKOSToI2B2Builder extends Builder {
 
 		metadata.setcSynonym("N");
 		metadata2.put("C_SYNONYM_CD", "N");
-
 		if (isNoeud)
 			// metadata.setcVisualAttributes("FA");
 			metadata2.put("C_VISUALATTRIBUTES", "FA");
 		else
 			// metadata.setcVisualAttributes("LA");
 			metadata2.put("C_VISUALATTRIBUTES", "LA");
-
 		metadata.setcBaseCode(basecode);
 		metadata2.put("C_BASECODE", basecode);
+		metadata.setcFactTableColumn("concept_cd");
+		metadata2.put("C_FACTTABLECOLUMN", "concept_cd");
+		metadata.setcTableName("concept_dimension");
+		metadata2.put("C_TABLENAME", "concept_dimension");
+		metadata.setcColumnName("concept_path");
+		metadata2.put("C_COLUMNNAME", "concept_path");
+		metadata.setcColumnDataType("T");
+		metadata2.put("C_COLUMNDATATYPE", "T");
+		metadata.setcOperator("LIKE");
+		metadata2.put("C_OPERATOR", "LIKE");
+		metadata.setcDimCode(fullname);
+		metadata2.put("C_DIMCODE", fullname);
+		metadata.setcTooltip(tooltip);
+		metadata2.put("C_TOOTIP", tooltip);
+		metadata.setmAppliedPath("@");
+		metadata2.put("M_APPLIED_PATH", "@");
 		metadata.setSourceSystem(inputFile);
 		metadata2.put("SOUCESYSTEM_CD", inputFile);
 		metadata.setcPath(cPath);
+		metadata2.put("C_PATH", cPath);
 		metadata.setcSymbol(cSymbol);
-		metadata.setcFactTableColumn("concept_cd");
-		metadata.setcTableName("concept_dimension");
-		metadata.setcColumnName("concept_path");
-		metadata.setcColumnDataType("T");
-		metadata.setcOperator("LIKE");
-		metadata.setcDimCode(fullname);
-		metadata.setcTooltip(tooltip);
-		metadata.setmAppliedPath("@");
+		metadata2.put("C_SYMBOL", cSymbol);
 
-		if (niveau == 0 || niveau == 1) {
-			System.out.print("HLEVEL : " + niveau + "\t");
-			System.out.print("FullName : " + fullname + "\t");
-			System.out.print("Name : " + prefLabel + "\t");
-			System.out.print("Basecode : " + basecode);
-			System.out.print("SourceSystem : " + inputFile + "\t");
-			System.out.print("C_PATH : " + cPath + "\t");
-			System.out.print("C_SYMBOL : " + cSymbol + "\t");
-			System.out.print("\n");
-		}
 		return metadata;
+	}
+
+	/**
+	 * Cette méthode permet de créer un enregistrement Metadata et de le stocker
+	 * dans la liste d'enregistrement de la classe
+	 */
+	public Metadata createMetadataRecord(OWLIndividual individu, int niveau,
+			String hierarchie, boolean isNoeud) {
+		Metadata metadata2 = new Metadata();
+
+		String prefLabel = getAnnotation(individu, prefixSKOS, "prefLabel");
+		String basecode = getAnnotation(individu, prefixOnto, "C_BASECODE");
+		String cPath = hierarchie;
+		String cSymbol = prefLabel;
+		String tooltip = cPath + "\\" + cSymbol;
+		String fullname = cPath + "\\" + cSymbol + "\\";
+		String nomFichier = "";
+		nomFichier = new File(inputFile).getName();
+
+		metadata2.put("C_HLEVEL", niveau);
+		metadata2.put("C_FULLNAME", fullname);
+		metadata2.put("C_NAME", prefLabel);
+		metadata2.put("C_SYNONYM_CD", "N");
+		if (isNoeud)
+			// metadata.setcVisualAttributes("FA");
+			metadata2.put("C_VISUALATTRIBUTES", "FA");
+		else
+			// metadata.setcVisualAttributes("LA");
+			metadata2.put("C_VISUALATTRIBUTES", "LA");
+		metadata2.put("C_BASECODE", basecode);
+		metadata2.put("C_FACTTABLECOLUMN", "concept_cd");
+		metadata2.put("C_TABLENAME", "concept_dimension");
+		metadata2.put("C_COLUMNNAME", "concept_path");
+		metadata2.put("C_COLUMNDATATYPE", "T");
+		metadata2.put("C_OPERATOR", "LIKE");
+		metadata2.put("C_DIMCODE", fullname);
+		metadata2.put("C_TOOTIP", tooltip);
+		metadata2.put("M_APPLIED_PATH", "@");
+		metadata2.put("SOUCESYSTEM_CD", nomFichier);
+		metadata2.put("C_PATH", cPath);
+		metadata2.put("C_SYMBOL", cSymbol);
+
+		return metadata2;
+	}
+
+	/**
+	 * @return the listeMetadata2
+	 */
+	public List<MetadataBIS> getListeMetadataBIS() {
+		return listeMetadataBIS;
+	}
+
+	/**
+	 * @param listeMetadata2
+	 *            the listeMetadata2 to set
+	 */
+	public void setListeMetadataBIS(List<MetadataBIS> listeMetadataBIS) {
+		this.listeMetadataBIS = listeMetadataBIS;
 	}
 
 	/**

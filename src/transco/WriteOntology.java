@@ -1,6 +1,7 @@
 package transco;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
@@ -90,7 +91,12 @@ public class WriteOntology {
 							.println("Erreur lors de l'écriture du fichier RDF.");
 					e.printStackTrace();
 				}
-				System.out.println("Nom du fichier créé : " + nomFichier);
+				try {
+					System.out.println("Nom du fichier créé : " + new File(nomFichier).getCanonicalPath());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
