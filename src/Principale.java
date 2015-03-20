@@ -2,10 +2,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 import load.SKOSToI2B2;
-
-
 import transco.OWLToSKOS;
 import transco.SKOSToOWL;
 
@@ -18,38 +17,145 @@ import transco.SKOSToOWL;
  */
 public class Principale {
 
-	
+	/**
+	 * Cet argument indique le nombre d'arguments attendu en entrée en fonction
+	 * de l'action
+	 */
+	private static HashMap<Integer, Integer> mapArgObligatoire = new HashMap<Integer, Integer>();
+
+	private static HashMap<Integer, Integer> mapArgFacultatif = new HashMap<Integer, Integer>();
+
+	public static void initMapArgument() {
+		// 1 : skos to owl
+		mapArgObligatoire.put(1, 3);
+		mapArgFacultatif.put(1, 2);
+
+		// 2 : owl to skos
+		mapArgObligatoire.put(2, 3);
+		mapArgFacultatif.put(2, 2);
+
+		// 3 : skos to csv
+		mapArgObligatoire.put(3, 5);
+		mapArgFacultatif.put(3, 0);
+
+		// 4 : skos to SQL
+		mapArgObligatoire.put(4, 5);
+		mapArgFacultatif.put(4, 0);
+
+		// 5 : skos to SQLLoader
+		mapArgObligatoire.put(5, 7);
+		mapArgFacultatif.put(5, 0);
+
+	}
+
 	/**
 	 * Cette méthode permet d'afficher un rappel sur les arguments à utiliser en
 	 * entrée.
 	 */
-	public static void afficheMessageErreur() {
-		System.err
-				.println("Argument 1 obligatoire : type de transcodage : 1 : skos to owl ou 2 : owl to skos ou 3 : skos to i2b2");
-		System.err.println("Argument 2 obligatoire : Nom du fichier en entrée");
-		System.err.println("Argument 3 obligatoire : Nom du fichier en sortie");
-		System.err.println("Argument 4 facultatif : IRI de l'ontologie");
-		System.err.println("Argument 5 facultatif : Prefix de l'ontologie");
+	public static void afficheMessageErreur(String typeMessage) {
+
+		switch (typeMessage) {
+
+		case "1":
+			System.err
+					.println("Argument 1 obligatoire : type de transcodage : 1 : skos to owl ou 2 : owl to skos ou 3 : skos to i2b2");
+			System.err
+					.println("Argument 2 obligatoire : Nom du fichier en entrée");
+			System.err
+					.println("Argument 3 obligatoire : Nom du fichier en sortie");
+			System.err.println("Argument 4 facultatif : IRI de l'ontologie");
+			System.err.println("Argument 5 facultatif : Prefix de l'ontologie");
+			break;
+		case "2":
+			System.err
+					.println("Argument 1 obligatoire : type de transcodage : 1 : skos to owl ou 2 : owl to skos ou 3 : skos to i2b2");
+			System.err
+					.println("Argument 2 obligatoire : Nom du fichier en entrée");
+			System.err
+					.println("Argument 3 obligatoire : Nom du fichier en sortie");
+			System.err.println("Argument 4 facultatif : IRI de l'ontologie");
+			System.err.println("Argument 5 facultatif : Prefix de l'ontologie");
+			break;
+		case "3":
+			System.err
+					.println("Argument 1 obligatoire : type de transcodage : 1 : skos to owl ou 2 : owl to skos ou 3 : skos to i2b2");
+			System.err
+					.println("Argument 2 obligatoire : Nom du fichier en entrée");
+			System.err
+					.println("Argument 3 obligatoire : Nom du fichier en sortie");
+			System.err.println("Argument 4 obligatoire : Caractère séparateur");
+			System.err
+					.println("Argument 5 obligatoire : Nom du fichier format table I2B2");
+			break;
+		case "4":
+			System.err
+					.println("Argument 1 obligatoire : type de transcodage : 1 : skos to owl ou 2 : owl to skos ou 3 : skos to i2b2");
+			System.err
+					.println("Argument 2 obligatoire : Nom du fichier en entrée");
+			System.err
+					.println("Argument 3 obligatoire : Nom du fichier en sortie");
+			System.err.println("Argument 4 obligatoire : Nom de la table");
+			System.err
+					.println("Argument 5 obligatoire : Nom du fichier format table I2B2");
+			break;
+		case "5":
+			System.err
+					.println("Argument 1 obligatoire : type de transcodage : 1 : skos to owl ou 2 : owl to skos ou 3 : skos to i2b2");
+			System.err
+					.println("Argument 2 obligatoire : Nom du fichier en entrée");
+			System.err
+					.println("Argument 3 obligatoire : Nom du fichier en sortie");
+			System.err.println("Argument 4 obligatoire : Nom du fichier CSV en sortie");
+			
+			System.err.println("Argument 5 obligatoire : Caractère séparateur");
+			System.err.println("Argument 6 obligatoire : Nom de la table");
+			System.err
+					.println("Argument 7 obligatoire : Nom du fichier format table I2B2");
+			break;
+		case "6":
+			break;
+		default:
+			break;
+		}
 	}
 
 	public static void checkArgs(String[] args) {
-		// On vérifie que l'on a le bon nombre d'argument
-		if (args.length < 3) {
+		// On vérifie que l'on a le bon nombre d'argument en fonction de
+		// l'action choisie
+
+		Integer nbArgObligatoire = mapArgObligatoire.get(Integer
+				.decode(args[0]));
+		Integer nbArgFacultatif = mapArgFacultatif.get(Integer.decode(args[0]));
+
+		if (args.length < nbArgObligatoire) {
 			System.err
 					.println("Erreur : Nombre d'arguments en entrée incorrect.");
-			System.err
-					.println("Vous devez saisir 3 arguments obligatoire et un argument facultatif :");
-			afficheMessageErreur();
+			System.err.println("Vous devez saisir " + nbArgObligatoire
+					+ " arguments obligatoires et " + nbArgFacultatif
+					+ " arguments facultatifs :");
+			afficheMessageErreur(args[0]);
 			System.exit(1);
 		} else {
-			if (args.length > 4) {
+			afficheListeArgument(args, nbArgObligatoire, nbArgFacultatif);
+			lanceTransco(args, nbArgObligatoire, nbArgFacultatif);
+		}
+	}
+
+	public static void afficheListeArgument(String[] args,
+			Integer nbArgObligatoire, Integer nbArgFacultatif) {
+
+		switch (args[0]) {
+
+		case "1":
+
+			if (args.length == nbArgObligatoire + nbArgFacultatif) {
 				System.out.println("Type de transcodage : " + args[0]);
 				System.out.println("Fichier en entrée : " + args[1]);
 				System.out.println("Fichier en sortie : " + args[2]);
 				System.out.println("IRI de l'ontologie : " + args[3]);
 				System.out.println("Prefix de l'ontologie : " + args[4]);
 			} else {
-				if (args.length > 3) {
+				if (args.length > nbArgObligatoire) {
 					System.out.println("Type de transcodage : " + args[0]);
 					System.out.println("Fichier en entrée : " + args[1]);
 					System.out.println("Fichier en sortie : " + args[2]);
@@ -60,55 +166,131 @@ public class Principale {
 					System.out.println("Fichier en sortie : " + args[2]);
 				}
 			}
+			break;
+		case "2":
+			if (args.length == nbArgObligatoire + nbArgFacultatif) {
+				System.out.println("Type de transcodage : " + args[0]);
+				System.out.println("Fichier en entrée : " + args[1]);
+				System.out.println("Fichier en sortie : " + args[2]);
+				System.out.println("IRI de l'ontologie : " + args[3]);
+				System.out.println("Prefix de l'ontologie : " + args[4]);
+			} else {
+				if (args.length > nbArgObligatoire) {
+					System.out.println("Type de transcodage : " + args[0]);
+					System.out.println("Fichier en entrée : " + args[1]);
+					System.out.println("Fichier en sortie : " + args[2]);
+					System.out.println("IRI de l'ontologie : " + args[3]);
+				} else {
+					System.out.println("Type de transcodage : " + args[0]);
+					System.out.println("Fichier en entrée : " + args[1]);
+					System.out.println("Fichier en sortie : " + args[2]);
+				}
+			}
+			break;
+		case "3":
+			if (args.length == nbArgObligatoire + nbArgFacultatif) {
+				System.out.println("Type de transcodage : " + args[0]);
+				System.out.println("Fichier en entrée : " + args[1]);
+				System.out.println("Fichier en sortie : " + args[2]);
+				System.out.println("Caractère séparateur : " + args[3]);
+				System.out.println("Fichier Format : " + args[4]);
+			} else {
+				System.out.println("Type de transcodage : " + args[0]);
+				System.out.println("Fichier en entrée : " + args[1]);
+				System.out.println("Fichier en sortie : " + args[2]);
+				System.out.println("Fichier Format : " + args[3]);
+			}
+			break;
+		case "4":
+				System.out.println("Type de transcodage : " + args[0]);
+				System.out.println("Fichier en entrée : " + args[1]);
+				System.out.println("Fichier en sortie : " + args[2]);
+				System.out.println("Nom de la table : " + args[3]);
+				System.out.println("Fichier Format : " + args[4]);
+			break;
+		case "5":
+			if (args.length == nbArgObligatoire + nbArgFacultatif) {
+				System.out.println("Type de transcodage : " + args[0]);
+				System.out.println("Fichier en entrée : " + args[1]);
+				System.out.println("Fichier SQLLoader en sortie : " + args[2]);
+				System.out.println("Fichier CSV en sortie : " + args[3]);
+				System.out.println("Caractère séparateur : " + args[4]);
+				System.out.println("Nom de la table : " + args[5]);
+				System.out.println("Fichier Format : " + args[6]);
+			} else {
+				System.out.println("Type de transcodage : " + args[0]);
+				System.out.println("Fichier en entrée : " + args[1]);
+				System.out.println("Fichier SQLLoader en sortie : " + args[2]);
+				System.out.println("Fichier CSV en sortie : " + args[3]);
+				System.out.println("Nom de la table : " + args[4]);
+				System.out.println("Fichier Format : " + args[5]);
+			}
+			break;
+		case "6":
+			break;
+		default:
+			break;
+		}
+	}
+
+	public static void lanceTransco(String[] args, Integer nbArgObligatoire,
+			Integer nbArgFacultatif) {
+		String[] parametre = null;
+
+		switch (args[0]) {
+
+		case "1":
+			parametre = new String[args.length - 1];
+			for (int i = 0; i < args.length - 1; i++) {
+				parametre[i] = args[i + 1];
+			}
+			new SKOSToOWL(parametre);
+			break;
+		case "2":
+			parametre = new String[args.length - 1];
+			for (int i = 0; i < args.length - 1; i++) {
+				parametre[i] = args[i + 1];
+			}
+			new OWLToSKOS(parametre);
+		case "3":
+			SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
+			loaderCSV.createCSV(args[2], args[3], args[4]);
+			break;
+		case "4":
+			SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
+			loaderSQL.createSQL(args[2], args[3], args[4]);
+			break;
+		case "5":
+			SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
+			loaderSQLLoader.createSQLLoader(args[2], args[3], args[4], args[5], args[6]);
+			break;
+		case "6":
+			break;
+		default:
+			System.err.println("Choix d'action inconnu.");
+			break;
 		}
 	}
 
 	/**
-	 * La main prend trois argument: \n Argument 1 : type de transcodage : 1 :
-	 * skostoowl, 2 : owltoskos ou 3 : skostoi2b2 \n Argument 2 : Nom du fichier
-	 * en entrée Argument \n 3 : Nom du fichier en sortie \n 4 : Iri de
-	 * l'ontologie \n 5 : Prefix de l'ontologie \n
+	 * La main prend trois argument: \n Argument 1 : type de transcodage : \t 1
+	 * : SKOS TO OWL \n \t 2 : OWL TO SKOS \n \t 3 : SKOS TO CSV \n \t 4 : SKOS
+	 * TO SQL (Insert) \n \t 5 : SKOS TO SQLLoader \n \t 6 : SKOS TO I2B2
+	 * Argument 2 : Nom du fichier en entrée \n Argument 3 : Nom du fichier en
+	 * sortie \n Argument 4 : Iri de l'ontologie \n Argument 5 : Prefix de
+	 * l'ontologie \n
 	 * 
 	 * @param args
 	 * 
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+		initMapArgument();
 		if (args.length == 0) {
 			// On ouvre le menu
 			menu();
 		} else {
-			switch (args[0]) {
-			case "1":
-				checkArgs(args);
-				if (args.length < 4)
-					new SKOSToOWL(args[1], args[2]);
-				else
-					new SKOSToOWL(args[1], args[2], args[3]);
-				break;
-			case "2":
-				checkArgs(args);
-				if (args.length < 4)
-					new OWLToSKOS(args[1], args[2]);
-				else if (args.length < 5)
-					new OWLToSKOS(args[1], args[2], args[3]);
-				else
-					new OWLToSKOS(args[1], args[2], args[3],
-							args[4]);
-				break;
-			case "3":
-				if (args.length < 2)
-					System.err.println("Nombre d'argument incorrect.");
-				else {
-					new SKOSToI2B2(args[1]);
-				}
-				break;
-			default:
-				System.err
-						.println("La valeur du premier argument est incorrect : ");
-				afficheMessageErreur();
-				break;
-			}
+			checkArgs(args);
 		}
 	}
 
@@ -180,9 +362,78 @@ public class Principale {
 	 * vers I2B2
 	 */
 	public static void menuSKOSToI2B2() {
+		String valeurSaisie;
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
 		System.out
-		.println("===================[     MENU SKOS TO I2B2    ]======================");
-		
+				.println("===================[     MENU SKOS TO I2B2    ]======================");
+		System.out.println("Que voulez-vous faire ?");
+		System.out.println("1 - Générer un fichier CSV");
+		System.out.println("2 - Générer un fichier SQL (insert into)");
+		System.out
+				.println("3 - Générer un fichier SQLLoader et son fichier CSV associé");
+		System.out.println("4 - Alimenter la table d'I2B2");
+		System.out.println("5 - Quitter");
+		try {
+			valeurSaisie = br.readLine();
+			if (valeurSaisie.equals("5")) {
+				System.exit(0);
+			} else
+				genererSortie(Integer.parseInt(valeurSaisie));
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}
+
+	}
+
+	public static void genererSortie(int typeFichier) {
+		String fichierEntree = null;
+		String fichierSortie = null;
+		String fichierFormat = null;
+		String fichierCSV = null;
+		String separateur = null;
+		String nomTable = null;
+
+		System.out.println("Nom du fichier en entrée :");
+		fichierEntree = choixUtilisateur();
+		checkFile(fichierEntree, true);
+		System.out.println("Nom du fichier en sortie :");
+		fichierSortie = choixUtilisateur();
+		checkFile(fichierSortie, false);
+		if (typeFichier == 3) {
+			System.out.println("Nom du fichier CSV à générer :");
+			fichierCSV = choixUtilisateur();
+			checkFile(fichierCSV, false);
+		}
+		if (typeFichier == 1 || typeFichier == 3) {
+			System.out.println("Caractère de séparation :");
+			separateur = choixUtilisateur();
+		}
+		if (typeFichier == 2 || typeFichier == 3) {
+			System.out.println("Nom de la table SQL à charger :");
+			nomTable = choixUtilisateur();
+		}
+		System.out.println("Nom du fichier format Metadata :");
+		fichierFormat = choixUtilisateur();
+		checkFile(fichierFormat, true);
+		SKOSToI2B2 loaderI2B2 = new SKOSToI2B2(fichierEntree);
+		switch (typeFichier) {
+		case 1:
+			loaderI2B2.createCSV(fichierSortie, separateur, fichierFormat);
+			break;
+		case 2:
+			loaderI2B2.createSQL(fichierSortie, nomTable, fichierFormat);
+			break;
+		case 3:
+			loaderI2B2.createSQLLoader(fichierSortie, fichierCSV, separateur,
+					nomTable, fichierFormat);
+			break;
+		case 4:
+			break;
+		default:
+			System.err.println("Erreur : Type de sortie à générer inconnu.");
+			break;
+		}
 	}
 
 	public static void menuTransco(int typeTransco) {
@@ -197,7 +448,7 @@ public class Principale {
 		checkFile(fichierEntree, true);
 		System.out.println("Nom du fichier en sortie :");
 		String fichierSortie = choixUtilisateur();
-		checkFile(fichierEntree, false);
+		checkFile(fichierSortie, false);
 		System.out.println("Nom de l'IRI (facultatif) :");
 		String iri = choixUtilisateur();
 		System.out.println("Nom du prefixe (facultatif) :");
@@ -207,20 +458,16 @@ public class Principale {
 			if (iri == null || iri.isEmpty())
 				new SKOSToOWL(fichierEntree, fichierSortie);
 			else if (prefix == null || prefix.isEmpty())
-				new SKOSToOWL(fichierEntree, fichierSortie,
-						iri);
+				new SKOSToOWL(fichierEntree, fichierSortie, iri);
 			else
-				new SKOSToOWL(fichierEntree, fichierSortie,
-						iri, prefix);
+				new SKOSToOWL(fichierEntree, fichierSortie, iri, prefix);
 		} else {
 			if (iri == null || iri.isEmpty())
 				new OWLToSKOS(fichierEntree, fichierSortie);
 			else if (prefix == null || prefix.isEmpty())
-				new OWLToSKOS(fichierEntree, fichierSortie,
-						iri);
+				new OWLToSKOS(fichierEntree, fichierSortie, iri);
 			else
-				new OWLToSKOS(fichierEntree, fichierSortie,
-						iri, prefix);
+				new OWLToSKOS(fichierEntree, fichierSortie, iri, prefix);
 		}
 
 	}

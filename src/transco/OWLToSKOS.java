@@ -2,7 +2,6 @@ package transco;
 
 import org.semanticweb.owlapi.model.IRI;
 
-
 /**
  * Cette classe gère le transcodage OWL vers SKOS
  * 
@@ -42,6 +41,24 @@ public class OWLToSKOS {
 		WriteOntology fileOntoWriterOnto = new WriteOntology(
 				importerSKOS.getOntology());
 		fileOntoWriterOnto.writeFile(output, skosBuilder.getFormat());
+	}
+
+	public OWLToSKOS(String[] parametre) {
+		switch (parametre.length) {
+
+		case 2:
+			new OWLToSKOS(parametre[0], parametre[1]);
+			break;
+		case 3:
+			new OWLToSKOS(parametre[0], parametre[1], parametre[2]);
+		case 4:
+			new OWLToSKOS(parametre[0], parametre[1], parametre[2],
+					parametre[3]);
+			break;
+		default:
+			System.err.println("Erreur : nombre de paramètres incorrect.");
+			break;
+		}
 	}
 
 	/**
