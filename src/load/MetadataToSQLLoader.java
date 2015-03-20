@@ -15,6 +15,12 @@ import java.util.List;
 public class MetadataToSQLLoader extends Exporter {
 	private FileWriter fichier;
 
+	public MetadataToSQLLoader(String fichierSQL, String fichierLoader, List<Metadata> listeMetadata,
+			String nomTable, String fichierFormat) {
+		new MetadataToSQLLoader(fichierSQL, fichierLoader, ";", listeMetadata,
+				nomTable,fichierFormat);
+	}
+	
 	public MetadataToSQLLoader(String fichierSQL, String fichierLoader, String separator, List<Metadata> listeMetadata,
 			String nomTable, String fichierFormat) {
 

@@ -17,6 +17,20 @@ public class MetadataToCSV extends Exporter {
 
 	private FileWriter fichier;
 
+	
+	/**
+	 * Constructeur de la classe MetadataToCSV. Le constructeur prend en entrée
+	 * le nom du fichier CSV à produire, une liste de Metadata et le nom du fichier décrivant le format de la
+	 * table Metadata. La construction du fichier CSV s'effetue sur la base du
+	 * contenu du fichier de format. Le caractère sépérateur par défaut est ";"
+	 * @param fichierCSV
+	 * @param listeMetadata
+	 * @param fichierFormat
+	 */
+	public MetadataToCSV(String fichierCSV, List<Metadata> listeMetadata, String fichierFormat) {
+		new MetadataToCSV(fichierCSV, listeMetadata,";",fichierFormat); 
+	}
+	
 	/**
 	 * Constructeur de la classe MetadataToCSV. Le constructeur prend en entrée
 	 * le nom du fichier CSV à produire, une liste de Metadata, le caractère

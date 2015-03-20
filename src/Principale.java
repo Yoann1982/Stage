@@ -35,16 +35,16 @@ public class Principale {
 		mapArgFacultatif.put(2, 2);
 
 		// 3 : skos to csv
-		mapArgObligatoire.put(3, 5);
-		mapArgFacultatif.put(3, 0);
+		mapArgObligatoire.put(3, 4);
+		mapArgFacultatif.put(3, 1);
 
 		// 4 : skos to SQL
 		mapArgObligatoire.put(4, 5);
 		mapArgFacultatif.put(4, 0);
 
 		// 5 : skos to SQLLoader
-		mapArgObligatoire.put(5, 7);
-		mapArgFacultatif.put(5, 0);
+		mapArgObligatoire.put(5, 6);
+		mapArgFacultatif.put(5, 1);
 
 	}
 
@@ -83,7 +83,7 @@ public class Principale {
 					.println("Argument 2 obligatoire : Nom du fichier en entrée");
 			System.err
 					.println("Argument 3 obligatoire : Nom du fichier en sortie");
-			System.err.println("Argument 4 obligatoire : Caractère séparateur");
+			System.err.println("Argument 4 facultatif : Caractère séparateur");
 			System.err
 					.println("Argument 5 obligatoire : Nom du fichier format table I2B2");
 			break;
@@ -105,9 +105,10 @@ public class Principale {
 					.println("Argument 2 obligatoire : Nom du fichier en entrée");
 			System.err
 					.println("Argument 3 obligatoire : Nom du fichier en sortie");
-			System.err.println("Argument 4 obligatoire : Nom du fichier CSV en sortie");
-			
-			System.err.println("Argument 5 obligatoire : Caractère séparateur");
+			System.err
+					.println("Argument 4 obligatoire : Nom du fichier CSV en sortie");
+
+			System.err.println("Argument 5 facultatif : Caractère séparateur");
 			System.err.println("Argument 6 obligatoire : Nom de la table");
 			System.err
 					.println("Argument 7 obligatoire : Nom du fichier format table I2B2");
@@ -202,11 +203,11 @@ public class Principale {
 			}
 			break;
 		case "4":
-				System.out.println("Type de transcodage : " + args[0]);
-				System.out.println("Fichier en entrée : " + args[1]);
-				System.out.println("Fichier en sortie : " + args[2]);
-				System.out.println("Nom de la table : " + args[3]);
-				System.out.println("Fichier Format : " + args[4]);
+			System.out.println("Type de transcodage : " + args[0]);
+			System.out.println("Fichier en entrée : " + args[1]);
+			System.out.println("Fichier en sortie : " + args[2]);
+			System.out.println("Nom de la table : " + args[3]);
+			System.out.println("Fichier Format : " + args[4]);
 			break;
 		case "5":
 			if (args.length == nbArgObligatoire + nbArgFacultatif) {
@@ -252,17 +253,30 @@ public class Principale {
 				parametre[i] = args[i + 1];
 			}
 			new OWLToSKOS(parametre);
+			break;
 		case "3":
 			SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
-			loaderCSV.createCSV(args[2], args[3], args[4]);
+			parametre = new String[args.length - 2];
+			for (int i = 0; i < args.length - 2; i++) {
+				parametre[i] = args[i + 2];
+			}
+			loaderCSV.createCSV(parametre);
 			break;
 		case "4":
 			SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
-			loaderSQL.createSQL(args[2], args[3], args[4]);
+			parametre = new String[args.length - 2];
+			for (int i = 0; i < args.length - 2; i++) {
+				parametre[i] = args[i + 2];
+			}
+			loaderSQL.createSQL(parametre);
 			break;
 		case "5":
 			SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
-			loaderSQLLoader.createSQLLoader(args[2], args[3], args[4], args[5], args[6]);
+			parametre = new String[args.length - 2];
+			for (int i = 0; i < args.length - 2; i++) {
+				parametre[i] = args[i + 2];
+			}
+			loaderSQLLoader.createSQLLoader(parametre);
 			break;
 		case "6":
 			break;
@@ -286,12 +300,10 @@ public class Principale {
 	 */
 	public static void main(String[] args) throws Exception {
 		initMapArgument();
-		if (args.length == 0) {
-			// On ouvre le menu
-			menu();
-		} else {
+		if (args.length == 0) 
+			menu(); // On ouvre le menu
+		else 
 			checkArgs(args);
-		}
 	}
 
 	public static void menu() {
@@ -406,7 +418,7 @@ public class Principale {
 			checkFile(fichierCSV, false);
 		}
 		if (typeFichier == 1 || typeFichier == 3) {
-			System.out.println("Caractère de séparation :");
+			System.out.println("Caractère de séparation (facultatif) :");
 			separateur = choixUtilisateur();
 		}
 		if (typeFichier == 2 || typeFichier == 3) {
@@ -419,14 +431,21 @@ public class Principale {
 		SKOSToI2B2 loaderI2B2 = new SKOSToI2B2(fichierEntree);
 		switch (typeFichier) {
 		case 1:
-			loaderI2B2.createCSV(fichierSortie, separateur, fichierFormat);
+			if (separateur == null || separateur.isEmpty())
+				loaderI2B2.createCSV(fichierSortie, fichierFormat);
+			else
+				loaderI2B2.createCSV(fichierSortie, separateur, fichierFormat);
 			break;
 		case 2:
 			loaderI2B2.createSQL(fichierSortie, nomTable, fichierFormat);
 			break;
 		case 3:
-			loaderI2B2.createSQLLoader(fichierSortie, fichierCSV, separateur,
-					nomTable, fichierFormat);
+			if (separateur == null || separateur.isEmpty())
+				loaderI2B2.createSQLLoader(fichierSortie, fichierCSV, nomTable,
+						fichierFormat);
+			else
+				loaderI2B2.createSQLLoader(fichierSortie, fichierCSV,
+						separateur, nomTable, fichierFormat);
 			break;
 		case 4:
 			break;
@@ -491,7 +510,7 @@ public class Principale {
 		}
 		while (fichierEntree == null || fichierEntree.trim().isEmpty()) {
 			System.out.println("Veuillez saisir un fichier à lire.");
-			System.out.println("Nom du fichier en entrée :");
+			System.out.println("Nom du fichier :");
 			fichierEntree = choixUtilisateur();
 			if (existence) {
 				if (!new File(fichierEntree).exists()) {

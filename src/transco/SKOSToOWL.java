@@ -28,28 +28,28 @@ public class SKOSToOWL {
 		buildOnto(reader, output, null);
 	}
 
-	
 	public SKOSToOWL(String[] parametre) {
-		
-		switch(parametre.length) {
-		
-		case 2 :
+
+		switch (parametre.length) {
+
+		case 2:
 			new SKOSToOWL(parametre[0], parametre[1]);
 			break;
-		case 3 :
+		case 3:
 			new SKOSToOWL(parametre[0], parametre[1], parametre[2]);
-		case 4 : 
-			new SKOSToOWL(parametre[0], parametre[1], parametre[2], parametre[3]);
+			break;
+		case 4:
+			new SKOSToOWL(parametre[0], parametre[1], parametre[2],
+					parametre[3]);
 			break;
 		default:
 			System.err.println("Erreur : nombre de paramètres incorrect.");
 			break;
-			
+
 		}
-		
-		
+
 	}
-	
+
 	/**
 	 * Ce constructeur permet d'effectuer le transcodage d'un fichier SKOS en
 	 * OWL. Cette méthode contient dans sa signature, une chaîne de caractères
@@ -85,7 +85,10 @@ public class SKOSToOWL {
 		// ontologie à partir de la structure de données.
 		OWLOntologyBuilder builder = new OWLOntologyBuilder(
 				reader.getOntology());
-		builder.createOntology(IRI.create(iriProject));
+		if (iriProject == null)
+			builder.createOntology();
+		else
+			builder.createOntology(IRI.create(iriProject));
 		WriteOntology fileOntoWriter = new WriteOntology(
 				builder.getTargetOntology());
 		fileOntoWriter.writeFile(output, reader.getFormat());

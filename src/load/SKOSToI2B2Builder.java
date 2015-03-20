@@ -149,32 +149,16 @@ public class SKOSToI2B2Builder extends Builder {
 	}
 
 	public void load() {
-
 		// On recherche l'IRI de l'ontologie
 		iriProject = foundIriProjectByIndividual();
 		// On crée le préfixe associé
 		if (iriProject != null) {
 			prefixOnto = new DefaultPrefixManager(iriProject.toString() + "#");
-
-			System.out.println("Création des niveaux 0.");
-			// Chargement d'un résoneur pour pouvoir trouver les broader mais
-			// également les narrower
-
-			// Recherche des ConceptScheme et création au niveau 0
 			int niveau = 0;
-			// findAndCreateConceptScheme(niveau);
-
-			System.out.println("Création des niveaux 1 et supérieur.");
 
 			// Recherche du Concept I2B2 et créations des enregistrements à
 			// partir
 			// de ce concept
-			// Set<OWLNamedIndividual> listeIndiv = ontology
-			// .getIndividualsInSignature();
-
-			// On recherche l'élément Thing et on parcours ses fils
-
-			// On cherche l'individu correspondant à #2 (SarcomaBcb)
 
 			OWLNamedIndividual i2b2 = rechercheIndividu("1",
 					prefixOnto.getDefaultPrefix());
@@ -193,7 +177,7 @@ public class SKOSToI2B2Builder extends Builder {
 			if (listeNarrowers != null && !listeNarrowers.isEmpty())
 				createNarrowers(listeNarrowers, niveau, hierarchie);
 		} else {
-			System.out
+			System.err
 					.println("L'IRI du projet n'a pu être trouvée. Arrêt des traitements.");
 		}
 	}
@@ -227,8 +211,6 @@ public class SKOSToI2B2Builder extends Builder {
 	public void createRecord(OWLIndividual individu, int niveau,
 			String hierarchie, boolean isNoeud) {
 
-		// System.out.println("Création de l'enregistrement : " + individu
-		// + " au niveau " + niveau + ".");
 		// Création des metadata
 		listeMetadata.add(createMetadataRecord(individu, niveau, hierarchie,
 				isNoeud));

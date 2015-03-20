@@ -890,8 +890,6 @@ public class Builder {
 					if (classAxiom.getClassExpression().asOWLClass().getIRI()
 							.equals(IRI.create(prefix.getDefaultPrefix() + op))) {
 
-						System.out.println("Scheme retrouvé : "
-								+ classAxiom.getIndividual());
 						listeIndividuSortie.add(classAxiom.getIndividual());
 						// on sort de la boucle for curAxio car il ne peut avoir
 						// plus d'une occurence pour le type op

@@ -34,6 +34,7 @@ public class OWLToSKOS {
 			skosBuilder.createSKOSOntologie();
 		else
 			skosBuilder.createSKOSOntologie(IRI.create(iriProject));
+
 		// On importe l'ontologie SKOS dans l'ontologie cible
 		Importer importerSKOS = new Importer(skosBuilder.getTargetOntology());
 		importerSKOS.importOnto(ontoExterne);
@@ -44,6 +45,7 @@ public class OWLToSKOS {
 	}
 
 	public OWLToSKOS(String[] parametre) {
+
 		switch (parametre.length) {
 
 		case 2:
@@ -51,6 +53,7 @@ public class OWLToSKOS {
 			break;
 		case 3:
 			new OWLToSKOS(parametre[0], parametre[1], parametre[2]);
+			break;
 		case 4:
 			new OWLToSKOS(parametre[0], parametre[1], parametre[2],
 					parametre[3]);
