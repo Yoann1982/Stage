@@ -100,18 +100,27 @@ public class SKOSBuilder extends Builder {
 					OWLClass curseurClasse = curseur.asOWLClass();
 
 					// On crée l'individu correspondant
+					//OWLNamedIndividual individuConceptAssocie = fact
+					//		.getOWLNamedIndividual(curseurClasse.getIRI());
 					OWLNamedIndividual individuConceptAssocie = fact
 							.getOWLNamedIndividual(curseurClasse.getIRI());
-					// On crée la relation Broader
-					addBroader(individuConceptAssocie, individuConcept);
+					
+					// On construit l'individu avec l'IRI paramétré (elle peut être différente de l'IRI dans le fichir lu
+					OWLNamedIndividual individuConceptAssocieNew = fact
+							.getOWLNamedIndividual(IRI.create(prefixOnto.getDefaultPrefix() + curseurClasse.getIRI().toURI().getFragment()));
+					
+					// On crée la relation Broader avec les noms correspondant à l'IRI en paramètre
+					addBroader(individuConceptAssocieNew, individuConcept);
 					// On ajoute le prefLabel au concept Père
-					addPrefLabel(individuConcept);
+					//addPrefLabel(individuConcept, individuConcept.getIRI());
 					// On ajoute le prefLable au concept fils
-					addPrefLabel(individuConceptAssocie);
+					// On a besoin de rechercher dans l'ontologie d'origine où l'IRI peut être différente de l'IRI en paramètre
+					// on utilise l'individu avec son IRI correspondant à l'ontologue d'origine et on indique son IRI cible
+					addPrefLabel(individuConceptAssocie, individuConceptAssocieNew.getIRI());
 					// On ajoute le lien avec le schéma pour le concept Père
 					addScheme(individuConcept, scheme);
 					// On ajoute le lien avec le schéma pour le concept fils
-					addScheme(individuConceptAssocie, scheme);
+					addScheme(individuConceptAssocieNew, scheme);
 					// }
 				}
 			}

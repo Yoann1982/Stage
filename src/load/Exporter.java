@@ -82,9 +82,9 @@ public class Exporter {
 			}
 		} else {
 			if (!isNullable) {
-				System.err.println("Erreur : La colonne " + colonne
-						+ " ne peut pas être nulle.");
-				System.err.println("Les Metadatas ne seront pas exportés.");
+				//System.err.println("Erreur : La colonne " + colonne
+				//		+ " ne peut pas être nulle.");
+				//System.err.println("Les Metadatas ne seront pas exportés.");
 			}
 		}
 		return formatOK;

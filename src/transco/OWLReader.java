@@ -2,6 +2,7 @@ package transco;
 
 import java.io.File;
 import java.net.URI;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -119,6 +120,11 @@ public class OWLReader {
 			// on supprime les prefix vide
 			cleanFormat();
 
+			HashSet<OWLOntology> listeOnto = new HashSet<OWLOntology>();
+			listeOnto.add(ontology);
+			
+			// On remplace l'iri des entité par l'IRI en entrée
+			
 			// On vérifie s'il s'agit d'un format qui accepte les prefixes.
 			// Dans ce cas, on va récupérer la liste de préfix et vérifier
 			// S'il y en a un qui correspond à l'IRI indiquée en paramètre.

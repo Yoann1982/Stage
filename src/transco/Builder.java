@@ -277,7 +277,7 @@ public class Builder {
 	 * @param individuClasse
 	 * @see OWLIndividual
 	 */
-	public void addPrefLabel(OWLIndividual individuClasse) {
+	public void addPrefLabel(OWLIndividual individuClasse, IRI iriNew) {
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLDataFactory fact = manager.getOWLDataFactory();
@@ -305,19 +305,12 @@ public class Builder {
 					OWLAnnotation targetAnnot = fact.getOWLAnnotation(
 							propertyPrefLabel, annotValeur);
 
-					// 3 - On transforme l'individu en AnonymousIndividual
-					// qui est une représentation de OWLAnnotationSubject
-					// OWLAnonymousIndividual annotSujet =
-					// individuClasse.asOWLAnonymousIndividual();
-					IRI iriIndividu = individuClasse.asOWLNamedIndividual()
-							.getIRI();
-
-					// 4 - On crée l'axiom d'annotation
+					// 3 - On crée l'axiom d'annotation
 					OWLAnnotationAssertionAxiom axiomAnnot = fact
-							.getOWLAnnotationAssertionAxiom(iriIndividu,
+							.getOWLAnnotationAssertionAxiom(iriNew,
 									targetAnnot);
 
-					// 5 - On crée le addAxiom
+					// 4 - On crée le addAxiom
 
 					AddAxiom addAxiomAnnot = new AddAxiom(targetOntology,
 							axiomAnnot);
@@ -348,7 +341,7 @@ public class Builder {
 
 					// 4 - On crée l'axiom d'annotation
 					OWLAnnotationAssertionAxiom axiomAnnot = fact
-							.getOWLAnnotationAssertionAxiom(iriIndividu,
+							.getOWLAnnotationAssertionAxiom(iriNew,
 									targetAnnot);
 
 					// 5 - On crée le addAxiom
