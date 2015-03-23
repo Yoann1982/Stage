@@ -336,8 +336,6 @@ public class Builder {
 					// qui est une représentation de OWLAnnotationSubject
 					// OWLAnonymousIndividual annotSujet =
 					// individuClasse.asOWLAnonymousIndividual();
-					IRI iriIndividu = individuClasse.asOWLNamedIndividual()
-							.getIRI();
 
 					// 4 - On crée l'axiom d'annotation
 					OWLAnnotationAssertionAxiom axiomAnnot = fact

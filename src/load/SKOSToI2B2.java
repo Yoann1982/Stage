@@ -1,7 +1,6 @@
 package load;
 
 import transco.OWLReader;
-import transco.SKOSToOWL;
 
 public class SKOSToI2B2 {
 
