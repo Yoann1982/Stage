@@ -27,6 +27,16 @@ public class Exporter {
 			classe = classe.substring(classe.lastIndexOf(".") + 1);
 			
 			if (classe.equalsIgnoreCase("String"))  {
+				// On échappe le ' des chemins
+				valeur = ((String) valeur).replace("'", "''");
+							
+				// On échappe le \ des chemins
+				valeur = ((String) valeur).replace("\\", "\\\\");
+				
+
+				
+				
+				// On entoure de guillemet
 				sortie =  "'" + valeur.toString() + "'";
 				return sortie;
 			} else return valeur.toString();
@@ -42,7 +52,7 @@ public class Exporter {
 			return valeur.toString();
 	}
 
-	public boolean checkFormat(FormatTable format, Object valeur) {
+	public int checkFormat(FormatTable format, Object valeur) {
 
 		// On parcours la liste de format pour retrouver les colonnes à traiter
 
@@ -51,43 +61,47 @@ public class Exporter {
 		int taille = format.getTaille();
 		boolean isNullable = format.isNullable();
 
-		boolean formatOK = true;
+		int codeRetour = 0;
 		if (valeur != null) {
 
 			String classe = valeur.getClass().toString();
 			classe = classe.substring(classe.lastIndexOf(".") + 1);
 			if (!classe.equalsIgnoreCase(type)) {
-				System.err
+				/*System.err
 						.println("Erreur : Le format de la metadata " + colonne
 								+ " de valeur " + valeur
 								+ " ne correspond pas au format attendu :"
 								+ type + ".");
 				System.err.println("Les Metadatas ne seront pas exportés.");
-				formatOK = false;
+				*/
+				codeRetour = 1;
 			} else {
 				// Format OK
 				// Contrôle de la taille
 				if (taille != -1) {
 					// On vérifie la taille
 					if (valeur.toString().length() > taille) {
-						System.err.println("Erreur : La taille de la metadata "
+						/*System.err.println("Erreur : La taille de la metadata "
 								+ colonne + " de valeur " + valeur
 								+ " ne correspond pas à la taille attendue :"
 								+ taille + ".");
 						System.err
 								.println("Les Metadatas ne seront pas exportés.");
-						formatOK = false;
+								*/
+						codeRetour = 2;
 					}
 				}
 			}
 		} else {
 			if (!isNullable) {
-				//System.err.println("Erreur : La colonne " + colonne
-				//		+ " ne peut pas être nulle.");
-				//System.err.println("Les Metadatas ne seront pas exportés.");
+				/*System.err.println("Erreur : La colonne " + colonne
+						+ " ne peut pas être nulle.");
+				System.err.println("Les Metadatas ne seront pas exportés.");
+				*/
+				codeRetour = 3;
 			}
 		}
-		return formatOK;
+		return codeRetour;
 	}
 
 	public int getTaille(String type) {
@@ -202,4 +216,34 @@ public class Exporter {
 		}
 	}
 
+	public String exportErreur(int codeErreur, String colonneErreur,
+			Object valeurErreur, String ligne) {
+		// Gestion de l'export d'erreur
+		String ligneErreur = null;
+		String messageErreur = null;
+		if (codeErreur != 0) {
+			switch (codeErreur) {
+			case 1:
+				messageErreur = "Le format de la metadata " + colonneErreur
+						+ " de valeur " + valeurErreur.toString()
+						+ " ne correspond pas au format attendu.";
+				break;
+			case 2:
+				messageErreur = "La taille de la metadata " + colonneErreur
+						+ " de valeur " + valeurErreur
+						+ " ne correspond pas à la taille attendue.";
+				break;
+			case 3:
+				messageErreur = "La colonne " + colonneErreur
+						+ " ne peut pas être nulle.";
+				break;
+			default:
+				break;
+			}
+
+			ligneErreur = ligne + ";" + codeErreur + ";" + entoureGuillemet(messageErreur) + "\n";
+		}
+		return ligneErreur;
+	}
+	
 }

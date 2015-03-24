@@ -16,21 +16,58 @@ import java.util.List;
 public class MetadataToCSV extends Exporter {
 
 	private FileWriter fichier;
+	private FileWriter fichierKO;
+	private String nomFichierKO = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\fichierKO.csv";
 
-	
 	/**
 	 * Constructeur de la classe MetadataToCSV. Le constructeur prend en entrée
-	 * le nom du fichier CSV à produire, une liste de Metadata et le nom du fichier décrivant le format de la
-	 * table Metadata. La construction du fichier CSV s'effetue sur la base du
-	 * contenu du fichier de format. Le caractère sépérateur par défaut est ";"
+	 * le nom du fichier CSV à produire, une liste de Metadata et le nom du
+	 * fichier décrivant le format de la table Metadata. La construction du
+	 * fichier CSV s'effetue sur la base du contenu du fichier de format. Le
+	 * caractère sépérateur par défaut est ";"
+	 * 
 	 * @param fichierCSV
 	 * @param listeMetadata
 	 * @param fichierFormat
 	 */
-	public MetadataToCSV(String fichierCSV, List<Metadata> listeMetadata, String fichierFormat) {
-		new MetadataToCSV(fichierCSV, listeMetadata,";",fichierFormat); 
+	public MetadataToCSV(String fichierCSV, List<Metadata> listeMetadata,
+			String fichierFormat) {
+
+		try {
+			fichier = new FileWriter(fichierCSV);
+			new MetadataToCSV(fichier, listeMetadata, ";", fichierFormat);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			System.out.println("\nFichier CVS écrit : "
+					+ new File(fichierCSV).getCanonicalPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
+
+	public MetadataToCSV(String fichierCSV, List<Metadata> listeMetadata,
+			String separator, String fichierFormat) {
+
+		try {
+			fichier = new FileWriter(fichierCSV);
+			new MetadataToCSV(fichier, listeMetadata, separator, fichierFormat);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			System.out.println("\nFichier CVS écrit : "
+					+ new File(fichierCSV).getCanonicalPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Constructeur de la classe MetadataToCSV. Le constructeur prend en entrée
 	 * le nom du fichier CSV à produire, une liste de Metadata, le caractère
@@ -43,14 +80,22 @@ public class MetadataToCSV extends Exporter {
 	 * @param separator
 	 * @param fichierFormat
 	 */
-	public MetadataToCSV(String fichierCSV, List<Metadata> listeMetadata,
+	public MetadataToCSV(FileWriter writer, List<Metadata> listeMetadata,
 			String separator, String fichierFormat) {
 
 		// Lecture du fichier de paramétrage qui contient le format de la table
 		readFormatFile(fichierFormat);
 
 		try {
-			fichier = new FileWriter(fichierCSV);
+
+			fichier = writer;
+			try {
+				fichierKO = new FileWriter(nomFichierKO);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			// Ecriture du fichier CSV
 			// Ecriture de l'entête
 			writeHeader(separator);
@@ -58,10 +103,6 @@ public class MetadataToCSV extends Exporter {
 			for (Metadata meta : listeMetadata) {
 				writeRecord(meta, separator);
 			}
-			System.out.println("Fichier CVS écrit : " + new File(fichierCSV).getCanonicalPath());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} finally {
 			if (fichier != null) {
 				try {
@@ -71,7 +112,21 @@ public class MetadataToCSV extends Exporter {
 					e.printStackTrace();
 				}
 			}
+			if (fichierKO != null) {
+				try {
+					System.out.println("\nErreurs rencontrées lors de la génération du fichier. Consultez le fichier des erreurs.");
+					System.out.println("Fichier SQL des erreur : "
+							+ new File(nomFichierKO).getCanonicalPath());
+					fichierKO.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
+		// System.out.println("Fichier CVS écrit : " + new
+		// File(fichierCSV).getCanonicalPath());
+
 	}
 
 	/**
@@ -95,25 +150,42 @@ public class MetadataToCSV extends Exporter {
 
 		String ligne = "";
 		int cpt = 0;
+		boolean formatOK = true;
+		int codeErreur = 0;
+
+		String sortieErreur = "";
+
+		
 		for (FormatTable format : listeFormat) {
-
+			String colonne = format.getColumn();
 			// On récupère la valeur correspondant à la colonne
-			Object valeur = meta.get(format.getColumn());
+			Object valeur = meta.get(colonne);
 			// On vérifie son format
-
-			if (checkFormat(format, valeur))
+			codeErreur = checkFormat(format, valeur);
+			if (codeErreur == 0)
 				if (cpt == 0)
 					ligne += stringNull(valeur);
 				else
 					ligne += separator + stringNull(valeur);
-			else
-				break; // On sort car on ne pourra pas écrire l'enregistement.
+			else {
+				formatOK = false;
+				// On enrichie la liste d'erreur qui sera exportée dans le fichier des erreurs.
+				sortieErreur = exportErreur(codeErreur, colonne, valeur,
+						sortieErreur);
+			}
 			cpt++;
 		}
-		ligne += "\n";
 		// On écrit dans le fichier si tous les enregistrements sont OK.
 		try {
-			fichier.write(ligne, 0, ligne.length());
+			if (formatOK)
+				fichier.write(ligne = "\n", 0, ligne.length());
+			else {
+				String ligneErreur = entoureGuillemet(ligne) + sortieErreur;
+				fichierKO.write(
+						ligneErreur,
+						0,
+						ligneErreur.length());
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block e.printStackTrace();
 		}

@@ -46,6 +46,10 @@ public class Principale {
 		mapArgObligatoire.put(5, 6);
 		mapArgFacultatif.put(5, 1);
 
+		// 6 : skos to i2b2
+		mapArgObligatoire.put(6, 4);
+		mapArgFacultatif.put(6, 0);
+		
 	}
 
 	/**
@@ -279,6 +283,12 @@ public class Principale {
 			loaderSQLLoader.createSQLLoader(parametre);
 			break;
 		case "6":
+			SKOSToI2B2 loaderTable = new SKOSToI2B2(args[1]);
+			parametre = new String[args.length - 2];
+			for (int i = 0; i < args.length - 2; i++) {
+				parametre[i] = args[i + 2];
+			}
+			loaderTable.loadSQL(parametre);
 			break;
 		default:
 			System.err.println("Choix d'action inconnu.");
@@ -300,9 +310,9 @@ public class Principale {
 	 */
 	public static void main(String[] args) throws Exception {
 		initMapArgument();
-		if (args.length == 0) 
+		if (args.length == 0)
 			menu(); // On ouvre le menu
-		else 
+		else
 			checkArgs(args);
 	}
 
@@ -405,13 +415,16 @@ public class Principale {
 		String fichierCSV = null;
 		String separateur = null;
 		String nomTable = null;
+		String methodeChargement = null;
 
 		System.out.println("Nom du fichier en entrée :");
 		fichierEntree = choixUtilisateur();
 		checkFile(fichierEntree, true);
-		System.out.println("Nom du fichier en sortie :");
-		fichierSortie = choixUtilisateur();
-		checkFile(fichierSortie, false);
+		if (typeFichier != 4) {
+			System.out.println("Nom du fichier en sortie :");
+			fichierSortie = choixUtilisateur();
+			checkFile(fichierSortie, false);
+		}
 		if (typeFichier == 3) {
 			System.out.println("Nom du fichier CSV à générer :");
 			fichierCSV = choixUtilisateur();
@@ -428,6 +441,11 @@ public class Principale {
 		System.out.println("Nom du fichier format Metadata :");
 		fichierFormat = choixUtilisateur();
 		checkFile(fichierFormat, true);
+		if (typeFichier == 4) {
+			System.out
+					.println("Méthode de chargement (1 : Insert / 2 : SQLLoader) :");
+			methodeChargement = choixUtilisateur();
+		}
 		SKOSToI2B2 loaderI2B2 = new SKOSToI2B2(fichierEntree);
 		switch (typeFichier) {
 		case 1:
@@ -448,6 +466,7 @@ public class Principale {
 						separateur, nomTable, fichierFormat);
 			break;
 		case 4:
+			loaderI2B2.loadSQL(Integer.decode(methodeChargement), fichierFormat);
 			break;
 		default:
 			System.err.println("Erreur : Type de sortie à générer inconnu.");

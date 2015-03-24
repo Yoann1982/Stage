@@ -50,7 +50,7 @@ public class SKOSToI2B2Builder extends Builder {
 	 */
 	public Metadata createMetadataRecord(OWLIndividual individu, int niveau,
 			String hierarchie, boolean isNoeud) {
-		Metadata metadata2 = new Metadata();
+		Metadata metadata = new Metadata();
 
 		String prefLabel = getAnnotation(individu, prefixSKOS, "prefLabel");
 		String basecode = getAnnotation(individu, prefixOnto, "C_BASECODE");
@@ -61,30 +61,30 @@ public class SKOSToI2B2Builder extends Builder {
 		String nomFichier = "";
 		nomFichier = new File(inputFile).getName();
 
-		metadata2.put("C_HLEVEL", niveau);
-		metadata2.put("C_FULLNAME", fullname);
-		metadata2.put("C_NAME", prefLabel);
-		metadata2.put("C_SYNONYM_CD", "N");
+		metadata.put("C_HLEVEL", niveau);
+		metadata.put("C_FULLNAME", fullname);
+		metadata.put("C_NAME", prefLabel);
+		metadata.put("C_SYNONYM_CD", "N");
 		if (isNoeud)
 			// metadata.setcVisualAttributes("FA");
-			metadata2.put("C_VISUALATTRIBUTES", "FA");
+			metadata.put("C_VISUALATTRIBUTES", "FA");
 		else
 			// metadata.setcVisualAttributes("LA");
-			metadata2.put("C_VISUALATTRIBUTES", "LA");
-		metadata2.put("C_BASECODE", basecode);
-		metadata2.put("C_FACTTABLECOLUMN", "concept_cd");
-		metadata2.put("C_TABLENAME", "concept_dimension");
-		metadata2.put("C_COLUMNNAME", "concept_path");
-		metadata2.put("C_COLUMNDATATYPE", "T");
-		metadata2.put("C_OPERATOR", "LIKE");
-		metadata2.put("C_DIMCODE", fullname);
-		metadata2.put("C_TOOTIP", tooltip);
-		metadata2.put("M_APPLIED_PATH", "@");
-		metadata2.put("SOUCESYSTEM_CD", nomFichier);
-		metadata2.put("C_PATH", cPath);
-		metadata2.put("C_SYMBOL", cSymbol);
+			metadata.put("C_VISUALATTRIBUTES", "LA");
+		metadata.put("C_BASECODE", basecode);
+		metadata.put("C_FACTTABLECOLUMN", "concept_cd");
+		metadata.put("C_TABLENAME", "concept_dimension");
+		metadata.put("C_COLUMNNAME", "concept_path");
+		metadata.put("C_COLUMNDATATYPE", "T");
+		metadata.put("C_OPERATOR", "LIKE");
+		metadata.put("C_DIMCODE", fullname);
+		metadata.put("C_TOOTIP", tooltip);
+		metadata.put("M_APPLIED_PATH", "@");
+		metadata.put("SOUCESYSTEM_CD", nomFichier);
+		metadata.put("C_PATH", cPath);
+		metadata.put("C_SYMBOL", cSymbol);
 
-		return metadata2;
+		return metadata;
 	}
 
 	/**

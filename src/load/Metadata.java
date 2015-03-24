@@ -14,5 +14,9 @@ public class Metadata {
 	public Object get(String key) {
 		return this.metadataMap.get(key);
 	}
+
+	public String toString() {
+		return metadataMap.toString();
+	}
 	
 }

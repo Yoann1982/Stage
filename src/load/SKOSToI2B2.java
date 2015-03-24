@@ -1,5 +1,9 @@
 package load;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import transco.OWLReader;
 
 public class SKOSToI2B2 {
@@ -9,7 +13,7 @@ public class SKOSToI2B2 {
 	public SKOSToI2B2(String inputFile) {
 		// I2B2 test
 		// Chargement du fichier SKOS
-		
+
 		OWLReader reader = new OWLReader();
 		reader.loadOntology(inputFile);
 
@@ -25,11 +29,12 @@ public class SKOSToI2B2 {
 
 		switch (parametre.length) {
 		case 2:
-			new MetadataToCSV(parametre[0], loader.getListeMetadata(), parametre[1]);
+			new MetadataToCSV(parametre[0], loader.getListeMetadata(),
+					parametre[1]);
 			break;
 		case 3:
-			new MetadataToCSV(parametre[0], loader.getListeMetadata(), parametre[1],
-					parametre[2]);
+			new MetadataToCSV(parametre[0], loader.getListeMetadata(),
+					parametre[1], parametre[2]);
 			break;
 		default:
 			System.err.println("Erreur : nombre de paramètres incorrect.");
@@ -46,17 +51,18 @@ public class SKOSToI2B2 {
 	public void createCSV(String fichierCSV, String fichierFormat) {
 		new MetadataToCSV(fichierCSV, loader.getListeMetadata(), fichierFormat);
 	}
-	
+
 	public void createSQL(String[] parametre) {
-		if (parametre.length == 3) 
-			new MetadataToSQL(parametre[0], loader.getListeMetadata(), parametre[1],
-					parametre[2]);
-		else System.err.println("Erreur : nombre de paramètres incorrect.");
+		if (parametre.length == 3)
+			new MetadataToSQL(parametre[0], loader.getListeMetadata(),
+					parametre[1], parametre[2]);
+		else
+			System.err.println("Erreur : nombre de paramètres incorrect.");
 	}
-	
-	public void createSQL(String fichierEntree, String nomTable,
+
+	public void createSQL(String fichierSortie, String nomTable,
 			String fichierFormat) {
-		new MetadataToSQL(fichierEntree, loader.getListeMetadata(), nomTable,
+		new MetadataToSQL(fichierSortie, loader.getListeMetadata(), nomTable,
 				fichierFormat);
 	}
 
@@ -77,16 +83,95 @@ public class SKOSToI2B2 {
 
 		}
 	}
-	
+
 	public void createSQLLoader(String fichierSQL, String fichierCSV,
 			String separateur, String nomTable, String fichierFormat) {
 		new MetadataToSQLLoader(fichierSQL, fichierCSV, separateur,
 				loader.getListeMetadata(), nomTable, fichierFormat);
 	}
-	
+
 	public void createSQLLoader(String fichierSQL, String fichierCSV,
 			String nomTable, String fichierFormat) {
-		new MetadataToSQLLoader(fichierSQL, fichierCSV, loader.getListeMetadata(), nomTable, fichierFormat);
+		new MetadataToSQLLoader(fichierSQL, fichierCSV,
+				loader.getListeMetadata(), nomTable, fichierFormat);
+	}
+
+	
+	public void loadSQL(String[] parametre) {
+		loadSQL(Integer.decode(parametre[0]), parametre[1]);
+	}
+	public void loadSQL(int methodeChargement, String fichierFormat) {
+		// Si methodeChargement == 1 : insert
+		// Si methodeChargement == 2 : SQLLoader
+
+		switch (methodeChargement) {
+
+		case 1:
+			// Methode par Insert
+			// 1 On crée le fichier temporaire
+			String name = "fichier";
+			String ext = ".tmp";
+			File tempFile = null;
+			try {
+				// Creer un fichier temporaire
+				tempFile = File.createTempFile(name, ext);
+				// Supprimer automatiquement
+				tempFile.deleteOnExit();
+				System.out.println("Ficher temporaire: ");
+				System.out.println(tempFile.getCanonicalFile());
+			} catch (IOException ex) {
+				System.err
+						.println("Erreur lors de la génération du fichier temporaire");
+				ex.printStackTrace();
+			}
+
+
+			// Génération des données à inserer
+			new MetadataToSQL(tempFile, loader.getListeMetadata(), "Metadata",
+					fichierFormat);
+			// Chargement en base de données
+			new MetadataToDatabase(tempFile);
+			break;
+		case 2:
+			String nameCTL = "control";
+			String extCTL = ".ctl";
+			File tempFileCTL = null;
+			String nameCSV = "data";
+			String extCSV = ".csv";
+			File tempFileCSV = null;
+
+			try {
+				// Creer un fichier temporaire
+				tempFileCTL = File.createTempFile(nameCTL, extCTL);
+				// Supprimer automatiquement
+				tempFileCTL.deleteOnExit();
+				System.out.println("Ficher temporaire CTL : ");
+				System.out.println(tempFileCTL.getCanonicalFile());
+				// Creer un fichier temporaire
+				tempFileCSV = File.createTempFile(nameCSV, extCSV);
+				// Supprimer automatiquement
+				tempFileCSV.deleteOnExit();
+				System.out.println("Ficher temporaire CSV : ");
+				System.out.println(tempFileCSV.getCanonicalFile());
+			} catch (IOException ex) {
+				System.err
+						.println("Erreur lors de la génération du fichier temporaire");
+				ex.printStackTrace();
+			}
+
+
+			// Génération des données à inserer
+			new MetadataToSQLLoader(tempFileCTL, tempFileCSV, loader.getListeMetadata(),
+					"Metadata", fichierFormat);
+			
+			// Chargement en base de données
+			new MetadataToDatabase(nameCTL+extCTL);
+			break;
+		default:
+			System.err.println("Erreur : Methode de chargement inconnue.");
+			break;
+
+		}
 	}
 
 }
