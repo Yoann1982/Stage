@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java -jar transcodeur.jar %*
+java -jar JAR/transcodeur.jar %*
