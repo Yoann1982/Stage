@@ -114,7 +114,8 @@ public class MetadataToCSV extends Exporter {
 			}
 			if (fichierKO != null) {
 				try {
-					System.out.println("\nErreurs rencontrées lors de la génération du fichier. Consultez le fichier des erreurs.");
+					System.out
+							.println("\nErreurs rencontrées lors de la génération du fichier. Consultez le fichier des erreurs.");
 					System.out.println("Fichier SQL des erreur : "
 							+ new File(nomFichierKO).getCanonicalPath());
 					fichierKO.close();
@@ -155,7 +156,6 @@ public class MetadataToCSV extends Exporter {
 
 		String sortieErreur = "";
 
-		
 		for (FormatTable format : listeFormat) {
 			String colonne = format.getColumn();
 			// On récupère la valeur correspondant à la colonne
@@ -168,23 +168,29 @@ public class MetadataToCSV extends Exporter {
 				else
 					ligne += separator + stringNull(valeur);
 			else {
-				formatOK = false;
-				// On enrichie la liste d'erreur qui sera exportée dans le fichier des erreurs.
-				sortieErreur = exportErreur(codeErreur, colonne, valeur,
-						sortieErreur);
+				if (colonne.equalsIgnoreCase("UPDATE_DATE")) {
+					if (cpt == 0)
+						ligne += "current_timestamp";
+					else
+						ligne += "," + "current_timestamp";
+				} else {
+					formatOK = false;
+					// On enrichie la liste d'erreur qui sera exportée dans le
+					// fichier des erreurs.
+					sortieErreur = exportErreur(codeErreur, colonne, valeur,
+							sortieErreur);
+				}
 			}
 			cpt++;
 		}
 		// On écrit dans le fichier si tous les enregistrements sont OK.
 		try {
-			if (formatOK)
-				fichier.write(ligne = "\n", 0, ligne.length());
-			else {
+			if (formatOK) {
+				String ligneSortie = ligne + "\n";
+				fichier.write(ligneSortie, 0, ligneSortie.length());
+			} else {
 				String ligneErreur = entoureGuillemet(ligne) + sortieErreur;
-				fichierKO.write(
-						ligneErreur,
-						0,
-						ligneErreur.length());
+				fichierKO.write(ligneErreur, 0, ligneErreur.length());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block e.printStackTrace();

@@ -85,7 +85,8 @@ public class MetadataToSQL extends Exporter {
 			}
 			if (fichierKO != null) {
 				try {
-					System.out.println("\nErreurs rencontrées lors de la génération du fichier. Consultez le fichier des erreurs.");
+					System.out
+							.println("\nErreurs rencontrées lors de la génération du fichier. Consultez le fichier des erreurs.");
 					System.out.println("Fichier SQL des erreur : "
 							+ new File(nomFichierKO).getCanonicalPath());
 					fichierKO.close();
@@ -149,7 +150,8 @@ public class MetadataToSQL extends Exporter {
 						listeValeurs += "," + "current_timestamp";
 				} else {
 					formatOK = false;
-					// On enrichie la liste d'erreur qui sera exportée dans le fichier des erreurs.
+					// On enrichie la liste d'erreur qui sera exportée dans le
+					// fichier des erreurs.
 					sortieErreur = exportErreur(codeErreur, colonne, valeur,
 							sortieErreur);
 				}
@@ -164,14 +166,12 @@ public class MetadataToSQL extends Exporter {
 
 		// On écrit dans le fichier si tous les enregistrements sont OK.
 		try {
-			if (formatOK)
-				fichier.write(ligne + ";\n", 0, ligne.length());
-			else {
+			if (formatOK) {
+				String ligneSortie = ligne + ";\n";
+				fichier.write(ligneSortie, 0, ligneSortie.length());
+			} else {
 				String ligneErreur = entoureGuillemet(ligne) + sortieErreur;
-				fichierKO.write(
-						ligneErreur,
-						0,
-						ligneErreur.length());
+				fichierKO.write(ligneErreur, 0, ligneErreur.length());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
