@@ -56,7 +56,7 @@ public class Exporter {
 
 		// On parcours la liste de format pour retrouver les colonnes à traiter
 
-		String colonne = format.getColumn();
+		//String colonne = format.getColumn();
 		String type = format.getType();
 		int taille = format.getTaille();
 		boolean isNullable = format.isNullable();

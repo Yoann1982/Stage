@@ -1,7 +1,6 @@
 package sgbd;
 
 import java.sql.*;
-import java.util.Vector;
 
 /**
  * 

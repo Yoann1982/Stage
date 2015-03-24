@@ -3,7 +3,6 @@ package load;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -130,7 +129,7 @@ public class MetadataToDatabase extends Exporter {
 
 			System.out.println("SQLLDR Started ....... ");
 			Runtime rt = Runtime.getRuntime();
-			Process proc = rt.exec(sqlldrCmd);
+			rt.exec(sqlldrCmd);
 			System.out.println("SQLLDR Ended ........  ");
 		} catch (Exception e) {
 			e.printStackTrace();
