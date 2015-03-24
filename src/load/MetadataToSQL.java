@@ -17,8 +17,7 @@ public class MetadataToSQL extends Exporter {
 	private FileWriter fichier;
 	private FileWriter fichierKO;
 	//private String nomFichierKO = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\fichierKO.sql";
-	private String home = System.getProperty("user.home" );
-	private String repertoireErreur = home + System.getProperty("file.separator") + "I2B2" + System.getProperty("file.separator") + "ERREUR" + System.getProperty("file.separator");
+	
 	private String nomFichierKO = repertoireErreur + "fichierKO.sql";
 
 	public MetadataToSQL(File fichierSQL, List<Metadata> listeMetadata,
@@ -69,12 +68,7 @@ public class MetadataToSQL extends Exporter {
 			fichier = writer;
 			try {
 				// Préparation fichier d'erreur
-				if(!new File(repertoireErreur).exists())
-		        {
-		            // Créer le dossier avec tous ses parents
-		            new File(repertoireErreur).mkdirs();
-		 
-		        }
+				checkRepertoire(repertoireErreur);
 				fichierKO = new FileWriter(nomFichierKO);
 			} catch (IOException e) {
 				System.err.println("Erreur lors de la génération du FileWriter du fichier d'erreurs.");

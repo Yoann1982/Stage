@@ -25,6 +25,12 @@ public class Principale {
 
 	private static HashMap<Integer, Integer> mapArgFacultatif = new HashMap<Integer, Integer>();
 
+	protected static String home = System.getProperty("user.home");
+	protected static String repertoireOutput = home
+			+ System.getProperty("file.separator") + "I2B2"
+			+ System.getProperty("file.separator") + "OUTPUT"
+			+ System.getProperty("file.separator");
+	
 	public static void initMapArgument() {
 		// 1 : skos to owl
 		mapArgObligatoire.put(1, 3);
@@ -49,7 +55,7 @@ public class Principale {
 		// 6 : skos to i2b2
 		mapArgObligatoire.put(6, 4);
 		mapArgFacultatif.put(6, 0);
-		
+
 	}
 
 	/**
@@ -242,57 +248,71 @@ public class Principale {
 			Integer nbArgFacultatif) {
 		String[] parametre = null;
 
-		switch (args[0]) {
+		if (!new File(args[1]).exists()) {
+			System.out
+					.println("Erreur : Le fichier indiqué en entrée n'existe pas.");
+			System.exit(1);
+		} else {
+			switch (args[0]) {
 
-		case "1":
-			parametre = new String[args.length - 1];
-			for (int i = 0; i < args.length - 1; i++) {
-				parametre[i] = args[i + 1];
+			case "1":
+				args[2] = verifFichierSortie(args[2]);
+				args[3] = verifIRI(args[3]);
+				parametre = new String[args.length - 1];
+				for (int i = 0; i < args.length - 1; i++) {
+					parametre[i] = args[i + 1];
+				}
+				new SKOSToOWL(parametre);
+				break;
+			case "2":
+				args[2] = verifFichierSortie(args[2]);
+				args[3] = verifIRI(args[3]);
+				parametre = new String[args.length - 1];
+				for (int i = 0; i < args.length - 1; i++) {
+					parametre[i] = args[i + 1];
+				}
+				new OWLToSKOS(parametre);
+				break;
+			case "3":
+				args[2] = verifFichierSortie(args[2]);
+				SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
+				parametre = new String[args.length - 2];
+				for (int i = 0; i < args.length - 2; i++) {
+					parametre[i] = args[i + 2];
+				}
+				loaderCSV.createCSV(parametre);
+				break;
+			case "4":
+				args[2] = verifFichierSortie(args[2]);
+				SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
+				parametre = new String[args.length - 2];
+				for (int i = 0; i < args.length - 2; i++) {
+					parametre[i] = args[i + 2];
+				}
+				loaderSQL.createSQL(parametre);
+				break;
+			case "5":
+				args[2] = verifFichierSortie(args[2]);
+				args[3] = verifFichierSortie(args[3]);
+				SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
+				parametre = new String[args.length - 2];
+				for (int i = 0; i < args.length - 2; i++) {
+					parametre[i] = args[i + 2];
+				}
+				loaderSQLLoader.createSQLLoader(parametre);
+				break;
+			case "6":
+				SKOSToI2B2 loaderTable = new SKOSToI2B2(args[1]);
+				parametre = new String[args.length - 2];
+				for (int i = 0; i < args.length - 2; i++) {
+					parametre[i] = args[i + 2];
+				}
+				loaderTable.loadSQL(parametre);
+				break;
+			default:
+				System.err.println("Choix d'action inconnu.");
+				break;
 			}
-			new SKOSToOWL(parametre);
-			break;
-		case "2":
-			parametre = new String[args.length - 1];
-			for (int i = 0; i < args.length - 1; i++) {
-				parametre[i] = args[i + 1];
-			}
-			new OWLToSKOS(parametre);
-			break;
-		case "3":
-			SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
-			parametre = new String[args.length - 2];
-			for (int i = 0; i < args.length - 2; i++) {
-				parametre[i] = args[i + 2];
-			}
-			loaderCSV.createCSV(parametre);
-			break;
-		case "4":
-			SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
-			parametre = new String[args.length - 2];
-			for (int i = 0; i < args.length - 2; i++) {
-				parametre[i] = args[i + 2];
-			}
-			loaderSQL.createSQL(parametre);
-			break;
-		case "5":
-			SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
-			parametre = new String[args.length - 2];
-			for (int i = 0; i < args.length - 2; i++) {
-				parametre[i] = args[i + 2];
-			}
-			loaderSQLLoader.createSQLLoader(parametre);
-			break;
-		case "6":
-			SKOSToI2B2 loaderTable = new SKOSToI2B2(args[1]);
-			parametre = new String[args.length - 2];
-			for (int i = 0; i < args.length - 2; i++) {
-				parametre[i] = args[i + 2];
-			}
-			loaderTable.loadSQL(parametre);
-			break;
-		default:
-			System.err.println("Choix d'action inconnu.");
-			break;
 		}
 	}
 
@@ -387,25 +407,36 @@ public class Principale {
 		String valeurSaisie;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		System.out
-				.println("===================[     MENU SKOS TO I2B2    ]======================");
-		System.out.println("Que voulez-vous faire ?");
-		System.out.println("1 - Générer un fichier CSV");
-		System.out.println("2 - Générer un fichier SQL (insert into)");
-		System.out
-				.println("3 - Générer un fichier SQLLoader et son fichier CSV associé");
-		System.out.println("4 - Alimenter la table d'I2B2");
-		System.out.println("5 - Quitter");
-		try {
-			valeurSaisie = br.readLine();
-			if (valeurSaisie.equals("5")) {
-				System.exit(0);
-			} else
-				genererSortie(Integer.parseInt(valeurSaisie));
-		} catch (IOException e2) {
-			e2.printStackTrace();
-		}
+		while (true) {
+			System.out
+					.println("===================[     MENU SKOS TO I2B2    ]======================");
+			System.out.println("Que voulez-vous faire ?");
+			System.out.println("1 - Générer un fichier CSV");
+			System.out.println("2 - Générer un fichier SQL (insert into)");
+			System.out
+					.println("3 - Générer un fichier SQLLoader et son fichier CSV associé");
+			System.out.println("4 - Alimenter la table d'I2B2");
+			System.out.println("5 - Quitter");
+			try {
+				valeurSaisie = br.readLine();
+				if (valeurSaisie.trim().equals("5")) {
+					System.exit(0);
+				} else {
+					if (valeurSaisie.trim().equals("1")
+							|| valeurSaisie.trim().equals("2")
+							|| valeurSaisie.trim().equals("3")
+							|| valeurSaisie.trim().equals("4")) {
+						genererSortie(Integer.parseInt(valeurSaisie));
+						break;
+					} else {
+						System.out.println("Valeur saisie incorrecte.");
+					}
 
+				}
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+		}
 	}
 
 	public static void genererSortie(int typeFichier) {
@@ -418,17 +449,14 @@ public class Principale {
 		String methodeChargement = null;
 
 		System.out.println("Nom du fichier en entrée :");
-		fichierEntree = choixUtilisateur();
-		checkFile(fichierEntree, true);
+		fichierEntree = checkFile(true);
 		if (typeFichier != 4) {
 			System.out.println("Nom du fichier en sortie :");
-			fichierSortie = choixUtilisateur();
-			checkFile(fichierSortie, false);
+			fichierSortie = checkFile(false);
 		}
 		if (typeFichier == 3) {
 			System.out.println("Nom du fichier CSV à générer :");
-			fichierCSV = choixUtilisateur();
-			checkFile(fichierCSV, false);
+			fichierCSV = checkFile(false);
 		}
 		if (typeFichier == 1 || typeFichier == 3) {
 			System.out.println("Caractère de séparation (facultatif) :");
@@ -439,12 +467,11 @@ public class Principale {
 			nomTable = choixUtilisateur();
 		}
 		System.out.println("Nom du fichier format Metadata :");
-		fichierFormat = choixUtilisateur();
-		checkFile(fichierFormat, true);
+		fichierFormat = checkFile(true);
 		if (typeFichier == 4) {
 			System.out
 					.println("Méthode de chargement (1 : Insert / 2 : SQLLoader) :");
-			methodeChargement = choixUtilisateur();
+			methodeChargement = checkMethodeChargement();
 		}
 		SKOSToI2B2 loaderI2B2 = new SKOSToI2B2(fichierEntree);
 		switch (typeFichier) {
@@ -466,7 +493,8 @@ public class Principale {
 						separateur, nomTable, fichierFormat);
 			break;
 		case 4:
-			loaderI2B2.loadSQL(Integer.decode(methodeChargement), fichierFormat);
+			loaderI2B2
+					.loadSQL(Integer.decode(methodeChargement), fichierFormat);
 			break;
 		default:
 			System.err.println("Erreur : Type de sortie à générer inconnu.");
@@ -482,11 +510,9 @@ public class Principale {
 			System.out
 					.println("===================[     MENU OWL TO SKOS    ]======================");
 		System.out.println("Nom du fichier en entrée :");
-		String fichierEntree = choixUtilisateur();
-		checkFile(fichierEntree, true);
+		String fichierEntree = checkFile(true);
 		System.out.println("Nom du fichier en sortie :");
-		String fichierSortie = choixUtilisateur();
-		checkFile(fichierSortie, false);
+		String fichierSortie = checkFile(false);
 		System.out.println("Nom de l'IRI (facultatif) :");
 		String iri = choixUtilisateur();
 		System.out.println("Nom du prefixe (facultatif) :");
@@ -518,7 +544,8 @@ public class Principale {
 	 * @param fichierEntree
 	 * @param existence
 	 */
-	public static void checkFile(String fichierEntree, boolean existence) {
+	public static String checkFile(boolean existence) {
+		String fichierEntree = choixUtilisateur();
 		if (existence) {
 			if (!new File(fichierEntree).exists()) {
 				System.out.println("Le fichier saisie n'existe pas.");
@@ -540,6 +567,18 @@ public class Principale {
 				}
 			}
 		}
+		return fichierEntree;
+	}
+
+	public static String checkMethodeChargement() {
+		String valeur = choixUtilisateur();
+		// Vérifie que la valeur vaut 1 ou 2
+		while (!(valeur.trim().equals("1") || valeur.trim().equals("2"))) {
+			System.out
+					.println("Valeur saisie incorrecte. Valeur possible : 1 - Insert / 2 - SQL Loader.");
+			valeur = choixUtilisateur();
+		}
+		return valeur;
 	}
 
 	public static String choixUtilisateur() {
@@ -555,4 +594,55 @@ public class Principale {
 		return choixUtilisateur;
 	}
 
+	/**
+	 * Cette méthode vérifie que l'IRI fini par un caractère /. Si ce n'est pas
+	 * le cas, le caractère est ajouté.
+	 */
+	public static String verifIRI(String iri) {
+		String sortie = "/";
+		if (!iri.substring(iri.length() - 1, iri.length() - 1).equals("/")) {
+			return iri + sortie;
+		} else
+			return iri;
+	}
+
+	/** Cette méthode permet de vérifier la cohérence du fichier saisie
+	 * Si le chemin est incorrect, une erreur est remontée. Si seul le nom d'un fichier est indiqué, 
+	 * le fichier sera créé dans le home del'utilsiateur dans le répertoire I2B2/OUTPUT/
+	 * @param fichierSortie Nom absolu du fichier de sortie
+	 * @return
+	 */
+	public static String verifFichierSortie(String fichierSortie) {
+	
+		String sortie = "";
+		// On regarde si le nom comporte des caractères séparateur
+		if (fichierSortie.contains(System.getProperty("file.separator"))) {
+			// L'utilisateur a entré un chemin absolu
+			// On vérifie si le chemin exist
+			String nomFichier = fichierSortie.substring(fichierSortie.lastIndexOf(System.getProperty("file.separator"))+1);
+			String cheminFichier = fichierSortie.substring(0,fichierSortie.lastIndexOf(System.getProperty("file.separator"))-1);
+			
+			// Si le chemin n'existe pas, on remonte une erreur
+			if (!new File(cheminFichier).exists()) {
+				System.err.println("Le chemin du fichier de sortie indiqué (" + fichierSortie +") n'existe pas.");
+				System.exit(1);
+			} else {
+				sortie = fichierSortie;
+			}
+		} else {
+			// Ce n'est pas un chemin absolu
+			// On crée le chemin absolu pour écrire dans le répertoire HOME/I2B2/OUTPUT/
+			checkRepertoire(repertoireOutput);
+			sortie = repertoireOutput + fichierSortie;
+		}
+		return sortie;
+	}
+	
+	public static void checkRepertoire(String repertoire) {
+		if (!new File(repertoire).exists()) {
+			// Créer le dossier avec tous ses parents
+			new File(repertoire).mkdirs();
+		}
+	}
+	
 }

@@ -1,6 +1,7 @@
 package load;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,33 +19,44 @@ public class Exporter {
 
 	protected List<FormatTable> listeFormat = new ArrayList<FormatTable>();
 	protected String retourChariot = System.lineSeparator();
+	protected String home = System.getProperty("user.home");
+	protected String repertoireErreur = home
+			+ System.getProperty("file.separator") + "I2B2"
+			+ System.getProperty("file.separator") + "ERREUR"
+			+ System.getProperty("file.separator");
+
+	public void checkRepertoire(String repertoire) {
+		if (!new File(repertoire).exists()) {
+			// Créer le dossier avec tous ses parents
+			new File(repertoire).mkdirs();
+		}
+	}
 
 	public String entoureGuillemet(Object valeur) {
 
 		String sortie = "";
-		
+
 		if (valeur != null) {
 			String classe = valeur.getClass().toString();
 			classe = classe.substring(classe.lastIndexOf(".") + 1);
-			
-			if (classe.equalsIgnoreCase("String"))  {
+
+			if (classe.equalsIgnoreCase("String")) {
 				// On échappe le ' des chemins
 				valeur = ((String) valeur).replace("'", "''");
-							
+
 				// On échappe le \ des chemins
 				valeur = ((String) valeur).replace("\\", "\\\\");
-				
 
-				
-				
 				// On entoure de guillemet
-				sortie =  "'" + valeur.toString() + "'";
+				sortie = "'" + valeur.toString() + "'";
 				return sortie;
-			} else return valeur.toString();
-			
-		} else return null;	
+			} else
+				return valeur.toString();
+
+		} else
+			return null;
 	}
-	
+
 	public String stringNull(Object valeur) {
 
 		if (valeur == null)
@@ -57,7 +69,7 @@ public class Exporter {
 
 		// On parcours la liste de format pour retrouver les colonnes à traiter
 
-		//String colonne = format.getColumn();
+		// String colonne = format.getColumn();
 		String type = format.getType();
 		int taille = format.getTaille();
 		boolean isNullable = format.isNullable();
@@ -68,13 +80,12 @@ public class Exporter {
 			String classe = valeur.getClass().toString();
 			classe = classe.substring(classe.lastIndexOf(".") + 1);
 			if (!classe.equalsIgnoreCase(type)) {
-				/*System.err
-						.println("Erreur : Le format de la metadata " + colonne
-								+ " de valeur " + valeur
-								+ " ne correspond pas au format attendu :"
-								+ type + ".");
-				System.err.println("Les Metadatas ne seront pas exportés.");
-				*/
+				/*
+				 * System.err .println("Erreur : Le format de la metadata " +
+				 * colonne + " de valeur " + valeur +
+				 * " ne correspond pas au format attendu :" + type + ".");
+				 * System.err.println("Les Metadatas ne seront pas exportés.");
+				 */
 				codeRetour = 1;
 			} else {
 				// Format OK
@@ -82,23 +93,24 @@ public class Exporter {
 				if (taille != -1) {
 					// On vérifie la taille
 					if (valeur.toString().length() > taille) {
-						/*System.err.println("Erreur : La taille de la metadata "
-								+ colonne + " de valeur " + valeur
-								+ " ne correspond pas à la taille attendue :"
-								+ taille + ".");
-						System.err
-								.println("Les Metadatas ne seront pas exportés.");
-								*/
+						/*
+						 * System.err.println("Erreur : La taille de la metadata "
+						 * + colonne + " de valeur " + valeur +
+						 * " ne correspond pas à la taille attendue :" + taille
+						 * + "."); System.err
+						 * .println("Les Metadatas ne seront pas exportés.");
+						 */
 						codeRetour = 2;
 					}
 				}
 			}
 		} else {
 			if (!isNullable) {
-				/*System.err.println("Erreur : La colonne " + colonne
-						+ " ne peut pas être nulle.");
-				System.err.println("Les Metadatas ne seront pas exportés.");
-				*/
+				/*
+				 * System.err.println("Erreur : La colonne " + colonne +
+				 * " ne peut pas être nulle.");
+				 * System.err.println("Les Metadatas ne seront pas exportés.");
+				 */
 				codeRetour = 3;
 			}
 		}
@@ -242,9 +254,10 @@ public class Exporter {
 				break;
 			}
 
-			ligneErreur = ligne + ";" + codeErreur + ";" + entoureGuillemet(messageErreur) + retourChariot;
+			ligneErreur = ligne + ";" + codeErreur + ";"
+					+ entoureGuillemet(messageErreur) + retourChariot;
 		}
 		return ligneErreur;
 	}
-	
+
 }

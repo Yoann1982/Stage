@@ -17,7 +17,7 @@ public class MetadataToCSV extends Exporter {
 
 	private FileWriter fichier;
 	private FileWriter fichierKO;
-	private String nomFichierKO = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\fichierKO.csv";
+	private String nomFichierKO = repertoireErreur + "fichierKO.csv";
 
 	/**
 	 * Constructeur de la classe MetadataToCSV. Le constructeur prend en entrée
@@ -89,6 +89,7 @@ public class MetadataToCSV extends Exporter {
 		try {
 
 			fichier = writer;
+			checkRepertoire(repertoireErreur);
 			try {
 				fichierKO = new FileWriter(nomFichierKO);
 			} catch (IOException e) {
