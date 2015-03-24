@@ -18,8 +18,8 @@ import sgbd.Connexion;
 
 public class MetadataToDatabase extends Exporter {
 
-	private String utilisateur = null;
-	private String mdp = null;
+	private String utilisateur = "postgres";
+	private String mdp = "";
 
 	// Méthode par fichier d'insert
 	public MetadataToDatabase(File fichierSQL) {
@@ -122,14 +122,16 @@ public class MetadataToDatabase extends Exporter {
 	public MetadataToDatabase(String fichierCtl) {
 		try {
 
-			demandeUserMdp();
+			//demandeUserMdp();
 
 			String sqlldrCmd = "sqlldr " + utilisateur + "/" + mdp
 					+ ", control=" + fichierCtl;
 
 			System.out.println("SQLLDR Started ....... ");
 			Runtime rt = Runtime.getRuntime();
-			rt.exec(sqlldrCmd);
+			Process proc = rt.exec(sqlldrCmd);
+			proc.waitFor();
+			System.out.println("Code sortie : " + proc.exitValue());
 			System.out.println("SQLLDR Ended ........  ");
 		} catch (Exception e) {
 			e.printStackTrace();
