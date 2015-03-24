@@ -606,6 +606,15 @@ public class Principale {
 		return fichierEntree;
 	}
 
+	/**
+	 * Cette méthode effectue la récupération du choix de l'utilisateur
+	 * concernant la méthode de chargement et vérifie que le mode de chargement
+	 * saisie par l'utilisateur vaut bien 1 ou 2. Si ce n'est pas le cas, un
+	 * message indique l'erreur à l'utilisateur et lui demande de saisie de
+	 * nouveau une valeur jusqu'à avoir une valeur correcte.
+	 * 
+	 * @return la valeur saisie par l'utilisateur.
+	 */
 	public static String checkMethodeChargement() {
 		String valeur = choixUtilisateur();
 		// Vérifie que la valeur vaut 1 ou 2
@@ -617,6 +626,12 @@ public class Principale {
 		return valeur;
 	}
 
+	/**
+	 * Cette méthode gère la récupération des données saisies par l'utilisateur
+	 * (prompt).
+	 * 
+	 * @return La valeur saisie par l'utilisateur.
+	 */
 	public static String choixUtilisateur() {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -633,6 +648,8 @@ public class Principale {
 	/**
 	 * Cette méthode vérifie que l'IRI fini par un caractère /. Si ce n'est pas
 	 * le cas, le caractère est ajouté.
+	 * 
+	 * @return L'IRI éventuellement commplétée de /
 	 */
 	public static String verifIRI(String iri) {
 		String sortie = "/";
@@ -652,7 +669,10 @@ public class Principale {
 	 * 
 	 * @param fichierSortie
 	 *            Nom absolu du fichier de sortie
-	 * @return
+	 * @return Le chemin absolu du fichier. Soit celui saisie par l'utilisateur
+	 *         si correcte, soit celui correspondant à
+	 *         HOME/I2B2/OUTPUT/fichierSortie si seul le nom du fichier a été
+	 *         saisie, soit arrêt du programme si chemin absolu incorrecte.
 	 */
 	public static String verifFichierSortie(String fichierSortie) {
 
@@ -661,8 +681,8 @@ public class Principale {
 		if (fichierSortie.contains(System.getProperty("file.separator"))) {
 			// L'utilisateur a entré un chemin absolu
 			// On vérifie si le chemin exist
-			//String nomFichier =
-			 //fichierSortie.substring(fichierSortie.lastIndexOf(System.getProperty("file.separator"))+1);
+			// String nomFichier =
+			// fichierSortie.substring(fichierSortie.lastIndexOf(System.getProperty("file.separator"))+1);
 			String cheminFichier = fichierSortie.substring(0, fichierSortie
 					.lastIndexOf(System.getProperty("file.separator")) + 1);
 			// Si le chemin n'existe pas, on remonte une erreur
@@ -683,6 +703,12 @@ public class Principale {
 		return sortie;
 	}
 
+	/**
+	 * Cette méthode vérifie que le répertoire en entrée existe. Si ce n'est pas
+	 * le cas, il est créée.
+	 * 
+	 * @param repertoire
+	 */
 	public static void checkRepertoire(String repertoire) {
 		if (!new File(repertoire).exists()) {
 			// Créer le dossier avec tous ses parents
