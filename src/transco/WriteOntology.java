@@ -94,7 +94,7 @@ public class WriteOntology {
 				try {
 					System.out.println("Nom du fichier créé : " + new File(nomFichier).getCanonicalPath());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					System.err.println("Erreur lors de l'affichage du nom du fichier généré.");
 					e.printStackTrace();
 				}
 			}

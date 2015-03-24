@@ -68,7 +68,7 @@ public class MetadataToDatabase extends Exporter {
 			}*/
 			insert = loadFileString(fichierSQL);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur lors de la lecture du fichier temporaire.");
 			e.printStackTrace();
 		}
 		// System.out.println(" DEBUG requête :" + insert);
@@ -96,7 +96,7 @@ public class MetadataToDatabase extends Exporter {
 			mdp = br.readLine();
 
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de la lecture des données saisies.");
 			e1.printStackTrace();
 		}
 	}

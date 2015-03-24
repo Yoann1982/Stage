@@ -25,7 +25,7 @@ public class MetadataToSQLLoader extends Exporter {
 			new MetadataToSQLLoader(fichierWriterCTL, fichierWriterCSV, ";",
 					listeMetadata, nomTable, fichierFormat);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de la génération des FileWriter.");
 			e1.printStackTrace();
 		}
 		try {
@@ -35,7 +35,7 @@ public class MetadataToSQLLoader extends Exporter {
 					+ fichierLoader.getCanonicalPath());
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de l'affichage du nom des fichiers générés.");
 			e.printStackTrace();
 		}
 
@@ -51,7 +51,7 @@ public class MetadataToSQLLoader extends Exporter {
 			new MetadataToSQLLoader(fichierWriterCTL, fichierWriterCSV, ";",
 					listeMetadata, nomTable, fichierFormat);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de la génération des FileWriter.");
 			e.printStackTrace();
 		}
 		try {
@@ -60,7 +60,7 @@ public class MetadataToSQLLoader extends Exporter {
 			System.out.println("Fichier CSV écrit : "
 					+ new File(fichierLoader).getCanonicalPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de l'affichage du nom des fichiers générés.");
 			e.printStackTrace();
 		}
 	}
@@ -76,7 +76,7 @@ public class MetadataToSQLLoader extends Exporter {
 			new MetadataToSQLLoader(fichierWriterCTL, fichierWriterCSV,
 					separator, listeMetadata, nomTable, fichierFormat);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de la génération des FileWriter.");
 			e.printStackTrace();
 		}
 		try {
@@ -85,7 +85,7 @@ public class MetadataToSQLLoader extends Exporter {
 			System.out.println("Fichier CSV écrit : "
 					+ new File(fichierLoader).getCanonicalPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de l'affichage des noms des fichiers en sortie.");
 			e.printStackTrace();
 		}
 	}
@@ -103,12 +103,12 @@ public class MetadataToSQLLoader extends Exporter {
 
 		String ligne = "LOAD DATA INFILE '"
 				+ fichierLoader
-				+ "'\nINTO TABLE "
+				+ "'" + retourChariot + "INTO TABLE "
 				+ nomTable
 				+ " FIELDS TERMINATED BY '"
 				+ separator
 				+ "' OPTIONALY ENCLOSED BY '\"' LINES TERMINATED BY '\\r\\n' \n"
-				+ "IGNORE 1 LINES\n(";
+				+ "IGNORE 1 LINES" + retourChariot +"(";
 		String listeColonnes = "";
 		int cpt = 0;
 		for (FormatTable format : listeFormat) {
@@ -121,7 +121,7 @@ public class MetadataToSQLLoader extends Exporter {
 		listeColonnes += ")";
 
 		// Ligne complète
-		ligne += listeColonnes + "\n";
+		ligne += listeColonnes + retourChariot;
 
 		new MetadataToCSV(fichierLoader, listeMetadata, separator,
 				fichierFormat);
@@ -130,13 +130,13 @@ public class MetadataToSQLLoader extends Exporter {
 		try {
 			fichier.write(ligne, 0, ligne.length());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block e.printStackTrace();
+			System.err.println("Erreur de l'écriture de la ligne dans le fichir de sortie.");
 		} finally {
 			if (fichier != null) {
 				try {
 					fichier.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					System.err.println("Erreur de la fermeture du fichier de sortie.");
 					e.printStackTrace();
 				}
 			}

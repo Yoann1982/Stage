@@ -16,7 +16,10 @@ import java.util.List;
 public class MetadataToSQL extends Exporter {
 	private FileWriter fichier;
 	private FileWriter fichierKO;
-	private String nomFichierKO = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\fichierKO.sql";
+	//private String nomFichierKO = "C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\fichierKO.sql";
+	private String home = System.getProperty("user.home" );
+	private String repertoireErreur = home + System.getProperty("file.separator") + "I2B2" + System.getProperty("file.separator") + "ERREUR" + System.getProperty("file.separator");
+	private String nomFichierKO = repertoireErreur + "fichierKO.sql";
 
 	public MetadataToSQL(File fichierSQL, List<Metadata> listeMetadata,
 			String nomTable, String fichierFormat) {
@@ -25,14 +28,14 @@ public class MetadataToSQL extends Exporter {
 			new MetadataToSQL(fichier, listeMetadata, nomTable, fichierFormat);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur lors de la génération du FileWriter.");
 			e.printStackTrace();
 		}
 		try {
-			System.out.println("\nFichier SQL écrit : "
+			System.out.println(retourChariot + "Fichier SQL écrit : "
 					+ fichierSQL.getCanonicalPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur lors de l'affichage du nom du fichier SQL.");
 			e.printStackTrace();
 		}
 	}
@@ -44,14 +47,14 @@ public class MetadataToSQL extends Exporter {
 			new MetadataToSQL(fichier, listeMetadata, nomTable, fichierFormat);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur lors de la génération du FileWriter.");
 			e.printStackTrace();
 		}
 		try {
-			System.out.println("\nFichier SQL écrit : "
+			System.out.println(retourChariot + "Fichier SQL écrit : "
 					+ new File(fichierSQL).getCanonicalPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur lors de l'affichage du fichier SQL.");
 			e.printStackTrace();
 		}
 	}
@@ -65,9 +68,16 @@ public class MetadataToSQL extends Exporter {
 
 			fichier = writer;
 			try {
+				// Préparation fichier d'erreur
+				if(!new File(repertoireErreur).exists())
+		        {
+		            // Créer le dossier avec tous ses parents
+		            new File(repertoireErreur).mkdirs();
+		 
+		        }
 				fichierKO = new FileWriter(nomFichierKO);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Erreur lors de la génération du FileWriter du fichier d'erreurs.");
 				e.printStackTrace();
 			}
 			// Ecriture des lignes
@@ -79,19 +89,19 @@ public class MetadataToSQL extends Exporter {
 				try {
 					fichier.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					System.err.println("Erreur lors de la fermeture du FileWriter.");
 					e.printStackTrace();
 				}
 			}
 			if (fichierKO != null) {
 				try {
 					System.out
-							.println("\nErreurs rencontrées lors de la génération du fichier. Consultez le fichier des erreurs.");
+							.println(retourChariot + "Erreurs rencontrées lors de la génération du fichier. Consultez le fichier des erreurs.");
 					System.out.println("Fichier SQL des erreur : "
 							+ new File(nomFichierKO).getCanonicalPath());
 					fichierKO.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					System.err.println("Erreur lors de la fermeture du fichier d'erreurs.");
 					e.printStackTrace();
 				}
 			}
@@ -150,7 +160,7 @@ public class MetadataToSQL extends Exporter {
 						listeValeurs += "," + "current_timestamp";
 				} else {
 					formatOK = false;
-					// On enrichie la liste d'erreur qui sera exportée dans le
+					// On enrichie la liste d'erreurs qui sera exportée dans le
 					// fichier des erreurs.
 					sortieErreur = exportErreur(codeErreur, colonne, valeur,
 							sortieErreur);
@@ -167,14 +177,14 @@ public class MetadataToSQL extends Exporter {
 		// On écrit dans le fichier si tous les enregistrements sont OK.
 		try {
 			if (formatOK) {
-				String ligneSortie = ligne + ";\n";
+				String ligneSortie = ligne + ";" + retourChariot;
 				fichier.write(ligneSortie, 0, ligneSortie.length());
 			} else {
 				String ligneErreur = entoureGuillemet(ligne) + sortieErreur;
 				fichierKO.write(ligneErreur, 0, ligneErreur.length());
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur lors de l'écriture dans le fichier d'erreurs.");
 			e.printStackTrace();
 		}
 	}

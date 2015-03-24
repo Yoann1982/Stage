@@ -37,14 +37,14 @@ public class MetadataToCSV extends Exporter {
 			fichier = new FileWriter(fichierCSV);
 			new MetadataToCSV(fichier, listeMetadata, ";", fichierFormat);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de la génération du FileWriter.");
 			e.printStackTrace();
 		}
 		try {
-			System.out.println("\nFichier CVS écrit : "
+			System.out.println(retourChariot + "Fichier CVS écrit : "
 					+ new File(fichierCSV).getCanonicalPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de l'affichage du nom du fichier généré.");
 			e.printStackTrace();
 		}
 	}
@@ -56,14 +56,14 @@ public class MetadataToCSV extends Exporter {
 			fichier = new FileWriter(fichierCSV);
 			new MetadataToCSV(fichier, listeMetadata, separator, fichierFormat);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de la génération du FileWriter.");
 			e.printStackTrace();
 		}
 		try {
-			System.out.println("\nFichier CVS écrit : "
+			System.out.println(retourChariot + "Fichier CVS écrit : "
 					+ new File(fichierCSV).getCanonicalPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de l'affichage du nom du fichier généré.");
 			e.printStackTrace();
 		}
 	}
@@ -92,7 +92,7 @@ public class MetadataToCSV extends Exporter {
 			try {
 				fichierKO = new FileWriter(nomFichierKO);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Erreur de la génération du FileWriter.");
 				e.printStackTrace();
 			}
 
@@ -108,19 +108,19 @@ public class MetadataToCSV extends Exporter {
 				try {
 					fichier.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					System.err.println("Erreur de la fermeture du fichier généré.");
 					e.printStackTrace();
 				}
 			}
 			if (fichierKO != null) {
 				try {
 					System.out
-							.println("\nErreurs rencontrées lors de la génération du fichier. Consultez le fichier des erreurs.");
+							.println(retourChariot + "Erreurs rencontrées lors de la génération du fichier. Consultez le fichier des erreurs.");
 					System.out.println("Fichier SQL des erreur : "
 							+ new File(nomFichierKO).getCanonicalPath());
 					fichierKO.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					System.err.println("Erreur de la fermeture du fichier généré.");
 					e.printStackTrace();
 				}
 			}
@@ -186,14 +186,15 @@ public class MetadataToCSV extends Exporter {
 		// On écrit dans le fichier si tous les enregistrements sont OK.
 		try {
 			if (formatOK) {
-				String ligneSortie = ligne + "\n";
+				String ligneSortie = ligne + retourChariot;
 				fichier.write(ligneSortie, 0, ligneSortie.length());
 			} else {
 				String ligneErreur = entoureGuillemet(ligne) + sortieErreur;
 				fichierKO.write(ligneErreur, 0, ligneErreur.length());
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block e.printStackTrace();
+			System.err.println("Erreur de l'écriture du fichier des erreurs.");
+			e.printStackTrace();
 		}
 	}
 
@@ -218,11 +219,11 @@ public class MetadataToCSV extends Exporter {
 			}
 			cpt++;
 		}
-		header += "\n";
+		header += retourChariot;
 		try {
 			fichier.write(header);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur de l'écriture de l'header du fichier généré.");
 			e.printStackTrace();
 		}
 	}

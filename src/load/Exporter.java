@@ -17,6 +17,7 @@ import java.util.List;
 public class Exporter {
 
 	protected List<FormatTable> listeFormat = new ArrayList<FormatTable>();
+	protected String retourChariot = System.lineSeparator();
 
 	public String entoureGuillemet(Object valeur) {
 
@@ -241,7 +242,7 @@ public class Exporter {
 				break;
 			}
 
-			ligneErreur = ligne + ";" + codeErreur + ";" + entoureGuillemet(messageErreur) + "\n";
+			ligneErreur = ligne + ";" + codeErreur + ";" + entoureGuillemet(messageErreur) + retourChariot;
 		}
 		return ligneErreur;
 	}

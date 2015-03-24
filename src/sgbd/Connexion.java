@@ -60,9 +60,9 @@ public class Connexion {
 
 		/* Chargement du driver JDBC pour MySQL */
 		try {
-			System.out.println("[Technique] Chargement du driver...");
+			//System.out.println("[Technique] Chargement du driver...");
 			Class.forName("org.postgresql.Driver");
-			System.out.println("[Technique] Driver charge.");
+			//System.out.println("[Technique] Driver charge.");
 			return 0;
 		} catch (ClassNotFoundException e) {
 			System.err
@@ -84,10 +84,10 @@ public class Connexion {
 		/* Connexion à la base de données */
 
 		try {
-			System.out.println("[Technique] Connexion a la base de donnees...");
+			//System.out.println("[Technique] Connexion a la base de donnees...");
 			this.connexion = DriverManager.getConnection(url, utilisateur,
 					motDePasse);
-			System.out.println("[Technique] Connexion reussie !");
+			//System.out.println("[Technique] Connexion reussie !");
 			return 0;
 		} catch (SQLException e) {
 			System.err
@@ -107,8 +107,8 @@ public class Connexion {
 		if (connexion != null) {
 			try {
 				connexion.close();
-				System.out
-						.println("[Technique] Fermeture de l'objet Connection.");
+				//System.out
+				//		.println("[Technique] Fermeture de l'objet Connection.");
 				return 0;
 			} catch (SQLException e) {
 				System.err
@@ -132,7 +132,7 @@ public class Connexion {
 		try {
 
 			this.statement = connexion.createStatement();
-			System.out.println("[Technique] Objet requete cree !");
+			//System.out.println("[Technique] Objet requete cree !");
 			return 0;
 		} catch (SQLException erreur) {
 			System.err.println("[Technique] Erreur à la creation du statement"
@@ -153,8 +153,8 @@ public class Connexion {
 		if (this.statement != null) {
 			try {
 				statement.close();
-				System.out
-						.println("[Technique] Fermeture de l'objet Statement.");
+				//System.out
+				//		.println("[Technique] Fermeture de l'objet Statement.");
 				return 0;
 			} catch (SQLException erreur) {
 				System.err
