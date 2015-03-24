@@ -30,7 +30,7 @@ public class Principale {
 			+ System.getProperty("file.separator") + "I2B2"
 			+ System.getProperty("file.separator") + "OUTPUT"
 			+ System.getProperty("file.separator");
-	
+
 	public static void initMapArgument() {
 		// 1 : skos to owl
 		mapArgObligatoire.put(1, 3);
@@ -247,10 +247,9 @@ public class Principale {
 	public static void lanceTransco(String[] args, Integer nbArgObligatoire,
 			Integer nbArgFacultatif) {
 		String[] parametre = null;
-
 		if (!new File(args[1]).exists()) {
-			System.out
-					.println("Erreur : Le fichier indiqué en entrée n'existe pas.");
+			System.err.println("Erreur : Le fichier indiqué en entrée ("
+					+ args[1] + ") n'existe pas.");
 			System.exit(1);
 		} else {
 			switch (args[0]) {
@@ -275,39 +274,67 @@ public class Principale {
 				break;
 			case "3":
 				args[2] = verifFichierSortie(args[2]);
-				SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
-				parametre = new String[args.length - 2];
-				for (int i = 0; i < args.length - 2; i++) {
-					parametre[i] = args[i + 2];
+				if (!new File(args[4]).exists()) {
+					System.err
+							.println("Erreur : Le fichier indiqué en entrée ("
+									+ args[4] + ") n'existe pas.");
+					System.exit(1);
+				} else {
+					SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
+					parametre = new String[args.length - 2];
+					for (int i = 0; i < args.length - 2; i++) {
+						parametre[i] = args[i + 2];
+					}
+					loaderCSV.createCSV(parametre);
 				}
-				loaderCSV.createCSV(parametre);
 				break;
 			case "4":
 				args[2] = verifFichierSortie(args[2]);
-				SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
-				parametre = new String[args.length - 2];
-				for (int i = 0; i < args.length - 2; i++) {
-					parametre[i] = args[i + 2];
+				if (!new File(args[4]).exists()) {
+					System.err
+							.println("Erreur : Le fichier indiqué en entrée ("
+									+ args[4] + ") n'existe pas.");
+					System.exit(1);
+				} else {
+					SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
+					parametre = new String[args.length - 2];
+					for (int i = 0; i < args.length - 2; i++) {
+						parametre[i] = args[i + 2];
+					}
+					loaderSQL.createSQL(parametre);
 				}
-				loaderSQL.createSQL(parametre);
 				break;
 			case "5":
-				args[2] = verifFichierSortie(args[2]);
-				args[3] = verifFichierSortie(args[3]);
-				SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
-				parametre = new String[args.length - 2];
-				for (int i = 0; i < args.length - 2; i++) {
-					parametre[i] = args[i + 2];
+				if (!new File(args[6]).exists()) {
+					System.err
+							.println("Erreur : Le fichier indiqué en entrée ("
+									+ args[6] + ") n'existe pas.");
+					System.exit(1);
+				} else {
+					args[2] = verifFichierSortie(args[2]);
+					args[3] = verifFichierSortie(args[3]);
+					SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
+					parametre = new String[args.length - 2];
+					for (int i = 0; i < args.length - 2; i++) {
+						parametre[i] = args[i + 2];
+					}
+					loaderSQLLoader.createSQLLoader(parametre);
 				}
-				loaderSQLLoader.createSQLLoader(parametre);
 				break;
 			case "6":
-				SKOSToI2B2 loaderTable = new SKOSToI2B2(args[1]);
-				parametre = new String[args.length - 2];
-				for (int i = 0; i < args.length - 2; i++) {
-					parametre[i] = args[i + 2];
+				if (!new File(args[3]).exists()) {
+					System.err
+							.println("Erreur : Le fichier indiqué en entrée ("
+									+ args[3] + ") n'existe pas.");
+					System.exit(1);
+				} else {
+					SKOSToI2B2 loaderTable = new SKOSToI2B2(args[1]);
+					parametre = new String[args.length - 2];
+					for (int i = 0; i < args.length - 2; i++) {
+						parametre[i] = args[i + 2];
+					}
+					loaderTable.loadSQL(parametre);
 				}
-				loaderTable.loadSQL(parametre);
 				break;
 			default:
 				System.err.println("Choix d'action inconnu.");
@@ -515,6 +542,7 @@ public class Principale {
 		String fichierSortie = checkFile(false);
 		System.out.println("Nom de l'IRI (facultatif) :");
 		String iri = choixUtilisateur();
+		iri = verifIRI(iri);
 		System.out.println("Nom du prefixe (facultatif) :");
 		String prefix = choixUtilisateur();
 		System.out.println("Transcodage en cours ...");
@@ -553,6 +581,10 @@ public class Principale {
 						.println("Veuillez-saisir de nouveau le nom du fichier.");
 				fichierEntree = null;
 			}
+		} else {
+			// Vérifie si le fichier est écrit en chemin absolu et si le chemin
+			// existe sinon on écrit dans HOME/I2B2/OUTPUT/
+			fichierEntree = verifFichierSortie(fichierEntree);
 		}
 		while (fichierEntree == null || fichierEntree.trim().isEmpty()) {
 			System.out.println("Veuillez saisir un fichier à lire.");
@@ -565,6 +597,10 @@ public class Principale {
 							.println("Veuillez-saisir de nouveau le nom du fichier.");
 					fichierEntree = null;
 				}
+			} else {
+				// Vérifie si le fichier est écrit en chemin absolu et si le
+				// chemin existe sinon on écrit dans HOME/I2B2/OUTPUT/
+				fichierEntree = verifFichierSortie(fichierEntree);
 			}
 		}
 		return fichierEntree;
@@ -600,49 +636,58 @@ public class Principale {
 	 */
 	public static String verifIRI(String iri) {
 		String sortie = "/";
-		if (!iri.substring(iri.length() - 1, iri.length() - 1).equals("/")) {
+		if (iri != null
+				&& !iri.substring(iri.length() - 1, iri.length() - 1).equals(
+						"/")) {
 			return iri + sortie;
 		} else
 			return iri;
 	}
 
-	/** Cette méthode permet de vérifier la cohérence du fichier saisie
-	 * Si le chemin est incorrect, une erreur est remontée. Si seul le nom d'un fichier est indiqué, 
-	 * le fichier sera créé dans le home del'utilsiateur dans le répertoire I2B2/OUTPUT/
-	 * @param fichierSortie Nom absolu du fichier de sortie
+	/**
+	 * Cette méthode permet de vérifier la cohérence du fichier saisie Si le
+	 * chemin est incorrect, une erreur est remontée. Si seul le nom d'un
+	 * fichier est indiqué, le fichier sera créé dans le home del'utilsiateur
+	 * dans le répertoire I2B2/OUTPUT/
+	 * 
+	 * @param fichierSortie
+	 *            Nom absolu du fichier de sortie
 	 * @return
 	 */
 	public static String verifFichierSortie(String fichierSortie) {
-	
+
 		String sortie = "";
 		// On regarde si le nom comporte des caractères séparateur
 		if (fichierSortie.contains(System.getProperty("file.separator"))) {
 			// L'utilisateur a entré un chemin absolu
 			// On vérifie si le chemin exist
-			String nomFichier = fichierSortie.substring(fichierSortie.lastIndexOf(System.getProperty("file.separator"))+1);
-			String cheminFichier = fichierSortie.substring(0,fichierSortie.lastIndexOf(System.getProperty("file.separator"))-1);
-			
+			//String nomFichier =
+			 //fichierSortie.substring(fichierSortie.lastIndexOf(System.getProperty("file.separator"))+1);
+			String cheminFichier = fichierSortie.substring(0, fichierSortie
+					.lastIndexOf(System.getProperty("file.separator")) + 1);
 			// Si le chemin n'existe pas, on remonte une erreur
 			if (!new File(cheminFichier).exists()) {
-				System.err.println("Le chemin du fichier de sortie indiqué (" + fichierSortie +") n'existe pas.");
+				System.err.println("Le chemin du fichier de sortie indiqué ("
+						+ fichierSortie + ") n'existe pas.");
 				System.exit(1);
 			} else {
 				sortie = fichierSortie;
 			}
 		} else {
 			// Ce n'est pas un chemin absolu
-			// On crée le chemin absolu pour écrire dans le répertoire HOME/I2B2/OUTPUT/
+			// On crée le chemin absolu pour écrire dans le répertoire
+			// HOME/I2B2/OUTPUT/
 			checkRepertoire(repertoireOutput);
 			sortie = repertoireOutput + fichierSortie;
 		}
 		return sortie;
 	}
-	
+
 	public static void checkRepertoire(String repertoire) {
 		if (!new File(repertoire).exists()) {
 			// Créer le dossier avec tous ses parents
 			new File(repertoire).mkdirs();
 		}
 	}
-	
+
 }
