@@ -238,6 +238,10 @@ public class Principale {
 			}
 			break;
 		case "6":
+			System.out.println("Type de transcodage : " + args[0]);
+			System.out.println("Fichier en entrée : " + args[1]);
+			System.out.println("Méthode de chargement : " + args[2]);
+			System.out.println("Fichier Format : " + args[3]);
 			break;
 		default:
 			break;
@@ -322,18 +326,24 @@ public class Principale {
 				}
 				break;
 			case "6":
-				if (!new File(args[3]).exists()) {
+				if (!(args[2].trim().equals("1") || args[2].trim().equals("2"))) {
 					System.err
-							.println("Erreur : Le fichier indiqué en entrée ("
-									+ args[3] + ") n'existe pas.");
-					System.exit(1);
+							.println("Erreur : Le mode de chargement saisi ("
+									+ args[2] + ") est incorrect.");
 				} else {
-					SKOSToI2B2 loaderTable = new SKOSToI2B2(args[1]);
-					parametre = new String[args.length - 2];
-					for (int i = 0; i < args.length - 2; i++) {
-						parametre[i] = args[i + 2];
+					if (!new File(args[3]).exists()) {
+						System.err
+								.println("Erreur : Le fichier indiqué en entrée ("
+										+ args[3] + ") n'existe pas.");
+						System.exit(1);
+					} else {
+						SKOSToI2B2 loaderTable = new SKOSToI2B2(args[1]);
+						parametre = new String[args.length - 2];
+						for (int i = 0; i < args.length - 2; i++) {
+							parametre[i] = args[i + 2];
+						}
+						loaderTable.loadSQL(parametre);
 					}
-					loaderTable.loadSQL(parametre);
 				}
 				break;
 			default:
