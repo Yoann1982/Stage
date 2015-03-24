@@ -174,33 +174,7 @@ public class Connexion {
 	 * du code SQL.
 	 * 
 	 * @param r
-	 *            : l'objet Requete
-	 * @return un ResultSet
-	 * @see Requete
-	 */
-	public ResultSet executerRequete(Requete r) {
-
-		ResultSet resultat = null;
-		/* Exécution d'une requête de lecture */
-		//System.out.println("La requete lancée est " + r.getRequeteALancer());
-
-		try {
-			resultat = this.statement.executeQuery(r.getRequeteALancer());
-
-		} catch (SQLException e) {
-			System.err.println("[Technique] Erreur a l'execution de la requete"
-					+ e.getMessage());
-			e.printStackTrace();
-		}
-		return resultat;
-	}
-
-	/**
-	 * Cette méthode génère un ResultSet à partir d'un objet Requete contenant
-	 * du code SQL.
-	 * 
-	 * @param r
-	 *            : l'objet Requete
+	 *            : requête SQL.
 	 * @return un ResultSet
 	 * @see Requete
 	 */
@@ -222,13 +196,10 @@ public class Connexion {
 	}
 	
 	/**
-	 * Cette méthode génère un ResultSet à partir d'un objet Requete contenant
-	 * du code SQL.
+	 * Cette méthode effectue un ordre d'update ou d'insert et renvoie un code d'erreur. 0 si ok.
 	 * 
 	 * @param r
-	 *            : l'objet Requete
-	 * @return un ResultSet
-	 * @see Requete
+	 *            : la requête à executer.
 	 */
 	public int executerInsert(String r) {
 
@@ -237,9 +208,7 @@ public class Connexion {
 		//System.out.println("La requete lancée est " + r.getRequeteALancer());
 
 		try {
-			System.out.println("Requête : " + r);
 			resultat = this.statement.executeUpdate(r);
-			//resultat = this.statement.executeUpdate("INSERT INTO Metadata (C_HLEVEL,C_FULLNAME,C_NAME,C_SYNONYM_CD,C_VISUALATTRIBUTES,C_TOTALNUM,C_BASECODE,C_METADATAXML,C_FACTTABLECOLUMN,C_TABLENAME,C_COLUMNNAME,C_COLUMNDATATYPE,C_OPERATOR,C_DIMCODE,C_COMMENT,C_TOOTIP,M_APPLIED_PATH,UPDATE_DATE,DOWNLOAD_DATE,IMPORT_DATE,SOUCESYSTEM_CD,VALUETYPE_CD,M_EXCLUSION_CD,C_PATH,C_SYMBOL) VALUES (0,'\\i2b2\\','i2b2','N','FA',null,'BCBS:1',null,'concept_cd','concept_dimension','concept_path','T','LIKE','\\i2b2\\',null,'\\i2b2','@',current_timestamp,null,null,'skosSortiePrefix.owl',null,null,'','i2b2');");
 
 		} catch (SQLException e) {
 			System.err.println("[Technique] Erreur a l'execution de la requete"
@@ -248,97 +217,4 @@ public class Connexion {
 		}
 		return resultat;
 	}
-	
-	
-	/**
-	 * Cette méthode permet de connaître le nombre de lignes présentes dans le ResultSet en entrée.
-	 * @param resultat : L'objet ResultSet dont on veut connaître le nombre de lignes.
-	 * @return le nombre de lignes présentes dans le ResultSet.
-	 */
-	public int nbLignesResultat(ResultSet resultat) {
-
-		int nombreLignes;
-
-		try {
-
-			// on place le curseur sur le dernier tuple
-			resultat.last();
-			// on r�cup�re le num�ro de la ligne
-			nombreLignes = resultat.getRow();
-
-			// System.out.println("Nombre de lignes " + nombreLignes);
-
-			// on replace le curseur avant la premi�re ligne
-			resultat.beforeFirst();
-
-		} catch (SQLException erreur) {
-			System.err
-					.println("nbLignesResultat : Erreur a l'exploitation des resultats "
-							+ erreur.getMessage());
-			erreur.printStackTrace();
-			return 1;
-		}
-		return nombreLignes;
-
-	}
-
-	/**
-	 * Cette méthode permet de connaître le nombre de colonnes d'un ResultSet.
-	 * @param resultat : le ResultSet dont on veut connaître le nombre de colonnes.
-	 * @return : le nombre de colonnes.
-	 */
-	public int nbColonnesResultat(ResultSet resultat) {
-		int nombreColonnes;
-
-		try {
-
-			ResultSetMetaData resultatStructure = resultat.getMetaData();
-			nombreColonnes = resultatStructure.getColumnCount();
-
-		} catch (SQLException erreur) {
-			System.err
-					.println("Nb Colonnes : Erreur a l'exploitation des resultats"
-							+ erreur.getMessage());
-			erreur.printStackTrace();
-			return 1;
-		}
-		return nombreColonnes;
-
-	}
-
-	/**
-	 * Cette méthode crée une liste (vecteur) des noms de colonnes présentes 
-	 * dans le ResultSet en entrée.
-	 * @param resultat : 
-	 * @return : Un vecteur contenant les noms de colonnes.
-	 */
-	public Vector<String> listeColonnesResultat(ResultSet resultat) {
-
-		try {
-
-			ResultSetMetaData resultatStructure = resultat.getMetaData();
-			int nbColonnes = resultatStructure.getColumnCount();
-			Vector<String> listeColonnes = new Vector<String>();
-			;
-
-			String nomColonne;
-			for (int i = 1; i <= nbColonnes; i++) {
-
-				nomColonne = resultatStructure.getColumnName(i);
-				System.out.println("Nom de la colonne " + nomColonne);
-				listeColonnes.add(nomColonne);
-
-			}
-			return listeColonnes;
-
-		} catch (SQLException erreur) {
-			System.err
-					.println("Liste Colonnes : Erreur a l'exploitation des resultats "
-							+ erreur.getMessage());
-			erreur.printStackTrace();
-			return null;
-
-		}
-	}
-
 }

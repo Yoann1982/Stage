@@ -53,7 +53,7 @@ public class MetadataToDatabase extends Exporter {
 			// try/finally, ce qui permet de ne fermer le flux QUE s'il le
 			// reader
 			// est correctement instancié (évite les NullPointerException)
-			BufferedReader buff = new BufferedReader(new FileReader(fichierSQL));
+			/*BufferedReader buff = new BufferedReader(new FileReader(fichierSQL));
 			try {
 				String line;
 				// Lecture du fichier ligne par ligne. Cette boucle se termine
@@ -66,14 +66,17 @@ public class MetadataToDatabase extends Exporter {
 			} finally {
 				// dans tous les cas, on ferme nos flux
 				buff.close();
-			}
-			//insert = loadFileString(fichierSQL);
+			}*/
+			insert = loadFileString(fichierSQL);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// System.out.println(" DEBUG requête :" + insert);
-		//maConnexion.executerInsert(insert);
+		if (maConnexion.executerInsert(insert) == 1) 
+			System.out.println("Insertion au sein de la table d'I2B2.");
+		else 
+			System.err.println("Erreur à l'insertion des données dans la table d'I2B2.");
 
 		// 4 - Déconnexion
 
