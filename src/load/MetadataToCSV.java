@@ -172,7 +172,7 @@ public class MetadataToCSV extends Exporter {
 					if (cpt == 0)
 						ligne += "current_timestamp";
 					else
-						ligne += "," + "current_timestamp";
+						ligne += separator + "current_timestamp";
 				} else {
 					formatOK = false;
 					// On enrichie la liste d'erreur qui sera exportée dans le

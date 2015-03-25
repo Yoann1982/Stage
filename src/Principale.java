@@ -267,7 +267,7 @@ public class Principale {
 			switch (args[0]) {
 
 			case "1":
-				args[2] = verifFichierSortie(args[2]);
+				args[2] = verifFichierSortie(args[2],1);
 				args[3] = verifIRI(args[3]);
 				parametre = new String[args.length - 1];
 				for (int i = 0; i < args.length - 1; i++) {
@@ -276,7 +276,7 @@ public class Principale {
 				new SKOSToOWL(parametre);
 				break;
 			case "2":
-				args[2] = verifFichierSortie(args[2]);
+				args[2] = verifFichierSortie(args[2],1);
 				args[3] = verifIRI(args[3]);
 				parametre = new String[args.length - 1];
 				for (int i = 0; i < args.length - 1; i++) {
@@ -285,7 +285,7 @@ public class Principale {
 				new OWLToSKOS(parametre);
 				break;
 			case "3":
-				args[2] = verifFichierSortie(args[2]);
+				args[2] = verifFichierSortie(args[2],1);
 				args[4] = verifFichierFormat(args[4], 1);
 				SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
 				parametre = new String[args.length - 2];
@@ -295,7 +295,7 @@ public class Principale {
 				loaderCSV.createCSV(parametre);
 				break;
 			case "4":
-				args[2] = verifFichierSortie(args[2]);
+				args[2] = verifFichierSortie(args[2],1);
 				args[4] = verifFichierFormat(args[4], 1);
 				SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
 				parametre = new String[args.length - 2];
@@ -306,8 +306,8 @@ public class Principale {
 				break;
 			case "5":
 				args[6] = verifFichierFormat(args[6], 1);
-				args[2] = verifFichierSortie(args[2]);
-				args[3] = verifFichierSortie(args[3]);
+				args[2] = verifFichierSortie(args[2],1);
+				args[3] = verifFichierSortie(args[3],1);
 				SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
 				parametre = new String[args.length - 2];
 				for (int i = 0; i < args.length - 2; i++) {
@@ -594,7 +594,7 @@ public class Principale {
 						// si le
 						// chemin
 						// existe sinon on écrit dans HOME/I2B2/OUTPUT/
-						fichierEntree = verifFichierSortie(fichierEntree);
+						fichierEntree = verifFichierSortie(fichierEntree,2);
 					} else { // fichier param
 						fichierEntree = verifFichierFormat(fichierEntree, 2);
 					}
@@ -651,8 +651,13 @@ public class Principale {
 	 */
 	public static String verifIRI(String iri) {
 		String sortie = "/";
+		System.out.println("DEBUG IRI : " + iri.substring(iri.length() - 1, iri.length() - 1));
+		System.out.println("LONGUEUR :" + iri.length());
+		//System.out.println("DEBUG IRI2 : " + iri.substring(iri.length(), iri.length()+1));
+		System.out.println("DEBUG IRI3 : " + iri.substring(iri.length() - 1, iri.length()));
+		
 		if (!(iri == null || iri.isEmpty())
-				&& !iri.substring(iri.length() - 1, iri.length() - 1).equals(
+				&& !iri.substring(iri.length() - 1, iri.length()).equals(
 						"/")) {
 			return iri + sortie;
 		} else
@@ -667,12 +672,14 @@ public class Principale {
 	 * 
 	 * @param fichierSortie
 	 *            Nom absolu du fichier de sortie
+	 *            typeAppel : 1 -
+	 *            ligne de commande, 2 - menu
 	 * @return Le chemin absolu du fichier. Soit celui saisie par l'utilisateur
 	 *         si correcte, soit celui correspondant à
 	 *         HOME/I2B2/OUTPUT/fichierSortie si seul le nom du fichier a été
 	 *         saisie, soit arrêt du programme si chemin absolu incorrecte.
 	 */
-	public static String verifFichierSortie(String fichierSortie) {
+	public static String verifFichierSortie(String fichierSortie, int typeAppel) {
 
 		String sortie = "";
 		// On regarde si le nom comporte des caractères séparateur
@@ -685,9 +692,17 @@ public class Principale {
 					fichierSortie.lastIndexOf(FILE_SEPARATOR) + 1);
 			// Si le chemin n'existe pas, on remonte une erreur
 			if (!new File(cheminFichier).exists()) {
+				if (typeAppel == 1) {
 				System.err.println("Le chemin du fichier de sortie indiqué ("
 						+ fichierSortie + ") n'existe pas.");
 				System.exit(1);
+				}else
+				{
+					System.out.println("Le chemin du fichier de sortie indiqué ("
+							+ fichierSortie + ") n'existe pas.");
+					System.out.println("Saisissez de nouveau le nom du fichier : ");
+					sortie = checkFile(2);
+				}
 			} else {
 				sortie = fichierSortie;
 			}
