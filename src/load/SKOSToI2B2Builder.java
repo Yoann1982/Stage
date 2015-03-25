@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
@@ -57,19 +56,15 @@ public class SKOSToI2B2Builder extends Builder {
 		String prefLabel = getAnnotation(individu, prefixSKOS, "prefLabel");
 		String basecode = getAnnotation(individu, prefixOnto, "C_BASECODE");
 
-		WordUtils wordUtils = new WordUtils();
 		
 		// Retraitement de cPath:
 		// Ajout des majuscules
-		String hierarchieModif = wordUtils.capitalize(hierarchie);
+		String hierarchieModif = WordUtils.capitalize(hierarchie);
+
+		// Suppression des blancs
+		hierarchieModif = hierarchieModif.replaceAll("[\\s]","");
 		
-		// Suppression des caractères spéciaux
-		
-		
-		System.out.println("DEBUG C PATH AVANT : " + hierarchie);
-		System.out.println("DEBUG APRES :" +  wordUtils.capitalize(hierarchie));
-		
-		String cPath = hierarchie + "\\";
+		String cPath = hierarchieModif + "\\";
 		String cSymbol = prefLabel;
 		String tooltip = cPath + cSymbol;
 		String fullname = cPath + cSymbol + "\\";
