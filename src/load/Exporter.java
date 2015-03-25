@@ -1,11 +1,13 @@
 package load;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import Param.Param;
+
 
 /**
  * Cette classe contient les méthodes permettant de préparer les Metadata pour
@@ -19,19 +21,10 @@ public class Exporter {
 
 	protected List<FormatTable> listeFormat = new ArrayList<FormatTable>();
 	protected String retourChariot = System.lineSeparator();
-	protected String home = System.getProperty("user.home");
-	protected String repertoireErreur = home
-			+ System.getProperty("file.separator") + "I2B2"
-			+ System.getProperty("file.separator") + "ERREUR"
-			+ System.getProperty("file.separator");
-
-	public void checkRepertoire(String repertoire) {
-		if (!new File(repertoire).exists()) {
-			// Créer le dossier avec tous ses parents
-			new File(repertoire).mkdirs();
-		}
-	}
-
+	
+	protected String repertoireErreur = Param.REPERTOIRE_ERREUR;
+	protected String repertoireParam =  Param.REPETOIRE_PARAM;
+	
 	public String entoureGuillemet(Object valeur) {
 
 		String sortie = "";
@@ -121,7 +114,7 @@ public class Exporter {
 
 		int taille = -1;
 		if (type != null) {
-			if (type.toLowerCase().contains("VARCHAR2".toLowerCase())
+			if (type.toLowerCase().contains("VARCHAR".toLowerCase())
 					|| type.toLowerCase().contains("CHAR".toLowerCase())) {
 
 				taille = Integer.parseInt(type.substring(type.indexOf("(") + 1,
@@ -139,7 +132,8 @@ public class Exporter {
 				 * m.group(0)); }
 				 */
 
-			} else if (type.toLowerCase().contains("NUMBER".toLowerCase())) {
+			} else if (type.toLowerCase().contains("NUMBER".toLowerCase())
+					|| type.toLowerCase().contains("NUMERIC".toLowerCase())) {
 				taille = Integer.parseInt(type.substring(type.indexOf("(") + 1,
 						type.indexOf(",")));
 			}
@@ -152,15 +146,19 @@ public class Exporter {
 
 		String typeSortie = null;
 		if (type != null) {
-			if (type.toLowerCase().contains("VARCHAR2".toLowerCase()))
+			if (type.toLowerCase().contains("VARCHAR".toLowerCase()))
 				typeSortie = "String";
 			else if (type.toLowerCase().contains("DATE".toLowerCase()))
 				typeSortie = "Date";
 			else if (type.toLowerCase().contains("NUMBER".toLowerCase()))
 				typeSortie = "Integer";
+			else if (type.toLowerCase().contains("NUMERIC".toLowerCase()))
+				typeSortie = "Integer";
 			else if (type.toLowerCase().contains("CHAR".toLowerCase()))
 				typeSortie = "String";
 			else if (type.toLowerCase().contains("CLOB".toLowerCase()))
+				typeSortie = "String";
+			else if (type.toLowerCase().contains("TEXT".toLowerCase()))
 				typeSortie = "String";
 		} else
 			System.err.println("Erreur : le format de la colonne est inconnu.");
@@ -259,5 +257,4 @@ public class Exporter {
 		}
 		return ligneErreur;
 	}
-
 }

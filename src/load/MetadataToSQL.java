@@ -68,7 +68,6 @@ public class MetadataToSQL extends Exporter {
 			fichier = writer;
 			try {
 				// Préparation fichier d'erreur
-				checkRepertoire(repertoireErreur);
 				fichierKO = new FileWriter(nomFichierKO);
 			} catch (IOException e) {
 				System.err.println("Erreur lors de la génération du FileWriter du fichier d'erreurs.");

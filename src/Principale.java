@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
+import Param.Param;
 import load.SKOSToI2B2;
 import transco.OWLToSKOS;
 import transco.SKOSToOWL;
@@ -25,11 +26,18 @@ public class Principale {
 
 	private static HashMap<Integer, Integer> mapArgFacultatif = new HashMap<Integer, Integer>();
 
-	protected static String home = System.getProperty("user.home");
-	protected static String repertoireOutput = home
-			+ System.getProperty("file.separator") + "I2B2"
-			+ System.getProperty("file.separator") + "OUTPUT"
-			+ System.getProperty("file.separator");
+	public static final String RETOUR_CHARIOT = Param.RETOUR_CHARIOT;
+	public static final String FILE_SEPARATOR = Param.FILE_SEPARATOR;
+
+	private static final String repertoireOutput = Param.REPERTOIRE_OUTPUT;
+
+	private static final String repertoireErreur = Param.REPERTOIRE_ERREUR;
+
+	private static final String repertoireParam = Param.REPETOIRE_PARAM;
+
+	private static final String fichierParamOracle = Param.FICHIER_PARAM_ORACLE;
+	private static final String fichierParamMySQL = Param.FICHIER_PARAM_MYSQL;
+	private static final String fichierParamPostgreSQL = Param.FICHIER_PARAM_POSTGRESQSL;
 
 	public static void initMapArgument() {
 		// 1 : skos to owl
@@ -278,72 +286,48 @@ public class Principale {
 				break;
 			case "3":
 				args[2] = verifFichierSortie(args[2]);
-				if (!new File(args[4]).exists()) {
-					System.err
-							.println("Erreur : Le fichier indiqué en entrée ("
-									+ args[4] + ") n'existe pas.");
-					System.exit(1);
-				} else {
-					SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
-					parametre = new String[args.length - 2];
-					for (int i = 0; i < args.length - 2; i++) {
-						parametre[i] = args[i + 2];
-					}
-					loaderCSV.createCSV(parametre);
+				args[4] = verifFichierFormat(args[4], 1);
+				SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
+				parametre = new String[args.length - 2];
+				for (int i = 0; i < args.length - 2; i++) {
+					parametre[i] = args[i + 2];
 				}
+				loaderCSV.createCSV(parametre);
 				break;
 			case "4":
 				args[2] = verifFichierSortie(args[2]);
-				if (!new File(args[4]).exists()) {
-					System.err
-							.println("Erreur : Le fichier indiqué en entrée ("
-									+ args[4] + ") n'existe pas.");
-					System.exit(1);
-				} else {
-					SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
-					parametre = new String[args.length - 2];
-					for (int i = 0; i < args.length - 2; i++) {
-						parametre[i] = args[i + 2];
-					}
-					loaderSQL.createSQL(parametre);
+				args[4] = verifFichierFormat(args[4], 1);
+				SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
+				parametre = new String[args.length - 2];
+				for (int i = 0; i < args.length - 2; i++) {
+					parametre[i] = args[i + 2];
 				}
+				loaderSQL.createSQL(parametre);
 				break;
 			case "5":
-				if (!new File(args[6]).exists()) {
-					System.err
-							.println("Erreur : Le fichier indiqué en entrée ("
-									+ args[6] + ") n'existe pas.");
-					System.exit(1);
-				} else {
-					args[2] = verifFichierSortie(args[2]);
-					args[3] = verifFichierSortie(args[3]);
-					SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
-					parametre = new String[args.length - 2];
-					for (int i = 0; i < args.length - 2; i++) {
-						parametre[i] = args[i + 2];
-					}
-					loaderSQLLoader.createSQLLoader(parametre);
+				args[6] = verifFichierFormat(args[6], 1);
+				args[2] = verifFichierSortie(args[2]);
+				args[3] = verifFichierSortie(args[3]);
+				SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
+				parametre = new String[args.length - 2];
+				for (int i = 0; i < args.length - 2; i++) {
+					parametre[i] = args[i + 2];
 				}
+				loaderSQLLoader.createSQLLoader(parametre);
 				break;
 			case "6":
 				if (!(args[2].trim().equals("1") || args[2].trim().equals("2"))) {
-					System.err
-							.println("Erreur : Le mode de chargement saisi ("
-									+ args[2] + ") est incorrect.");
+					System.err.println("Erreur : Le mode de chargement saisi ("
+							+ args[2] + ") est incorrect.");
+					System.exit(1);
 				} else {
-					if (!new File(args[3]).exists()) {
-						System.err
-								.println("Erreur : Le fichier indiqué en entrée ("
-										+ args[3] + ") n'existe pas.");
-						System.exit(1);
-					} else {
-						SKOSToI2B2 loaderTable = new SKOSToI2B2(args[1]);
-						parametre = new String[args.length - 2];
-						for (int i = 0; i < args.length - 2; i++) {
-							parametre[i] = args[i + 2];
-						}
-						loaderTable.loadSQL(parametre);
+					args[3] = verifFichierFormat(args[3], 1);
+					SKOSToI2B2 loaderTable = new SKOSToI2B2(args[1]);
+					parametre = new String[args.length - 2];
+					for (int i = 0; i < args.length - 2; i++) {
+						parametre[i] = args[i + 2];
 					}
+					loaderTable.loadSQL(parametre);
 				}
 				break;
 			default:
@@ -367,6 +351,12 @@ public class Principale {
 	 */
 	public static void main(String[] args) throws Exception {
 		initMapArgument();
+
+		// Vérification de la présence des répertoires de l'application
+		checkRepertoire(repertoireOutput);
+		checkRepertoire(repertoireErreur);
+		checkRepertoire(repertoireParam);
+
 		if (args.length == 0)
 			menu(); // On ouvre le menu
 		else
@@ -486,14 +476,14 @@ public class Principale {
 		String methodeChargement = null;
 
 		System.out.println("Nom du fichier en entrée :");
-		fichierEntree = checkFile(true);
+		fichierEntree = checkFile(1);
 		if (typeFichier != 4) {
 			System.out.println("Nom du fichier en sortie :");
-			fichierSortie = checkFile(false);
+			fichierSortie = checkFile(2);
 		}
 		if (typeFichier == 3) {
 			System.out.println("Nom du fichier CSV à générer :");
-			fichierCSV = checkFile(false);
+			fichierCSV = checkFile(2);
 		}
 		if (typeFichier == 1 || typeFichier == 3) {
 			System.out.println("Caractère de séparation (facultatif) :");
@@ -504,7 +494,7 @@ public class Principale {
 			nomTable = choixUtilisateur();
 		}
 		System.out.println("Nom du fichier format Metadata :");
-		fichierFormat = checkFile(true);
+		fichierFormat = checkFile(3);
 		if (typeFichier == 4) {
 			System.out
 					.println("Méthode de chargement (1 : Insert / 2 : SQLLoader) :");
@@ -547,9 +537,9 @@ public class Principale {
 			System.out
 					.println("===================[     MENU OWL TO SKOS    ]======================");
 		System.out.println("Nom du fichier en entrée :");
-		String fichierEntree = checkFile(true);
+		String fichierEntree = checkFile(1);
 		System.out.println("Nom du fichier en sortie :");
-		String fichierSortie = checkFile(false);
+		String fichierSortie = checkFile(2);
 		System.out.println("Nom de l'IRI (facultatif) :");
 		String iri = choixUtilisateur();
 		iri = verifIRI(iri);
@@ -579,40 +569,38 @@ public class Principale {
 	 * saisie et permet d'effectuer un test d'existence au besoin Le deuxième
 	 * paramètre prend true pour faire le test d'existence, false sinon.
 	 * 
-	 * @param fichierEntree
-	 * @param existence
+	 * @param typeFichier
+	 *            Type de fichier traité : 1 - fichier d'entrée, 2 - Fichier de
+	 *            sortie, 3 - Fichier de paramétrage
 	 */
-	public static String checkFile(boolean existence) {
-		String fichierEntree = choixUtilisateur();
-		if (existence) {
-			if (!new File(fichierEntree).exists()) {
-				System.out.println("Le fichier saisie n'existe pas.");
-				System.out
-						.println("Veuillez-saisir de nouveau le nom du fichier.");
-				fichierEntree = null;
-			}
-		} else {
-			// Vérifie si le fichier est écrit en chemin absolu et si le chemin
-			// existe sinon on écrit dans HOME/I2B2/OUTPUT/
-			fichierEntree = verifFichierSortie(fichierEntree);
-		}
-		while (fichierEntree == null || fichierEntree.trim().isEmpty()) {
-			System.out.println("Veuillez saisir un fichier à lire.");
-			System.out.println("Nom du fichier :");
+	public static String checkFile(int typeFichier) {
+		String fichierEntree = null;
+		do {
 			fichierEntree = choixUtilisateur();
-			if (existence) {
-				if (!new File(fichierEntree).exists()) {
-					System.out.println("Le fichier saisie n'existe pas.");
-					System.out
-							.println("Veuillez-saisir de nouveau le nom du fichier.");
-					fichierEntree = null;
-				}
+			if (fichierEntree == null || fichierEntree.trim().isEmpty()) {
+				System.out.println("Veuillez saisir un fichier à lire.");
+				System.out.println("Nom du fichier :");
 			} else {
-				// Vérifie si le fichier est écrit en chemin absolu et si le
-				// chemin existe sinon on écrit dans HOME/I2B2/OUTPUT/
-				fichierEntree = verifFichierSortie(fichierEntree);
+				if (typeFichier == 1) { // fichier entrée
+					if (!new File(fichierEntree).exists()) {
+						System.out.println("Le fichier saisie n'existe pas.");
+						System.out
+								.println("Veuillez-saisir de nouveau le nom du fichier.");
+						fichierEntree = null;
+					}
+				} else {
+					if (typeFichier == 2) { // fichier Sortie
+						// Vérifie si le fichier est écrit en chemin absolu et
+						// si le
+						// chemin
+						// existe sinon on écrit dans HOME/I2B2/OUTPUT/
+						fichierEntree = verifFichierSortie(fichierEntree);
+					} else { // fichier param
+						fichierEntree = verifFichierFormat(fichierEntree, 2);
+					}
+				}
 			}
-		}
+		} while (fichierEntree == null || fichierEntree.trim().isEmpty());
 		return fichierEntree;
 	}
 
@@ -663,7 +651,7 @@ public class Principale {
 	 */
 	public static String verifIRI(String iri) {
 		String sortie = "/";
-		if (iri != null
+		if (!(iri == null || iri.isEmpty())
 				&& !iri.substring(iri.length() - 1, iri.length() - 1).equals(
 						"/")) {
 			return iri + sortie;
@@ -688,13 +676,13 @@ public class Principale {
 
 		String sortie = "";
 		// On regarde si le nom comporte des caractères séparateur
-		if (fichierSortie.contains(System.getProperty("file.separator"))) {
+		if (fichierSortie.contains(FILE_SEPARATOR)) {
 			// L'utilisateur a entré un chemin absolu
 			// On vérifie si le chemin exist
 			// String nomFichier =
 			// fichierSortie.substring(fichierSortie.lastIndexOf(System.getProperty("file.separator"))+1);
-			String cheminFichier = fichierSortie.substring(0, fichierSortie
-					.lastIndexOf(System.getProperty("file.separator")) + 1);
+			String cheminFichier = fichierSortie.substring(0,
+					fichierSortie.lastIndexOf(FILE_SEPARATOR) + 1);
 			// Si le chemin n'existe pas, on remonte une erreur
 			if (!new File(cheminFichier).exists()) {
 				System.err.println("Le chemin du fichier de sortie indiqué ("
@@ -726,4 +714,41 @@ public class Principale {
 		}
 	}
 
+	/**
+	 * Cette méthode vérifie si la variable fichierFormat contient un fichier ou
+	 * un type de base de données (Oracle, PostgreSQL, MySQL). Si le type d'une
+	 * base est en entrée, fichierFormat sera écrasé par le nom du fichier de
+	 * paramétrage associé par défaut.
+	 * 
+	 * @param fichierFormat
+	 *            : nom de fichier ou type de base de données. typeAppel : 1 -
+	 *            ligne de commande, 2 - menu
+	 * @return
+	 */
+	public static String verifFichierFormat(String fichierFormat, int typeAppel) {
+
+		if (fichierFormat.equalsIgnoreCase("Oracle")) {
+			fichierFormat = fichierParamOracle;
+		} else if (fichierFormat.equalsIgnoreCase("MySQL")) {
+			fichierFormat = fichierParamMySQL;
+		} else if (fichierFormat.equalsIgnoreCase("PostgreSQL")) {
+			fichierFormat = fichierParamPostgreSQL;
+		}
+
+		if (!new File(fichierFormat).exists()) {
+			if (typeAppel == 1) {
+				System.err.println("Erreur : Le fichier indiqué en entrée ("
+						+ fichierFormat + ") n'existe pas.");
+
+				System.exit(1);
+			} else {
+				System.out.println("Erreur : Le fichier indiqué en entrée ("
+						+ fichierFormat + ") n'existe pas.");
+				System.out
+						.println("Veuillez saisir de nouveau le format (fichier de paramétrage ou type de BDD).");
+				fichierFormat = checkFile(3);
+			}
+		}
+		return fichierFormat;
+	}
 }

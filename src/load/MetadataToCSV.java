@@ -89,7 +89,6 @@ public class MetadataToCSV extends Exporter {
 		try {
 
 			fichier = writer;
-			checkRepertoire(repertoireErreur);
 			try {
 				fichierKO = new FileWriter(nomFichierKO);
 			} catch (IOException e) {
