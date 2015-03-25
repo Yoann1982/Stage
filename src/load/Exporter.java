@@ -20,7 +20,7 @@ import Param.Param;
 public class Exporter {
 
 	protected List<FormatTable> listeFormat = new ArrayList<FormatTable>();
-	protected String retourChariot = System.lineSeparator();
+	protected String retourChariot = Param.RETOUR_CHARIOT;
 	
 	protected String repertoireErreur = Param.REPERTOIRE_ERREUR;
 	protected String repertoireParam =  Param.REPETOIRE_PARAM;
