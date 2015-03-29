@@ -160,6 +160,8 @@ public class MetadataToCSV extends Exporter {
 			String colonne = format.getColumn();
 			// On récupère la valeur correspondant à la colonne
 			Object valeur = meta.get(colonne);
+			// On récupère sa taile
+			int taille =  format.getTaille();
 			// On vérifie son format
 			codeErreur = checkFormat(format, valeur);
 			if (codeErreur == 0)
@@ -174,6 +176,17 @@ public class MetadataToCSV extends Exporter {
 					else
 						ligne += separator + "current_timestamp";
 				} else {
+					// On exporte tout de même l'enregistrement
+					// si le problème est un problème de taille, on tronque le champ
+					if (codeErreur == 2) {
+						valeur = valeur.toString().substring(0, taille);
+					}
+					// On ajoute à la ligne la valeur de la colonne
+					if (cpt == 0)
+						ligne += stringNull(valeur);
+					else
+						ligne += separator + stringNull(valeur);
+					// on l'envoie en // dans le fichier des erreurs
 					formatOK = false;
 					// On enrichie la liste d'erreur qui sera exportée dans le
 					// fichier des erreurs.

@@ -57,15 +57,20 @@ public class SKOSToI2B2Builder extends Builder {
 		String basecode = getAnnotation(individu, prefixOnto, "C_BASECODE");
 
 		
-		// Retraitement de cPath:
+		// Retraitement de hierarchie:
 		// Ajout des majuscules
 		String hierarchieModif = WordUtils.capitalize(hierarchie);
 
-		// Suppression des blancs
-		hierarchieModif = hierarchieModif.replaceAll("[\\s]","");
+			
+		// Suppression des caractères spéciaux
+		hierarchieModif = hierarchieModif.replaceAll("[^\\w\\\\]","");
+		
+		// Même opération pour prefLabel
+		String prefLabelModif = WordUtils.capitalize(prefLabel);
+		prefLabelModif = prefLabelModif.replaceAll("[^\\w\\\\]","");
 		
 		String cPath = hierarchieModif + "\\";
-		String cSymbol = prefLabel;
+		String cSymbol = prefLabelModif;
 		String tooltip = cPath + cSymbol;
 		String fullname = cPath + cSymbol + "\\";
 		String nomFichier = "";
@@ -73,7 +78,7 @@ public class SKOSToI2B2Builder extends Builder {
 
 		metadata.put("C_HLEVEL", niveau);
 		metadata.put("C_FULLNAME", fullname);
-		metadata.put("C_NAME", prefLabel);
+		metadata.put("C_NAME", prefLabelModif);
 		metadata.put("C_SYNONYM_CD", "N");
 		if (isNoeud)
 			// metadata.setcVisualAttributes("FA");
