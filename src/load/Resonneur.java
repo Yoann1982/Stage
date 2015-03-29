@@ -123,8 +123,6 @@ public class Resonneur {
 		InferredOntologyGenerator iog = new InferredOntologyGenerator(hermit,
 				gens);
 		iog.fillOntology(m, infOnt);
-		WriteOntology writer = new WriteOntology(infOnt);
-		writer.writeFile("C:\\Users\\y.keravec\\Documents\\BERGONIE\\OUT\\RESONNEUR.owl",new RDFXMLOntologyFormat());
 		return infOnt;
 	}
 
