@@ -88,15 +88,9 @@ public class SKOSBuilder extends Builder {
 				// On lui attribut le prefix de l'ontologie
 				// / SI l'IRI est complète, on conserve son IRI.
 
-				OWLNamedIndividual individuConcept = null;
-				if (cls.getIRI().toString().toLowerCase().contains("http")) {
-					individuConcept = addIndividual(prefixSKOS, "Concept",
-							cls.getIRI());
-				} else {
-					// On lui attribue le prefix de l'ontologie
-					individuConcept = addIndividual(prefixSKOS, "Concept",
-							prefixOnto, iriClasse);
-				}
+				OWLNamedIndividual individuConcept = addIndividual(prefixSKOS,
+						"Concept", cls.getIRI());
+
 				// 2 - On récupère les sous-classes de la classe référence
 				// Si la liste à une taille de 0, c'est que la classe n'est mère
 				// d'aucune autre
@@ -128,22 +122,11 @@ public class SKOSBuilder extends Builder {
 						OWLNamedIndividual individuConceptAssocie = fact
 								.getOWLNamedIndividual(iriClasseFille);
 
-						// On construit l'individu avec l'IRI paramétré (elle
-						// peut être différente de l'IRI dans le fichir lu
-						OWLNamedIndividual individuConceptAssocieNew = fact
-								.getOWLNamedIndividual(IRI.create(prefixOnto
-										.getDefaultPrefix()
-										+ iriClasseFille.toURI().getFragment()));
-
 						// On crée la relation Broader avec les noms
 						// correspondant à l'IRI en paramètre
 						// Si
 
-						if (aPrefixDiff)
-							addBroader(individuConceptAssocie, individuConcept);
-						else
-							addBroader(individuConceptAssocieNew,
-									individuConcept);
+						addBroader(individuConceptAssocie, individuConcept);
 
 						// On ajoute le prefLabel au concept Père
 						addPrefLabel(individuConcept, individuConcept.getIRI());
@@ -152,22 +135,16 @@ public class SKOSBuilder extends Builder {
 						// où l'IRI peut être différente de l'IRI en paramètre
 						// on utilise l'individu avec son IRI correspondant à
 						// l'ontologue d'origine et on indique son IRI cible
-						if (aPrefixDiff) {
-							addPrefLabel(individuConceptAssocie,
-									individuConceptAssocie.getIRI());
-						} else {
-							addPrefLabel(individuConceptAssocie,
-									individuConceptAssocieNew.getIRI());
-						}
+
+						addPrefLabel(individuConceptAssocie,
+								individuConceptAssocie.getIRI());
 
 						// On ajoute le lien avec le schéma pour le concept Père
 						addScheme(individuConcept, scheme);
 						// On ajoute le lien avec le schéma pour le concept fils
-						if (aPrefixDiff) {
-							addScheme(individuConceptAssocie, scheme);
-						} else {
-							addScheme(individuConceptAssocieNew, scheme);
-						}
+
+						addScheme(individuConceptAssocie, scheme);
+
 					}
 				}
 			}
