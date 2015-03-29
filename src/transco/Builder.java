@@ -443,6 +443,16 @@ public class Builder {
 		addClassAssertion(prefixClasse, classe, ind);
 		return ind;
 	}
+	
+	public OWLNamedIndividual addIndividual(PrefixManager prefixClasse,
+			String classe, IRI iri) {
+
+		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+		OWLDataFactory fact = manager.getOWLDataFactory();
+		OWLNamedIndividual ind = fact.getOWLNamedIndividual(iri);
+		addClassAssertion(prefixClasse, classe, ind);
+		return ind;
+	}
 
 	/**
 	 * Cette méthode crée une relation hasBroader entre le concept père et le

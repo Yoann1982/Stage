@@ -651,10 +651,6 @@ public class Principale {
 	 */
 	public static String verifIRI(String iri) {
 		String sortie = "/";
-		System.out.println("DEBUG IRI : " + iri.substring(iri.length() - 1, iri.length() - 1));
-		System.out.println("LONGUEUR :" + iri.length());
-		//System.out.println("DEBUG IRI2 : " + iri.substring(iri.length(), iri.length()+1));
-		System.out.println("DEBUG IRI3 : " + iri.substring(iri.length() - 1, iri.length()));
 		
 		if (!(iri == null || iri.isEmpty())
 				&& !iri.substring(iri.length() - 1, iri.length()).equals(

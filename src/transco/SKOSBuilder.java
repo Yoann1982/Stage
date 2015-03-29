@@ -33,8 +33,9 @@ public class SKOSBuilder extends Builder {
 	}
 
 	/**
-	 * Cette méthode permet de créer l'ontologie SKOS cible à partir de l'ontologie OWL d'origine.
-	 * L'IRI est récupérée à partir du contenu du fichier en entrée.
+	 * Cette méthode permet de créer l'ontologie SKOS cible à partir de
+	 * l'ontologie OWL d'origine. L'IRI est récupérée à partir du contenu du
+	 * fichier en entrée.
 	 */
 	public void createSKOSOntologie() {
 		// On récupère l'iri de l'ontologie cible
@@ -44,8 +45,8 @@ public class SKOSBuilder extends Builder {
 
 	/**
 	 * Cette méthode permet de créer l'ontologie SKOS cible à partir de
-	 * l'ontologie OWL d'origine.
-	 * L'IRI considéré est celle indiquée en paramètre d'entrée.
+	 * l'ontologie OWL d'origine. L'IRI considéré est celle indiquée en
+	 * paramètre d'entrée.
 	 */
 	public void createSKOSOntologie(IRI iriProject) {
 
@@ -77,51 +78,97 @@ public class SKOSBuilder extends Builder {
 
 			String iriClasse = cls.getIRI().toURI().getFragment();
 
-			// 1 - Transformation en SKOS:Concept
-			OWLNamedIndividual individuConcept = addIndividual(prefixSKOS,
-					"Concept", prefixOnto, iriClasse);
+			// On ne traite pas la classe Thing
+			if (!fact.getOWLThing().getIRI().equals(cls.getIRI())) {
 
-			// 2 - On récupère les sous-classes de la classe référence
-			// Si la liste à une taille de 0, c'est que la classe n'est mère
-			// d'aucune autre
-			Set<OWLClassExpression> listeClasseExpression = cls
-					.getSubClasses(originalOntology);
+				// 1 - Transformation en SKOS:Concept
 
-			// Si la liste de sous classe est vide, on ne traite pas (c'est que
-			// Concept n'est père d'aucun autre concept
+				// Si l'IRI n'est pas complète, c'est que l'entité correspond à
+				// l'IRI de l'ontologie.
+				// On lui attribut le prefix de l'ontologie
+				// / SI l'IRI est complète, on conserve son IRI.
 
-			if (listeClasseExpression.size() != 0) {
+				OWLNamedIndividual individuConcept = null;
+				if (cls.getIRI().toString().toLowerCase().contains("http")) {
+					individuConcept = addIndividual(prefixSKOS, "Concept",
+							cls.getIRI());
+				} else {
+					// On lui attribue le prefix de l'ontologie
+					individuConcept = addIndividual(prefixSKOS, "Concept",
+							prefixOnto, iriClasse);
+				}
+				// 2 - On récupère les sous-classes de la classe référence
+				// Si la liste à une taille de 0, c'est que la classe n'est mère
+				// d'aucune autre
+				Set<OWLClassExpression> listeClasseExpression = cls
+						.getSubClasses(originalOntology);
 
-				// On va pour chaque relation SubClassOf retrouvée créer un
-				// équivalent SKOS:Broader
-				for (OWLClassExpression curseur : listeClasseExpression) {
-					// On veut récuperer la classe associée à la relation
+				// Si la liste de sous classe est vide, on ne traite pas (c'est
+				// que
+				// Concept n'est père d'aucun autre concept
+				// cls.getIRI().toURI().getFragment());
 
-					OWLClass curseurClasse = curseur.asOWLClass();
+				if (listeClasseExpression.size() != 0) {
 
-					// On crée l'individu correspondant
-					//OWLNamedIndividual individuConceptAssocie = fact
-					//		.getOWLNamedIndividual(curseurClasse.getIRI());
-					OWLNamedIndividual individuConceptAssocie = fact
-							.getOWLNamedIndividual(curseurClasse.getIRI());
-					
-					// On construit l'individu avec l'IRI paramétré (elle peut être différente de l'IRI dans le fichir lu
-					OWLNamedIndividual individuConceptAssocieNew = fact
-							.getOWLNamedIndividual(IRI.create(prefixOnto.getDefaultPrefix() + curseurClasse.getIRI().toURI().getFragment()));
-					
-					// On crée la relation Broader avec les noms correspondant à l'IRI en paramètre
-					addBroader(individuConceptAssocieNew, individuConcept);
-					// On ajoute le prefLabel au concept Père
-					//addPrefLabel(individuConcept, individuConcept.getIRI());
-					// On ajoute le prefLable au concept fils
-					// On a besoin de rechercher dans l'ontologie d'origine où l'IRI peut être différente de l'IRI en paramètre
-					// on utilise l'individu avec son IRI correspondant à l'ontologue d'origine et on indique son IRI cible
-					addPrefLabel(individuConceptAssocie, individuConceptAssocieNew.getIRI());
-					// On ajoute le lien avec le schéma pour le concept Père
-					addScheme(individuConcept, scheme);
-					// On ajoute le lien avec le schéma pour le concept fils
-					addScheme(individuConceptAssocieNew, scheme);
-					// }
+					// On va pour chaque relation SubClassOf retrouvée créer un
+					// équivalent SKOS:Broader
+					for (OWLClassExpression curseur : listeClasseExpression) {
+						// On veut récuperer la classe associée à la relation
+
+						OWLClass curseurClasse = curseur.asOWLClass();
+
+						// On crée l'individu correspondant
+						// OWLNamedIndividual individuConceptAssocie = fact
+						// .getOWLNamedIndividual(curseurClasse.getIRI());
+
+						IRI iriClasseFille = curseurClasse.getIRI();
+						// iriClasseFille.toString());
+						boolean aPrefixDiff = iriClasseFille.toString()
+								.toLowerCase().contains("http");
+						OWLNamedIndividual individuConceptAssocie = fact
+								.getOWLNamedIndividual(iriClasseFille);
+
+						// On construit l'individu avec l'IRI paramétré (elle
+						// peut être différente de l'IRI dans le fichir lu
+						OWLNamedIndividual individuConceptAssocieNew = fact
+								.getOWLNamedIndividual(IRI.create(prefixOnto
+										.getDefaultPrefix()
+										+ iriClasseFille.toURI().getFragment()));
+
+						// On crée la relation Broader avec les noms
+						// correspondant à l'IRI en paramètre
+						// Si
+
+						if (aPrefixDiff)
+							addBroader(individuConceptAssocie, individuConcept);
+						else
+							addBroader(individuConceptAssocieNew,
+									individuConcept);
+
+						// On ajoute le prefLabel au concept Père
+						addPrefLabel(individuConcept, individuConcept.getIRI());
+						// On ajoute le prefLable au concept fils
+						// On a besoin de rechercher dans l'ontologie d'origine
+						// où l'IRI peut être différente de l'IRI en paramètre
+						// on utilise l'individu avec son IRI correspondant à
+						// l'ontologue d'origine et on indique son IRI cible
+						if (aPrefixDiff) {
+							addPrefLabel(individuConceptAssocie,
+									individuConceptAssocie.getIRI());
+						} else {
+							addPrefLabel(individuConceptAssocie,
+									individuConceptAssocieNew.getIRI());
+						}
+
+						// On ajoute le lien avec le schéma pour le concept Père
+						addScheme(individuConcept, scheme);
+						// On ajoute le lien avec le schéma pour le concept fils
+						if (aPrefixDiff) {
+							addScheme(individuConceptAssocie, scheme);
+						} else {
+							addScheme(individuConceptAssocieNew, scheme);
+						}
+					}
 				}
 			}
 		}
