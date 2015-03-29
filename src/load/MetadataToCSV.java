@@ -75,8 +75,8 @@ public class MetadataToCSV extends Exporter {
 	 * table Metadata. La construction du fichier CSV s'effetue sur la base du
 	 * contenu du fichier de format.
 	 * 
-	 * @param fichierCSV
-	 * @param listeMetadata
+	 * @param writer @see FileWriter
+	 * @param listeMetadata @see MetaData
 	 * @param separator
 	 * @param fichierFormat
 	 */

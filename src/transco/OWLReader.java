@@ -38,7 +38,7 @@ public class OWLReader {
 	/**
 	 * Setter de l'attribut format.
 	 * 
-	 * @param @see OWLOntologyFormat format
+	 * @param format @see OWLOntologyFormat format
 	 */
 	public void setFormat(OWLOntologyFormat format) {
 		this.format = format;

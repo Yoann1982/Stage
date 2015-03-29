@@ -734,7 +734,7 @@ public class Principale {
 	 * @param fichierFormat
 	 *            : nom de fichier ou type de base de données. typeAppel : 1 -
 	 *            ligne de commande, 2 - menu
-	 * @return
+	 * @return Nom du fichier Format
 	 */
 	public static String verifFichierFormat(String fichierFormat, int typeAppel) {
 

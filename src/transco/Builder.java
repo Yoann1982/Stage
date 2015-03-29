@@ -72,7 +72,7 @@ public class Builder {
 	/**
 	 * Setter de l'attribut format
 	 * 
-	 * @param @see OWLOntologyFormat format
+	 * @param format de l'ontologie @see OWLOntologyFormat format
 	 */
 	public void setFormat(OWLOntologyFormat format) {
 		this.format = format;
@@ -92,7 +92,7 @@ public class Builder {
 	 * Setter de l'attribut prefixOnto. Il correspond au PrefixManager de
 	 * l'ontologie à construire.
 	 * 
-	 * @param @PrefixManager prefixOnto
+	 * @param prefixOnto @PrefixManager 
 	 */
 	public void setPrefixOnto(PrefixManager prefixOnto) {
 		this.prefixOnto = prefixOnto;
@@ -112,7 +112,7 @@ public class Builder {
 	 * Setter de l'attribut prefixSKOS. Le PrefixManager correspond au préfixe
 	 * SKOS.
 	 * 
-	 * @param @see PrefixManager prefixSKOS
+	 * @param prefixSKOS @see PrefixManager 
 	 */
 	public void setPrefixSKOS(PrefixManager prefixSKOS) {
 		this.prefixSKOS = prefixSKOS;
@@ -426,12 +426,12 @@ public class Builder {
 	 * 
 	 * @param prefixClasse
 	 * @see PrefixManager de la classe de l'individu à ajouter.
-	 * @param class nom de la classe de l'individu à ajouter.
+	 * @param classe nom de la classe de l'individu à ajouter.
 	 * @param prefixIndividu
 	 * @see PrefixManager de l'individu à ajouter.
-	 * @param name
+	 * @param nameIndividu
 	 *            : Nom de l'individu à ajouter.
-	 * @return @see OWLNamedIndividual L'individu ajouté.
+	 * @return L'individu ajouté. @see OWLNamedIndividual 
 	 */
 	public OWLNamedIndividual addIndividual(PrefixManager prefixClasse,
 			String classe, PrefixManager prefixIndividu, String nameIndividu) {
@@ -486,8 +486,8 @@ public class Builder {
 	 * correspondant à l'IRI en entrée existe. Si aucun préfixe n'est retrouvé,
 	 * un préfixe est ajouté au format.
 	 * 
-	 * @param @IRI iriProject IRI recherchée
-	 * @param @prefixEntree Valeur du préfixe ajouté si l'IRI n'est pas retrouvé
+	 * @param iriProject @see IRI  IRI recherchée
+	 * @param prefixEntree @see prefixEntree Valeur du préfixe ajouté si l'IRI n'est pas retrouvé
 	 *        dans le format.
 	 */
 	public void addPrefix(IRI iriProject, String prefixEntree) {
@@ -634,7 +634,7 @@ public class Builder {
 	 * l'URI en entrée Si aucune classe n'est retrouvée, elle est rattachée à
 	 * Thing (SubClassOf).
 	 * 
-	 * @param uriAAjouter
+	 * @param classeRelated @see OWLClass
 	 * @see URI
 	 */
 	public void addToThing(OWLClass classeRelated) {
@@ -769,9 +769,9 @@ public class Builder {
 	/**
 	 * Cette méthode permet de retrouver une annotation d'un individu avec une IRI et le nom de la balise
 	 * @param individu
-	 * @param iri
+	 * @param prefix @see PrefixManager
 	 * @param balise
-	 * @return
+	 * @return Annotation d'un individu.
 	 */
 	public String getAnnotation(OWLIndividual individu, PrefixManager prefix, String balise) {
 		OWLAnnotationValue annotValeur = null;
@@ -819,7 +819,7 @@ public class Builder {
 	 * @param op
 	 * @param individu
 	 * @param prefix
-	 * @return
+	 * @return List<OWLIndividual> La liste des individus liés à l'individu en entrée par la relation op
 	 */
 	public List<OWLIndividual> findIndividualsByObjectProperty(String op,
 			OWLIndividual individu, PrefixManager prefix) {
@@ -852,7 +852,7 @@ public class Builder {
 	 * entrée.
 	 * 
 	 * @param individu
-	 * @return
+	 * @return List<OWLIndividual> Liste d'individu narrower de l'individu en entrée.
 	 */
 	public List<OWLIndividual> getNarrowers(OWLIndividual individu) {
 

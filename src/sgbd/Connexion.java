@@ -175,7 +175,6 @@ public class Connexion {
 	 * @param r
 	 *            : requête SQL.
 	 * @return un ResultSet
-	 * @see Requete
 	 */
 	public ResultSet executerRequete(String r) {
 
