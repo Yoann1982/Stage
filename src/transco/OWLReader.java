@@ -63,10 +63,10 @@ public class OWLReader {
 	}
 
 	/**
-	 * Cette méthode vérifie s'il y a des prefix "vide" dans l'attribut format
-	 * et les supprime de celui-ci.
-	 */
-	public void cleanFormat() {
+	 * Cette méthode permet de supprimer un prefix de la liste
+	 * 
+	 * */
+	public void cleanFormat(String prefixEntree) {
 
 		if (format != null) {
 
@@ -79,7 +79,7 @@ public class OWLReader {
 				Set<String> listePrefix = formatCopy
 						.asPrefixOWLOntologyFormat().getPrefixNames();
 				for (String prefix : listePrefix) {
-					if (!prefix.equals(":")) {
+					if (!prefix.equals(prefixEntree)) {
 						// On le remet dans le format
 						format.asPrefixOWLOntologyFormat().setPrefix(
 								prefix,
@@ -118,37 +118,54 @@ public class OWLReader {
 			format = manager.getOntologyFormat(ontology);
 
 			// on supprime les prefix vide
-			cleanFormat();
+			cleanFormat(":");
 
 			HashSet<OWLOntology> listeOnto = new HashSet<OWLOntology>();
 			listeOnto.add(ontology);
-			
+
 			// On remplace l'iri des entité par l'IRI en entrée
-			
+
 			// On vérifie s'il s'agit d'un format qui accepte les prefixes.
 			// Dans ce cas, on va récupérer la liste de préfix et vérifier
 			// S'il y en a un qui correspond à l'IRI indiquée en paramètre.
 			// Si il n'y a pas de prefix associé, on l'ajoute
 
-			if (format.isPrefixOWLOntologyFormat()) {
-				Set<String> listePrefix = format.asPrefixOWLOntologyFormat()
-						.getPrefixNames();
-				boolean prefixPresent = false;
-				for (String prefix : listePrefix) {
-					if (IRI.create(iriOnto).equals(
-							format.asPrefixOWLOntologyFormat().getIRI(prefix))) {
-						prefixPresent = true;
-						break;
+			// On ajoute le caratère # s'il manque
+			if (!iriOnto.contains("#")) {
+				iriOnto += "#";
+
+				if (format.isPrefixOWLOntologyFormat()) {
+					Set<String> listePrefix = format
+							.asPrefixOWLOntologyFormat().getPrefixNames();
+					boolean prefixPresent = false;
+					boolean memePrefix = true;
+					String prefixASupprimer = null;
+					for (String prefix : listePrefix) {
+						if (IRI.create(iriOnto).equals(
+								format.asPrefixOWLOntologyFormat().getIRI(
+										prefix))) {
+							prefixPresent = true;
+							// On vérifie si le prefix à la même valeur que la
+							// valeur en entrée.
+							// Si ce n'est pas le cas on met à jour cette valeur
+							if (!prefix.equals(prefixEntree)) {
+								memePrefix = false;
+								prefixASupprimer = prefix;
+							}
+							break;
+						}
 					}
-				}
-				// Si on n'a pas retrouvé de prefix associé, on l'ajoute
-				if (!prefixPresent) {
-					if (iriOnto.contains("#")) {
+					// Si on n'a pas retrouvé de prefix associé ou si on en a
+					// retrouvé un mais qu'il ne correspond pas à celui en
+					// entrée
+					// on l'ajoute
+					if (!(prefixPresent && memePrefix)) {
+						if (prefixPresent && !memePrefix) {
+							// On supprime l'ancien prefix
+							cleanFormat(prefixASupprimer);
+						}
 						format.asPrefixOWLOntologyFormat().setPrefix(
 								prefixEntree, iriOnto);
-					} else {
-						format.asPrefixOWLOntologyFormat().setPrefix(
-								prefixEntree, iriOnto + "#");
 					}
 				}
 			}
@@ -176,7 +193,8 @@ public class OWLReader {
 
 	/**
 	 * Cette méthode permet de charger en mémoire une ontologie à partir d'un
-	 * fichier OWL. L'IRI n'est pas connu et sera récupéré par parcours du contenu du fichier.
+	 * fichier OWL. L'IRI n'est pas connu et sera récupéré par parcours du
+	 * contenu du fichier.
 	 * 
 	 * @param nomFichier
 	 *            Fichier OWL.
