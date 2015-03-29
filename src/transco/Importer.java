@@ -7,6 +7,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
@@ -19,11 +20,28 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 public class Importer {
 
 	private OWLOntology ontology;
+	private OWLOntologyFormat format;
 	
 	public Importer (OWLOntology onto) {
 		this.ontology = onto;
+		this.format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
 	}
 	
+	public void setFormat(OWLOntologyFormat format) {
+		this.format = format;
+	}
+
+
+
+	public OWLOntologyFormat getFormat() {
+		return format;
+	}
+
+
+
+
+
+
 	/**
 	 * Cette méthode permet d'importer une ontologie externe.
 	 * @param ontoExterne L'ontologie à importer.

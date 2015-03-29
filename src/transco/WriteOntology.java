@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -119,4 +120,14 @@ public class WriteOntology {
 				format.asPrefixOWLOntologyFormat());
 		writeFile(nomFichier, rdfXMLFormat);
 	}
+	
+	public void writeFileOWLXML(String nomFichier, OWLOntologyFormat format) {
+
+		OWLXMLOntologyFormat owlXMLFormat = new OWLXMLOntologyFormat();
+
+		owlXMLFormat.asPrefixOWLOntologyFormat().copyPrefixesFrom(
+				format.asPrefixOWLOntologyFormat());
+		writeFile(nomFichier, owlXMLFormat);
+	}
+	
 }

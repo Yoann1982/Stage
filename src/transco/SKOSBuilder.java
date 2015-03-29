@@ -56,6 +56,9 @@ public class SKOSBuilder extends Builder {
 		IRI iriProjectDiese = IRI.create(iriProject.toString() + "#");
 
 		addPrefix(iriProjectDiese, "bcbs");
+		
+		addPrefix(IRI.create(iriSKOS), "skos");
+		//format.asPrefixOWLOntologyFormat().copyPrefixesFrom(prefixSKOS);
 
 		// On initialise l'ontologie cible.
 		initTargetOnto(iriProject);
@@ -76,7 +79,6 @@ public class SKOSBuilder extends Builder {
 			 * relation de type broader entre les deux concepts
 			 */
 
-			String iriClasse = cls.getIRI().toURI().getFragment();
 
 			// On ne traite pas la classe Thing
 			if (!fact.getOWLThing().getIRI().equals(cls.getIRI())) {
@@ -117,8 +119,7 @@ public class SKOSBuilder extends Builder {
 
 						IRI iriClasseFille = curseurClasse.getIRI();
 						// iriClasseFille.toString());
-						boolean aPrefixDiff = iriClasseFille.toString()
-								.toLowerCase().contains("http");
+
 						OWLNamedIndividual individuConceptAssocie = fact
 								.getOWLNamedIndividual(iriClasseFille);
 

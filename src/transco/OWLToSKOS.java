@@ -1,6 +1,7 @@
 package transco;
 
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntologyFormat;
 
 /**
  * Cette classe gère le transcodage OWL vers SKOS
@@ -37,11 +38,17 @@ public class OWLToSKOS {
 
 		// On importe l'ontologie SKOS dans l'ontologie cible
 		Importer importerSKOS = new Importer(skosBuilder.getTargetOntology());
+		//importerSKOS.setFormat(skosBuilder.getFormat());
 		importerSKOS.importOnto(ontoExterne);
 
+		OWLOntologyFormat formatImport = importerSKOS.getOntology().getOWLOntologyManager().getOntologyFormat(importerSKOS.getOntology());
+		
+		formatImport.asPrefixOWLOntologyFormat().copyPrefixesFrom(skosBuilder.getFormat().asPrefixOWLOntologyFormat());
+		
 		WriteOntology fileOntoWriterOnto = new WriteOntology(
 				importerSKOS.getOntology());
-		fileOntoWriterOnto.writeFile(output, skosBuilder.getFormat());
+
+		fileOntoWriterOnto.writeFileOWLXML(output, formatImport);
 	}
 
 	public OWLToSKOS(String[] parametre) {
