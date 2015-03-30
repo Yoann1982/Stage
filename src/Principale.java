@@ -138,6 +138,13 @@ public class Principale {
 		}
 	}
 
+	/**
+	 * Cette méthode permet de vérifier les paramètres en entrée.
+	 * Elle vérifie le nombre de paramètres en fonction du type d'action indiquée (le premier argument).
+	 * Si le nombre est incorrect, elle affiche sur la sortie standard des messages d'erreurs.
+	 * Si le nombre de paramètres est OK, elle affiche sur la sortie standard les paramètres d'entrée et lance les transco (méthode lanceTransco)
+	 * @param args La liste d'arguments du lancement de l'application.
+	 */
 	public static void checkArgs(String[] args) {
 		// On vérifie que l'on a le bon nombre d'argument en fonction de
 		// l'action choisie
@@ -160,6 +167,12 @@ public class Principale {
 		}
 	}
 
+	/**
+	 * Cette méthode affiche la liste des arguments en entrée.
+	 * @param args La liste des arguments.
+	 * @param nbArgObligatoire Le nombre d'arguments obligatoires.
+	 * @param nbArgFacultatif Le nombre d'arguments facultatifs.
+	 */
 	public static void afficheListeArgument(String[] args,
 			Integer nbArgObligatoire, Integer nbArgFacultatif) {
 
@@ -256,6 +269,12 @@ public class Principale {
 		}
 	}
 
+	/**
+	 * Cette méthode effectue le lancement des traitements de transcodage.
+	 * @param args La liste des paramètres.
+	 * @param nbArgObligatoire Le nombre d'arguments obligatoire.
+	 * @param nbArgFacultatif Le nombre d'arguments facultatifs.
+	 */
 	public static void lanceTransco(String[] args, Integer nbArgObligatoire,
 			Integer nbArgFacultatif) {
 		String[] parametre = null;
@@ -267,8 +286,10 @@ public class Principale {
 			switch (args[0]) {
 
 			case "1":
-				args[2] = verifFichierSortie(args[2],1);
-				args[3] = verifIRI(args[3]);
+				args[2] = verifFichierSortie(args[2], 1);
+				if (args.length > 3) {
+					args[3] = verifIRI(args[3]);
+				}
 				parametre = new String[args.length - 1];
 				for (int i = 0; i < args.length - 1; i++) {
 					parametre[i] = args[i + 1];
@@ -276,8 +297,10 @@ public class Principale {
 				new SKOSToOWL(parametre);
 				break;
 			case "2":
-				args[2] = verifFichierSortie(args[2],1);
-				args[3] = verifIRI(args[3]);
+				args[2] = verifFichierSortie(args[2], 1);
+				if (args.length > 3) {
+					args[3] = verifIRI(args[3]);
+				}
 				parametre = new String[args.length - 1];
 				for (int i = 0; i < args.length - 1; i++) {
 					parametre[i] = args[i + 1];
@@ -285,7 +308,7 @@ public class Principale {
 				new OWLToSKOS(parametre);
 				break;
 			case "3":
-				args[2] = verifFichierSortie(args[2],1);
+				args[2] = verifFichierSortie(args[2], 1);
 				args[4] = verifFichierFormat(args[4], 1);
 				SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
 				parametre = new String[args.length - 2];
@@ -295,7 +318,7 @@ public class Principale {
 				loaderCSV.createCSV(parametre);
 				break;
 			case "4":
-				args[2] = verifFichierSortie(args[2],1);
+				args[2] = verifFichierSortie(args[2], 1);
 				args[4] = verifFichierFormat(args[4], 1);
 				SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
 				parametre = new String[args.length - 2];
@@ -306,8 +329,8 @@ public class Principale {
 				break;
 			case "5":
 				args[6] = verifFichierFormat(args[6], 1);
-				args[2] = verifFichierSortie(args[2],1);
-				args[3] = verifFichierSortie(args[3],1);
+				args[2] = verifFichierSortie(args[2], 1);
+				args[3] = verifFichierSortie(args[3], 1);
 				SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
 				parametre = new String[args.length - 2];
 				for (int i = 0; i < args.length - 2; i++) {
@@ -363,6 +386,9 @@ public class Principale {
 			checkArgs(args);
 	}
 
+	/**
+	 * Cette méthode gère l'affichage du menu qui s'affiche lorsque l'application est lancée sans aucun paramètre.
+	 */
 	public static void menu() {
 
 		String swValue;
@@ -412,7 +438,7 @@ public class Principale {
 
 	/**
 	 * Cette méthode gère le menu correspondant à la transcodification SKOS TO
-	 * OWL
+	 * OWL.
 	 */
 	public static void menuSKOSToOWL() {
 		menuTransco(1);
@@ -420,7 +446,7 @@ public class Principale {
 
 	/**
 	 * Cette méthode gère le menu correspondant à la transcodification OWL TO
-	 * SKOS
+	 * SKOS.
 	 */
 	public static void menuOWLToSKOS() {
 		menuTransco(2);
@@ -428,7 +454,7 @@ public class Principale {
 
 	/**
 	 * Cette méthode gère le menu correspondant au chargement d'un fichier SKOS
-	 * vers I2B2
+	 * vers I2B2.
 	 */
 	public static void menuSKOSToI2B2() {
 		String valeurSaisie;
@@ -466,6 +492,10 @@ public class Principale {
 		}
 	}
 
+	/**
+	 * Cette méthode gère les générations de fichiers à partir de SKOS ou le chargement en base.
+	 * @param typeFichier 1 : fichier CSV, 2 : fichier SQL, 3 : SQLLoader, 4 : Alimentation table SQL
+	 */
 	public static void genererSortie(int typeFichier) {
 		String fichierEntree = null;
 		String fichierSortie = null;
@@ -529,6 +559,10 @@ public class Principale {
 		}
 	}
 
+	/**
+	 * Cette méthode permet d'afficher le menu de saisie des informations de transcodage
+	 * @param typeTransco 1 : SKOS To OWL 2 : OWL To SKOS
+	 */
 	public static void menuTransco(int typeTransco) {
 		if (typeTransco == 1)
 			System.out
@@ -594,7 +628,7 @@ public class Principale {
 						// si le
 						// chemin
 						// existe sinon on écrit dans HOME/I2B2/OUTPUT/
-						fichierEntree = verifFichierSortie(fichierEntree,2);
+						fichierEntree = verifFichierSortie(fichierEntree, 2);
 					} else { // fichier param
 						fichierEntree = verifFichierFormat(fichierEntree, 2);
 					}
@@ -651,10 +685,9 @@ public class Principale {
 	 */
 	public static String verifIRI(String iri) {
 		String sortie = "/";
-		
+
 		if (!(iri == null || iri.isEmpty())
-				&& !iri.substring(iri.length() - 1, iri.length()).equals(
-						"/")) {
+				&& !iri.substring(iri.length() - 1, iri.length()).equals("/")) {
 			return iri + sortie;
 		} else
 			return iri;
@@ -667,9 +700,8 @@ public class Principale {
 	 * dans le répertoire I2B2/OUTPUT/
 	 * 
 	 * @param fichierSortie
-	 *            Nom absolu du fichier de sortie
-	 *            typeAppel : 1 -
-	 *            ligne de commande, 2 - menu
+	 *            Nom absolu du fichier de sortie typeAppel : 1 - ligne de
+	 *            commande, 2 - menu
 	 * @return Le chemin absolu du fichier. Soit celui saisie par l'utilisateur
 	 *         si correcte, soit celui correspondant à
 	 *         HOME/I2B2/OUTPUT/fichierSortie si seul le nom du fichier a été
@@ -689,14 +721,16 @@ public class Principale {
 			// Si le chemin n'existe pas, on remonte une erreur
 			if (!new File(cheminFichier).exists()) {
 				if (typeAppel == 1) {
-				System.err.println("Le chemin du fichier de sortie indiqué ("
-						+ fichierSortie + ") n'existe pas.");
-				System.exit(1);
-				}else
-				{
-					System.out.println("Le chemin du fichier de sortie indiqué ("
-							+ fichierSortie + ") n'existe pas.");
-					System.out.println("Saisissez de nouveau le nom du fichier : ");
+					System.err
+							.println("Le chemin du fichier de sortie indiqué ("
+									+ fichierSortie + ") n'existe pas.");
+					System.exit(1);
+				} else {
+					System.out
+							.println("Le chemin du fichier de sortie indiqué ("
+									+ fichierSortie + ") n'existe pas.");
+					System.out
+							.println("Saisissez de nouveau le nom du fichier : ");
 					sortie = checkFile(2);
 				}
 			} else {

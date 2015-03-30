@@ -178,7 +178,7 @@ public class OWLReader {
 
 	/**
 	 * Cette méthode permet de charger en mémoire une ontologie à partir d'un
-	 * fichier OWL Elle vérifie si l'IRI en entrée est listée dans les prefix de
+	 * fichier OWL. Elle vérifie si l'IRI en entrée est listée dans les prefix de
 	 * l'ontologie Si ce n'est pas le cas, elle crée un nouveau prefix
 	 * correspondant (avec la valeur par défaut "bcbs").
 	 * 
