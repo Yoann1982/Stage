@@ -194,6 +194,11 @@ public class Builder {
 		this.manager = manager;
 	}
 
+	public boolean conceptIsInOntology(String conceptRecherche) {
+		IRI iriRecherche = IRI.create(prefixOnto.getDefaultPrefix(),conceptRecherche);
+		return originalOntology.containsIndividualInSignature(iriRecherche);
+	}
+	
 	/**
 	 * Cette méthode permet de retrouver l'IRI correspondant aux individus
 	 * présents dans l'ontologie d'origine.

@@ -9,7 +9,7 @@ public class SKOSToI2B2 {
 
 	private SKOSToI2B2Builder loader;
 
-	public SKOSToI2B2(String inputFile) {
+	public SKOSToI2B2(String inputFile, String conceptStart) {
 		// I2B2 test
 		// Chargement du fichier SKOS
 
@@ -21,7 +21,7 @@ public class SKOSToI2B2 {
 		loader = new SKOSToI2B2Builder(resonneur.findPropertyAssertion());
 		loader.setInputFile(inputFile);
 		// On charge les données dans I2B2
-		loader.load();
+		loader.load(conceptStart);
 	}
 
 	public void createCSV(String[] parametre) {
@@ -33,7 +33,11 @@ public class SKOSToI2B2 {
 			break;
 		case 3:
 			new MetadataToCSV(parametre[0], loader.getListeMetadata(),
-					parametre[1], parametre[2]);
+					parametre[1]);
+			break;
+		case 4 :
+			new MetadataToCSV(parametre[0], loader.getListeMetadata(),
+					parametre[3], parametre[1]);
 			break;
 		default:
 			System.err.println("Erreur : nombre de paramètres incorrect.");
@@ -52,7 +56,7 @@ public class SKOSToI2B2 {
 	}
 
 	public void createSQL(String[] parametre) {
-		if (parametre.length == 3)
+		if (parametre.length == 3 || parametre.length == 4 )
 			new MetadataToSQL(parametre[0], loader.getListeMetadata(),
 					parametre[1], parametre[2]);
 		else
@@ -73,13 +77,16 @@ public class SKOSToI2B2 {
 					loader.getListeMetadata(), parametre[2], parametre[3]);
 			break;
 		case 5:
-			new MetadataToSQLLoader(parametre[0], parametre[1], parametre[2],
-					loader.getListeMetadata(), parametre[3], parametre[4]);
+			new MetadataToSQLLoader(parametre[0], parametre[1],
+					loader.getListeMetadata(), parametre[2], parametre[3]);
+			break;
+		case 6:
+			new MetadataToSQLLoader(parametre[0], parametre[1], parametre[4],
+					loader.getListeMetadata(), parametre[2], parametre[3]);
 			break;
 		default:
 			System.err.println("Erreur : nombre de paramètres incorrect.");
 			break;
-
 		}
 	}
 

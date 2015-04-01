@@ -23,9 +23,9 @@ import transco.Builder;
 public class SKOSToI2B2Builder extends Builder {
 
 	private List<Metadata> listeMetadata = new ArrayList<Metadata>();
-	private PrefixManager prefixOnto;
-	private String iriSKOS = "http://www.w3.org/2004/02/skos/core#";
-	private PrefixManager prefixSKOS = new DefaultPrefixManager(iriSKOS);
+	//private PrefixManager prefixOnto;
+	//private String iriSKOS = "http://www.w3.org/2004/02/skos/core#";
+	//private PrefixManager prefixSKOS = new DefaultPrefixManager(iriSKOS);
 	private String inputFile;
 
 	/**
@@ -56,19 +56,19 @@ public class SKOSToI2B2Builder extends Builder {
 		String prefLabel = getAnnotation(individu, prefixSKOS, "prefLabel");
 		String basecode = getAnnotation(individu, prefixOnto, "C_BASECODE");
 
-		
 		// Retraitement de hierarchie:
 		// Ajout des majuscules
 		String hierarchieModif = WordUtils.capitalize(hierarchie);
-
-			
 		// Suppression des caractères spéciaux
-		hierarchieModif = hierarchieModif.replaceAll("[^\\w\\\\]","");
-		
-		// Même opération pour prefLabel
-		String prefLabelModif = WordUtils.capitalize(prefLabel);
-		prefLabelModif = prefLabelModif.replaceAll("[^\\w\\\\]","");
-		
+		hierarchieModif = hierarchieModif.replaceAll("[^\\w\\\\]", "");
+		String prefLabelModif = null;
+		if (!prefLabel.equalsIgnoreCase("i2b2")) {
+			// Pour i2b2 on ne met pas de majuscule
+			// Même opération pour prefLabel
+			prefLabelModif = WordUtils.capitalize(prefLabel);
+			prefLabelModif = prefLabelModif.replaceAll("[^\\w\\\\]", "");
+		} else prefLabelModif = prefLabel;
+
 		String cPath = hierarchieModif + "\\";
 		String cSymbol = prefLabelModif;
 		String tooltip = cPath + cSymbol;
@@ -163,7 +163,7 @@ public class SKOSToI2B2Builder extends Builder {
 
 	}
 
-	public void load() {
+	public void load(String conceptStart) {
 		// On recherche l'IRI de l'ontologie
 		iriProject = foundIriProjectByIndividual();
 		// On crée le préfixe associé
@@ -175,18 +175,27 @@ public class SKOSToI2B2Builder extends Builder {
 			// partir
 			// de ce concept
 
-			OWLNamedIndividual i2b2 = rechercheIndividu("1",
-					prefixOnto.getDefaultPrefix());
+			// On vérifie que le concept de départ fait bien partie de l'ontologie
+			// Si ce n'est pas le cas, on alimente avec tout.
+			OWLNamedIndividual startItem = null;
+			if (conceptIsInOntology(conceptStart)) {
+				startItem = rechercheIndividu(conceptStart,
+						prefixOnto.getDefaultPrefix());
+			} else {
+				// on commence à i2b2
+				startItem = rechercheIndividu("1",
+						prefixOnto.getDefaultPrefix());
+			}
 
-			createRecord(i2b2, niveau, "", true);
+			createRecord(startItem, niveau, "", true);
 
 			String hierarchie = "\\"
-					+ getAnnotation(i2b2, prefixSKOS, "prefLabel");
+					+ getAnnotation(startItem, prefixSKOS, "prefLabel");
 
 			// On parcours les narrower de cet individu et on crée un
 			// enregistrement
 			// de niveau inférieur
-			List<OWLIndividual> listeNarrowers = getNarrowers(i2b2);
+			List<OWLIndividual> listeNarrowers = getNarrowers(startItem);
 
 			// creation des enregistrement
 			if (listeNarrowers != null && !listeNarrowers.isEmpty())

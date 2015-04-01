@@ -50,19 +50,19 @@ public class Principale {
 
 		// 3 : skos to csv
 		mapArgObligatoire.put(3, 4);
-		mapArgFacultatif.put(3, 1);
+		mapArgFacultatif.put(3, 2);
 
 		// 4 : skos to SQL
 		mapArgObligatoire.put(4, 5);
-		mapArgFacultatif.put(4, 0);
+		mapArgFacultatif.put(4, 1);
 
 		// 5 : skos to SQLLoader
 		mapArgObligatoire.put(5, 6);
-		mapArgFacultatif.put(5, 1);
+		mapArgFacultatif.put(5, 2);
 
 		// 6 : skos to i2b2
 		mapArgObligatoire.put(6, 4);
-		mapArgFacultatif.put(6, 0);
+		mapArgFacultatif.put(6, 1);
 
 	}
 
@@ -101,9 +101,11 @@ public class Principale {
 					.println("Argument 2 obligatoire : Nom du fichier en entrée");
 			System.err
 					.println("Argument 3 obligatoire : Nom du fichier en sortie");
-			System.err.println("Argument 4 facultatif : Caractère séparateur");
+
 			System.err
-					.println("Argument 5 obligatoire : Nom du fichier format table I2B2");
+					.println("Argument 4 obligatoire : Nom du fichier format table I2B2");
+			System.err.println("Argument 5 facultatif : Concept de début");
+			System.err.println("Argument 6 facultatif : Caractère séparateur");
 			break;
 		case "4":
 			System.err
@@ -115,6 +117,7 @@ public class Principale {
 			System.err.println("Argument 4 obligatoire : Nom de la table");
 			System.err
 					.println("Argument 5 obligatoire : Nom du fichier format table I2B2");
+			System.err.println("Argument 6 facultatif : Concept de début");
 			break;
 		case "5":
 			System.err
@@ -126,10 +129,11 @@ public class Principale {
 			System.err
 					.println("Argument 4 obligatoire : Nom du fichier CSV en sortie");
 
-			System.err.println("Argument 5 facultatif : Caractère séparateur");
-			System.err.println("Argument 6 obligatoire : Nom de la table");
+			System.err.println("Argument 5 obligatoire : Nom de la table");
 			System.err
-					.println("Argument 7 obligatoire : Nom du fichier format table I2B2");
+					.println("Argument 6 obligatoire : Nom du fichier format table I2B2");
+			System.err.println("Argument 7 facultatif : Concept de début");
+			System.err.println("Argument 8 facultatif : Caractère séparateur");
 			break;
 		case "6":
 			break;
@@ -139,11 +143,15 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode permet de vérifier les paramètres en entrée.
-	 * Elle vérifie le nombre de paramètres en fonction du type d'action indiquée (le premier argument).
-	 * Si le nombre est incorrect, elle affiche sur la sortie standard des messages d'erreurs.
-	 * Si le nombre de paramètres est OK, elle affiche sur la sortie standard les paramètres d'entrée et lance les transco (méthode lanceTransco)
-	 * @param args La liste d'arguments du lancement de l'application.
+	 * Cette méthode permet de vérifier les paramètres en entrée. Elle vérifie
+	 * le nombre de paramètres en fonction du type d'action indiquée (le premier
+	 * argument). Si le nombre est incorrect, elle affiche sur la sortie
+	 * standard des messages d'erreurs. Si le nombre de paramètres est OK, elle
+	 * affiche sur la sortie standard les paramètres d'entrée et lance les
+	 * transco (méthode lanceTransco)
+	 * 
+	 * @param args
+	 *            La liste d'arguments du lancement de l'application.
 	 */
 	public static void checkArgs(String[] args) {
 		// On vérifie que l'on a le bon nombre d'argument en fonction de
@@ -169,9 +177,13 @@ public class Principale {
 
 	/**
 	 * Cette méthode affiche la liste des arguments en entrée.
-	 * @param args La liste des arguments.
-	 * @param nbArgObligatoire Le nombre d'arguments obligatoires.
-	 * @param nbArgFacultatif Le nombre d'arguments facultatifs.
+	 * 
+	 * @param args
+	 *            La liste des arguments.
+	 * @param nbArgObligatoire
+	 *            Le nombre d'arguments obligatoires.
+	 * @param nbArgFacultatif
+	 *            Le nombre d'arguments facultatifs.
 	 */
 	public static void afficheListeArgument(String[] args,
 			Integer nbArgObligatoire, Integer nbArgFacultatif) {
@@ -186,6 +198,7 @@ public class Principale {
 				System.out.println("Fichier en sortie : " + args[2]);
 				System.out.println("IRI de l'ontologie : " + args[3]);
 				System.out.println("Prefix de l'ontologie : " + args[4]);
+
 			} else {
 				if (args.length > nbArgObligatoire) {
 					System.out.println("Type de transcodage : " + args[0]);
@@ -224,21 +237,39 @@ public class Principale {
 				System.out.println("Type de transcodage : " + args[0]);
 				System.out.println("Fichier en entrée : " + args[1]);
 				System.out.println("Fichier en sortie : " + args[2]);
-				System.out.println("Caractère séparateur : " + args[3]);
+				System.out.println("Fichier Format : " + args[3]);
+				System.out.println("Concept de début : " + args[4]);
+				System.out.println("Caractère séparateur : " + args[5]);
+			} else {
+				if (args.length > nbArgObligatoire) {
+					System.out.println("Type de transcodage : " + args[0]);
+					System.out.println("Fichier en entrée : " + args[1]);
+					System.out.println("Fichier en sortie : " + args[2]);
+					System.out.println("Fichier Format : " + args[3]);
+					System.err.println("Concept de début : " + args[4]);
+				} else {
+					System.out.println("Type de transcodage : " + args[0]);
+					System.out.println("Fichier en entrée : " + args[1]);
+					System.out.println("Fichier en sortie : " + args[2]);
+					System.out.println("Fichier Format : " + args[3]);
+				}
+			}
+			break;
+		case "4":
+			if (args.length == nbArgObligatoire + nbArgFacultatif) {
+				System.out.println("Type de transcodage : " + args[0]);
+				System.out.println("Fichier en entrée : " + args[1]);
+				System.out.println("Fichier en sortie : " + args[2]);
+				System.out.println("Nom de la table : " + args[3]);
 				System.out.println("Fichier Format : " + args[4]);
+				System.out.println("Concept de début : " + args[5]);
 			} else {
 				System.out.println("Type de transcodage : " + args[0]);
 				System.out.println("Fichier en entrée : " + args[1]);
 				System.out.println("Fichier en sortie : " + args[2]);
-				System.out.println("Fichier Format : " + args[3]);
+				System.out.println("Nom de la table : " + args[3]);
+				System.out.println("Fichier Format : " + args[4]);
 			}
-			break;
-		case "4":
-			System.out.println("Type de transcodage : " + args[0]);
-			System.out.println("Fichier en entrée : " + args[1]);
-			System.out.println("Fichier en sortie : " + args[2]);
-			System.out.println("Nom de la table : " + args[3]);
-			System.out.println("Fichier Format : " + args[4]);
 			break;
 		case "5":
 			if (args.length == nbArgObligatoire + nbArgFacultatif) {
@@ -246,23 +277,44 @@ public class Principale {
 				System.out.println("Fichier en entrée : " + args[1]);
 				System.out.println("Fichier SQLLoader en sortie : " + args[2]);
 				System.out.println("Fichier CSV en sortie : " + args[3]);
-				System.out.println("Caractère séparateur : " + args[4]);
-				System.out.println("Nom de la table : " + args[5]);
-				System.out.println("Fichier Format : " + args[6]);
-			} else {
-				System.out.println("Type de transcodage : " + args[0]);
-				System.out.println("Fichier en entrée : " + args[1]);
-				System.out.println("Fichier SQLLoader en sortie : " + args[2]);
-				System.out.println("Fichier CSV en sortie : " + args[3]);
 				System.out.println("Nom de la table : " + args[4]);
 				System.out.println("Fichier Format : " + args[5]);
+				System.out.println("Concept de début : " + args[6]);
+				System.out.println("Caractère séparateur : " + args[7]);
+			} else {
+				if (args.length > nbArgObligatoire) {
+					System.out.println("Type de transcodage : " + args[0]);
+					System.out.println("Fichier en entrée : " + args[1]);
+					System.out.println("Fichier SQLLoader en sortie : "
+							+ args[2]);
+					System.out.println("Fichier CSV en sortie : " + args[3]);
+					System.out.println("Nom de la table : " + args[4]);
+					System.out.println("Fichier Format : " + args[5]);
+					System.out.println("Concept de début : " + args[6]);
+				} else {
+					System.out.println("Type de transcodage : " + args[0]);
+					System.out.println("Fichier en entrée : " + args[1]);
+					System.out.println("Fichier SQLLoader en sortie : "
+							+ args[2]);
+					System.out.println("Fichier CSV en sortie : " + args[3]);
+					System.out.println("Nom de la table : " + args[4]);
+					System.out.println("Fichier Format : " + args[5]);
+				}
 			}
 			break;
 		case "6":
-			System.out.println("Type de transcodage : " + args[0]);
-			System.out.println("Fichier en entrée : " + args[1]);
-			System.out.println("Méthode de chargement : " + args[2]);
-			System.out.println("Fichier Format : " + args[3]);
+			if (args.length == nbArgObligatoire + nbArgFacultatif) {
+				System.out.println("Type de transcodage : " + args[0]);
+				System.out.println("Fichier en entrée : " + args[1]);
+				System.out.println("Méthode de chargement : " + args[2]);
+				System.out.println("Fichier Format : " + args[3]);
+				System.out.println("Concept de début : " + args[4]);
+			} else {
+				System.out.println("Type de transcodage : " + args[0]);
+				System.out.println("Fichier en entrée : " + args[1]);
+				System.out.println("Méthode de chargement : " + args[2]);
+				System.out.println("Fichier Format : " + args[3]);
+			}
 			break;
 		default:
 			break;
@@ -271,9 +323,13 @@ public class Principale {
 
 	/**
 	 * Cette méthode effectue le lancement des traitements de transcodage.
-	 * @param args La liste des paramètres.
-	 * @param nbArgObligatoire Le nombre d'arguments obligatoire.
-	 * @param nbArgFacultatif Le nombre d'arguments facultatifs.
+	 * 
+	 * @param args
+	 *            La liste des paramètres.
+	 * @param nbArgObligatoire
+	 *            Le nombre d'arguments obligatoire.
+	 * @param nbArgFacultatif
+	 *            Le nombre d'arguments facultatifs.
 	 */
 	public static void lanceTransco(String[] args, Integer nbArgObligatoire,
 			Integer nbArgFacultatif) {
@@ -309,8 +365,12 @@ public class Principale {
 				break;
 			case "3":
 				args[2] = verifFichierSortie(args[2], 1);
-				args[4] = verifFichierFormat(args[4], 1);
-				SKOSToI2B2 loaderCSV = new SKOSToI2B2(args[1]);
+				args[3] = verifFichierFormat(args[3], 1);
+				SKOSToI2B2 loaderCSV = null;
+				if (args.length > 4)
+					loaderCSV = new SKOSToI2B2(args[1], args[4]);
+				else
+					loaderCSV = new SKOSToI2B2(args[1], "");
 				parametre = new String[args.length - 2];
 				for (int i = 0; i < args.length - 2; i++) {
 					parametre[i] = args[i + 2];
@@ -320,7 +380,11 @@ public class Principale {
 			case "4":
 				args[2] = verifFichierSortie(args[2], 1);
 				args[4] = verifFichierFormat(args[4], 1);
-				SKOSToI2B2 loaderSQL = new SKOSToI2B2(args[1]);
+				SKOSToI2B2 loaderSQL = null;
+				if (args.length > 5)
+					loaderSQL = new SKOSToI2B2(args[1], args[5]);
+				else
+					loaderSQL = new SKOSToI2B2(args[1], "");
 				parametre = new String[args.length - 2];
 				for (int i = 0; i < args.length - 2; i++) {
 					parametre[i] = args[i + 2];
@@ -328,10 +392,14 @@ public class Principale {
 				loaderSQL.createSQL(parametre);
 				break;
 			case "5":
-				args[6] = verifFichierFormat(args[6], 1);
+				args[5] = verifFichierFormat(args[5], 1);
 				args[2] = verifFichierSortie(args[2], 1);
 				args[3] = verifFichierSortie(args[3], 1);
-				SKOSToI2B2 loaderSQLLoader = new SKOSToI2B2(args[1]);
+				SKOSToI2B2 loaderSQLLoader = null;
+				if (args.length > 6)
+					loaderSQLLoader = new SKOSToI2B2(args[1], args[6]);
+				else
+					loaderSQLLoader = new SKOSToI2B2(args[1], "");
 				parametre = new String[args.length - 2];
 				for (int i = 0; i < args.length - 2; i++) {
 					parametre[i] = args[i + 2];
@@ -345,7 +413,11 @@ public class Principale {
 					System.exit(1);
 				} else {
 					args[3] = verifFichierFormat(args[3], 1);
-					SKOSToI2B2 loaderTable = new SKOSToI2B2(args[1]);
+					SKOSToI2B2 loaderTable = null;
+					if (args.length > 4)
+						loaderTable = new SKOSToI2B2(args[1], args[4]);
+					else
+						loaderTable = new SKOSToI2B2(args[1], "");
 					parametre = new String[args.length - 2];
 					for (int i = 0; i < args.length - 2; i++) {
 						parametre[i] = args[i + 2];
@@ -387,7 +459,8 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode gère l'affichage du menu qui s'affiche lorsque l'application est lancée sans aucun paramètre.
+	 * Cette méthode gère l'affichage du menu qui s'affiche lorsque
+	 * l'application est lancée sans aucun paramètre.
 	 */
 	public static void menu() {
 
@@ -493,8 +566,12 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode gère les générations de fichiers à partir de SKOS ou le chargement en base.
-	 * @param typeFichier 1 : fichier CSV, 2 : fichier SQL, 3 : SQLLoader, 4 : Alimentation table SQL
+	 * Cette méthode gère les générations de fichiers à partir de SKOS ou le
+	 * chargement en base.
+	 * 
+	 * @param typeFichier
+	 *            1 : fichier CSV, 2 : fichier SQL, 3 : SQLLoader, 4 :
+	 *            Alimentation table SQL
 	 */
 	public static void genererSortie(int typeFichier) {
 		String fichierEntree = null;
@@ -504,6 +581,7 @@ public class Principale {
 		String separateur = null;
 		String nomTable = null;
 		String methodeChargement = null;
+		String conceptStart = null;
 
 		System.out.println("Nom du fichier en entrée :");
 		fichierEntree = checkFile(1);
@@ -515,22 +593,30 @@ public class Principale {
 			System.out.println("Nom du fichier CSV à générer :");
 			fichierCSV = checkFile(2);
 		}
-		if (typeFichier == 1 || typeFichier == 3) {
-			System.out.println("Caractère de séparation (facultatif) :");
-			separateur = choixUtilisateur();
-		}
+
 		if (typeFichier == 2 || typeFichier == 3) {
 			System.out.println("Nom de la table SQL à charger :");
 			nomTable = choixUtilisateur();
 		}
-		System.out.println("Nom du fichier format Metadata :");
-		fichierFormat = checkFile(3);
 		if (typeFichier == 4) {
 			System.out
 					.println("Méthode de chargement (1 : Insert / 2 : SQLLoader) :");
 			methodeChargement = checkMethodeChargement();
 		}
-		SKOSToI2B2 loaderI2B2 = new SKOSToI2B2(fichierEntree);
+		System.out.println("Nom du fichier format Metadata :");
+		fichierFormat = checkFile(3);
+		if (typeFichier == 1 || typeFichier == 3) {
+			System.out.println("Caractère de séparation (facultatif) :");
+			separateur = choixUtilisateur();
+		}
+		System.out.println("Concept de départ (facultatif) :");
+		conceptStart = choixUtilisateur();
+
+		SKOSToI2B2 loaderI2B2 = null;
+		if (conceptStart == null || conceptStart.isEmpty())
+			loaderI2B2 = new SKOSToI2B2(fichierEntree, "");
+		else
+			loaderI2B2 = new SKOSToI2B2(fichierEntree, conceptStart);
 		switch (typeFichier) {
 		case 1:
 			if (separateur == null || separateur.isEmpty())
@@ -560,8 +646,11 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode permet d'afficher le menu de saisie des informations de transcodage
-	 * @param typeTransco 1 : SKOS To OWL 2 : OWL To SKOS
+	 * Cette méthode permet d'afficher le menu de saisie des informations de
+	 * transcodage
+	 * 
+	 * @param typeTransco
+	 *            1 : SKOS To OWL 2 : OWL To SKOS
 	 */
 	public static void menuTransco(int typeTransco) {
 		if (typeTransco == 1)
