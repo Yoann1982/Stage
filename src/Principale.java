@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -64,6 +65,122 @@ public class Principale {
 		mapArgObligatoire.put(6, 4);
 		mapArgFacultatif.put(6, 1);
 
+	}
+
+	public static String[] readParamFile(String file, String typeAction) {
+		String[] param = new String[12];
+		boolean erreur = false;
+		try {
+			// Création du flux bufférisé sur un FileReader, immédiatement suivi
+			// par un
+			// try/finally, ce qui permet de ne fermer le flux QUE s'il le
+			// reader
+			// est correctement instancié (évite les NullPointerException)
+
+			BufferedReader buff = new BufferedReader(new FileReader(file));
+			try {
+				String line;
+				// Lecture du fichier ligne par ligne. Cette boucle se termine
+				// quand la méthode retourne la valeur null.
+				int numLigne = 1;
+				while ((line = buff.readLine()) != null) {
+					// on ignore l'entête
+					if (numLigne != 1) {
+						String[] contenuLigne = line.split("\\|", 2);
+						// if (contenuLigne.length == 2) {
+						param[0] = typeAction;
+						switch (contenuLigne[0]) {
+						case "fichierEntree":
+							param[1] = contenuLigne[1];
+							break;
+						case "fichierSortie":
+							param[2] = contenuLigne[1];
+							break;
+						case "fichierFormat":
+							param[3] = contenuLigne[1];
+							break;
+						case "IRI":
+							param[4] = contenuLigne[1];
+							break;
+						case "prefix":
+							param[5] = contenuLigne[1];
+							break;
+						case "concept":
+							param[6] = contenuLigne[1];
+							break;
+						case "caractereSeparateur":
+							param[7] = contenuLigne[1];
+							break;
+						case "niveau":
+							param[8] = contenuLigne[1];
+							break;
+						case "table":
+							param[9] = contenuLigne[1];
+							break;
+						case "typeChargement":
+							param[10] = contenuLigne[1];
+							break;
+						case "fichierSortieCSV":
+							param[11] = contenuLigne[1];
+						default:
+							// System.err
+							// .println("Erreur : paramètre inconnu.");
+							break;
+						}
+						// } else {
+						// System.err
+						// .println("ERREUR : nombre de colonne lue incorrect. Ligne lue : '"
+						// + line + "'");
+						// erreur = true;
+						// }
+					}
+					numLigne++;
+				}
+				// Contrôle des champs obligatoires
+				// contrôle fichier en entrée
+
+				if (param[1] == null || param[1].isEmpty()) {
+					System.err
+							.println("Erreur : Le fichier en entrée est obligatoire.");
+					erreur = true;
+				}
+				if (!typeAction.equalsIgnoreCase("6")) {
+					if (param[2] == null || param[2].isEmpty()) {
+						System.err
+								.println("Erreur : Le fichier en sortie est obligatoire.");
+						erreur = true;
+					}
+				}
+				if (typeAction.equalsIgnoreCase("3")
+						|| typeAction.equalsIgnoreCase("4")
+						|| typeAction.equalsIgnoreCase("5")
+						|| typeAction.equalsIgnoreCase("6")) {
+					if (param[3] == null || param[3].isEmpty()) {
+						System.err
+								.println("Erreur : Le fichier de format est obligatoire.");
+						erreur = true;
+					}
+				}
+				if (typeAction.equalsIgnoreCase("4")
+						|| typeAction.equalsIgnoreCase("5")
+						|| typeAction.equalsIgnoreCase("6")) {
+					if (param[9] == null || param[9].isEmpty()) {
+						System.err
+								.println("Erreur : Le nom de la table est obligatoire.");
+						erreur = true;
+					}
+				}
+			} finally {
+				// dans tous les cas, on ferme nos flux
+				buff.close();
+			}
+		} catch (IOException ioe) {
+			// erreur de fermeture des flux
+			System.out.println("Erreur --" + ioe.toString());
+		}
+		if (erreur)
+			System.exit(1);
+		return param;
 	}
 
 	/**
@@ -322,6 +439,155 @@ public class Principale {
 	}
 
 	/**
+	 * Cette méthode effectue le lancement du transcodage SKOS To OWL à partir du tableau de paramètre.
+	 * @param args Tableau de paramètre
+	 */
+	public static void lanceSKOSToOWL(String[] args) {
+		boolean iriRenseigne = false;
+		boolean prefixRenseigne = false;
+		args[2] = verifFichierSortie(args[2], 1);
+		if (args[4] != null && !args[4].isEmpty()) {
+			args[4] = verifIRI(args[4]);
+			iriRenseigne = true;
+		}
+		if (args[5] != null && !args[5].isEmpty())
+			prefixRenseigne = true;
+
+		if (iriRenseigne && prefixRenseigne)
+			new SKOSToOWL(args[1], args[2], args[4], args[5]);
+		else if (iriRenseigne)
+			new SKOSToOWL(args[1], args[2], args[4]);
+	}
+
+	/**
+	 * Cette méthode effectue le lancement du transcodage OWL To SKOS à partir du tableau de paramètre.
+	 * @param args
+	 */
+	public static void lanceOWLToSKOS(String[] args) {
+		boolean iriRenseigne = false;
+		boolean prefixRenseigne = false;
+		args[2] = verifFichierSortie(args[2], 1);
+		if (args[4] != null && !args[4].isEmpty()) {
+			args[4] = verifIRI(args[4]);
+			iriRenseigne = true;
+		}
+		if (args[5] != null && !args[5].isEmpty())
+			prefixRenseigne = true;
+
+		if (iriRenseigne && prefixRenseigne)
+			new OWLToSKOS(args[1], args[2], args[4], args[5]);
+		else if (iriRenseigne)
+			new OWLToSKOS(args[1], args[2], args[4]);
+	}
+
+	/**
+	 * Cette méthode effectue le lancement de la génération du fichier CSV à partir du tableau de paramètre.
+	 * @param args
+	 */
+	public static void lanceCSV(String[] args) {
+		args[2] = verifFichierSortie(args[2], 1);
+		args[3] = verifFichierFormat(args[3], 1);
+		SKOSToI2B2 loaderCSV = null;
+		if (args[6] != null && !args[6].isEmpty())
+			loaderCSV = new SKOSToI2B2(args[1], args[6]);
+		else
+			loaderCSV = new SKOSToI2B2(args[1], "");
+		if (args[7] != null && !args[7].isEmpty())
+			loaderCSV.createCSV(args[2], args[7], args[3]);
+		else
+			loaderCSV.createCSV(args[2], args[3]);
+	}
+
+	/**
+	 * Cette méthode effectue le lancement de la génération du fichier SQL à partir du tableau de paramètre.
+	 * @param args
+	 */
+	public static void lanceSQL(String[] args) {
+		args[2] = verifFichierSortie(args[2], 1);
+		args[3] = verifFichierFormat(args[3], 1);
+		SKOSToI2B2 loaderSQL = null;
+		if (args[6] != null && !args[6].isEmpty())
+			loaderSQL = new SKOSToI2B2(args[1], args[6]);
+		else
+			loaderSQL = new SKOSToI2B2(args[1], "");
+		loaderSQL.createSQL(args[2], args[9], args[3]);
+	}
+
+	/**
+	 * Cette méthode effectue le lancement de la génération du fichier SQLLoader à partir du tableau de paramètre.
+	 * @param args
+	 */
+	public static void lanceSQLLoader(String[] args) {
+		args[3] = verifFichierFormat(args[3], 1);
+		args[2] = verifFichierSortie(args[2], 1);
+		args[11] = verifFichierSortie(args[11], 1);
+		SKOSToI2B2 loaderSQLLoader = null;
+		if (args[6] != null && !args[6].isEmpty())
+			loaderSQLLoader = new SKOSToI2B2(args[1], args[6]);
+		else
+			loaderSQLLoader = new SKOSToI2B2(args[1], "");
+		if (args[7] != null && !args[7].isEmpty())
+			loaderSQLLoader.createSQLLoader(args[2], args[11], args[7],
+					args[9], args[3]);
+		else
+			loaderSQLLoader
+					.createSQLLoader(args[2], args[11], args[9], args[3]);
+	}
+
+	/**
+	 * Cette méthode effectue le lancement du chargement en base à partir du tableau de paramètre.
+	 * @param args
+	 */
+	public static void lanceLoadSQL(String[] args) {
+		if (!(args[10].trim().equals("1") || args[10].trim().equals("2"))) {
+			System.err.println("Erreur : Le mode de chargement saisi ("
+					+ args[2] + ") est incorrect.");
+			System.exit(1);
+		} else {
+			args[3] = verifFichierFormat(args[3], 1);
+			SKOSToI2B2 loaderTable = null;
+			if (args[6] != null && !args[6].isEmpty())
+				loaderTable = new SKOSToI2B2(args[1], args[4]);
+			else
+				loaderTable = new SKOSToI2B2(args[1], "");
+
+			loaderTable.loadSQL(Integer.parseInt(args[10]), args[3]);
+		}
+	}
+
+	public static void lanceTransco(String[] args) {
+		if (!new File(args[1]).exists()) {
+			System.err.println("Erreur : Le fichier indiqué en entrée ("
+					+ args[1] + ") n'existe pas.");
+			System.exit(1);
+		} else {
+			switch (args[0]) {
+			case "1":
+				lanceSKOSToOWL(args);
+				break;
+			case "2":
+				lanceOWLToSKOS(args);
+				break;
+			case "3":
+				lanceCSV(args);
+				break;
+			case "4":
+				lanceSQL(args);
+				break;
+			case "5":
+				lanceSQLLoader(args);
+				break;
+			case "6":
+				lanceLoadSQL(args);
+				break;
+			default:
+				System.out.println("Erreur : Type d'action inconnu.");
+				break;
+			}
+		}
+	}
+
+	/**
 	 * Cette méthode effectue le lancement des traitements de transcodage.
 	 * 
 	 * @param args
@@ -350,7 +616,7 @@ public class Principale {
 				for (int i = 0; i < args.length - 1; i++) {
 					parametre[i] = args[i + 1];
 				}
-				new SKOSToOWL(parametre);
+				new OWLToSKOS(parametre);
 				break;
 			case "2":
 				args[2] = verifFichierSortie(args[2], 1);
@@ -454,6 +720,8 @@ public class Principale {
 
 		if (args.length == 0)
 			menu(); // On ouvre le menu
+		else if (args.length == 2)
+			lanceTransco(readParamFile(args[1], args[0]));
 		else
 			checkArgs(args);
 	}
