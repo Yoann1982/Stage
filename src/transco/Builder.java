@@ -82,7 +82,7 @@ public class Builder {
 	 * Getter de l'attribut prefixOnto. Il correspond au PrefixManager de
 	 * l'ontologie à construire.
 	 * 
-	 * @return @PrefixManager de l'ontologie.
+	 * @return @see PrefixManager de l'ontologie.
 	 */
 	public PrefixManager getPrefixOnto() {
 		return prefixOnto;
@@ -92,7 +92,7 @@ public class Builder {
 	 * Setter de l'attribut prefixOnto. Il correspond au PrefixManager de
 	 * l'ontologie à construire.
 	 * 
-	 * @param prefixOnto @PrefixManager 
+	 * @param prefixOnto @see PrefixManager 
 	 */
 	public void setPrefixOnto(PrefixManager prefixOnto) {
 		this.prefixOnto = prefixOnto;

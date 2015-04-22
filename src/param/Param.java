@@ -1,5 +1,13 @@
 package param;
 
+/**
+ * Cette classe contient les paramètres permettant entre autre le portage sur des environnements Unix / Windows / Mac.
+ * 
+ * @author Yoann Keravec <br>
+ *         Date: 19/03/2015<br>
+ *         Institut Bergonié<br>
+ */
+
 public class Param {
 
 	public static final String RETOUR_CHARIOT = System.lineSeparator();

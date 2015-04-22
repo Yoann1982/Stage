@@ -13,7 +13,8 @@ import sgbd.Connexion;
  * Cette classe permet le chargement en base de données des metadatas.
  * 
  * @author y.keravec
- *
+ * Date: 19/03/2015<br>
+ *         Institut Bergonié<br>
  */
 
 public class MetadataToDatabase extends Exporter {

@@ -5,10 +5,24 @@ import java.io.IOException;
 
 import transco.OWLReader;
 
+/**
+ * Cette classe contient les méthodes permettant un chargement de fichier SKOS vers une structur I2B2, soit par fichier CSV, fichier SQL, SQLLoader ou chargement direct en table.
+ * 
+ * @author Yoann Keravec <br>
+ *         Date: 19/03/2015<br>
+ *         Institut Bergonié<br>
+ */
+
 public class SKOSToI2B2 {
 
 	private SKOSToI2B2Builder loader;
 
+	/**
+	 * Constructeur
+	 * @param inputFile Fichier SKOS à charger.
+	 * @param conceptStart Concept de départ.
+	 * @param niveau Niveau de départ.
+	 */
 	public SKOSToI2B2(String inputFile, String conceptStart, int niveau) {
 		// I2B2 test
 		// Chargement du fichier SKOS
@@ -24,6 +38,10 @@ public class SKOSToI2B2 {
 		loader.load(conceptStart, niveau);
 	}
 
+	/**
+	 * Cette méthode crée un fichier CSV à partir d'un tableau de paramètre.
+	 * @param parametre
+	 */
 	public void createCSV(String[] parametre) {
 
 		switch (parametre.length) {
@@ -45,16 +63,31 @@ public class SKOSToI2B2 {
 		}
 	}
 
+	/**
+	 * Cette méthode crée un fichier CSV à partir d'une liste de Metadata. Le caractère séparateur est paramétrable.
+	 * @param fichierCSV Fichier à générer.
+	 * @param separateur Caractère séparateur du fichier CSV.
+	 * @param fichierFormat Fichier décrivant le format de la table I2B2.
+	 */
 	public void createCSV(String fichierCSV, String separateur,
 			String fichierFormat) {
 		new MetadataToCSV(fichierCSV, loader.getListeMetadata(), separateur,
 				fichierFormat);
 	}
 
+	/**
+	 * Cette méthode crée un fichier CSV à partir d'une liste de Metadata. Le caractère séparateur est ";".
+	 * @param fichierCSV
+	 * @param fichierFormat
+	 */
 	public void createCSV(String fichierCSV, String fichierFormat) {
 		new MetadataToCSV(fichierCSV, loader.getListeMetadata(), fichierFormat);
 	}
 
+	/**
+	 * Cette méthode crée un fichier SQL (insert) à partir d'une liste de paramètre et d'une liste de Metadata.
+	 * @param parametre
+	 */
 	public void createSQL(String[] parametre) {
 		if (parametre.length == 3 || parametre.length == 4 )
 			new MetadataToSQL(parametre[0], loader.getListeMetadata(),
@@ -63,12 +96,22 @@ public class SKOSToI2B2 {
 			System.err.println("Erreur : nombre de paramètres incorrect.");
 	}
 
+	/**
+	 * Cette méthode crée un fichier SQL (insert) à partir de paramètres d'entrée.
+	 * @param fichierSortie Fichier à générer.
+	 * @param nomTable Nom de la table à générer indiquer dans les ordres d'insert.
+	 * @param fichierFormat Format de la table à alimenter.
+	 */
 	public void createSQL(String fichierSortie, String nomTable,
 			String fichierFormat) {
 		new MetadataToSQL(fichierSortie, loader.getListeMetadata(), nomTable,
 				fichierFormat);
 	}
 
+	/**
+	 * Cette méthode crée un fichier SQLLoader à partir d'une liste de paramètres.
+	 * @param parametre
+	 */
 	public void createSQLLoader(String[] parametre) {
 		switch (parametre.length) {
 
@@ -90,19 +133,37 @@ public class SKOSToI2B2 {
 		}
 	}
 
+	/**
+	 * Cette méthode crée un fichier un fichier SQLLoader et son fichier CSV associé. Le caractère séparateur du fichier CSV est paramétrable.
+	 * @param fichierSQL Fichier de contrôle à générer.
+	 * @param fichierCSV Fichier CSV de chargement à générer.
+	 * @param separateur Caractère séparateur du fichier CSV.
+	 * @param nomTable Nom de la table à charger.
+	 * @param fichierFormat Format de la table à charger.
+	 */
 	public void createSQLLoader(String fichierSQL, String fichierCSV,
 			String separateur, String nomTable, String fichierFormat) {
 		new MetadataToSQLLoader(fichierSQL, fichierCSV, separateur,
 				loader.getListeMetadata(), nomTable, fichierFormat);
 	}
 
+	/**
+	 * Cette méthode crée un fichier SQLLoader et son fichier CSV associé. Le caractère séparateur du fichier CSV est ";".
+	 * @param fichierSQL
+	 * @param fichierCSV
+	 * @param nomTable
+	 * @param fichierFormat
+	 */
 	public void createSQLLoader(String fichierSQL, String fichierCSV,
 			String nomTable, String fichierFormat) {
 		new MetadataToSQLLoader(fichierSQL, fichierCSV,
 				loader.getListeMetadata(), nomTable, fichierFormat);
 	}
 
-	
+	/**
+	 * Cette méthode charge une table I2B2 à partir de Métadata.
+	 * @param parametre
+	 */
 	public void loadSQL(String[] parametre) {
 		loadSQL(Integer.decode(parametre[0]), parametre[1]);
 	}

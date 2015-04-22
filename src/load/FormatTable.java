@@ -1,5 +1,12 @@
 package load;
 
+/**
+ * Cette classe contient les méthodes permettant de stocker les informations concernant le format de la table i2b2 à charger.
+ * 
+ * @author Yoann Keravec <br> Date: 19/03/2015<br>
+ *         Institut Bergonié<br>
+ */
+
 public class FormatTable {
 
 	private String column;

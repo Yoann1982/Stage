@@ -9,7 +9,7 @@ import java.util.List;
  * Cette classe permet de générer un fichier SQLLoader à partir d'une liste de
  * Metadata
  * 
- * @author Yoann Keravec Date: 19/03/2015<br>
+ * @author Yoann Keravec <br> Date: 19/03/2015<br>
  *         Institut Bergonié<br>
  */
 public class MetadataToSQLLoader extends Exporter {

@@ -6,8 +6,9 @@ import java.sql.*;
  * 
  * Cette Classe effectue la connexion SQL et le requêtage des tables
  * 
- * @author Yoann Keravec
- * 
+ * @author Yoann Keravec <br>
+ *  Date: 10/03/2015<br>
+ *         Institut Bergonié<br>
  * 
  * 
  */

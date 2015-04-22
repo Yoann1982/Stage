@@ -15,8 +15,8 @@ import transco.SKOSToOWL;
  * Cette classe contient la main et permet d'effectuer un transcodage SKOSToOWL
  * ou un transcodage OWLToSKOS.
  * 
- * @author Yoann Keravec Date: 09/03/2015<br>
- *         Institut Bergonié<br>
+ * @author Yoann Keravec <br> Date: 09/03/2015<br>
+ *         Institut Bergonié<br>>
  */
 public class Principale {
 

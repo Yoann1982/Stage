@@ -5,7 +5,7 @@ import org.semanticweb.owlapi.model.IRI;
 /**
  * Cette classe gère le transcodage SKOS vers OWL
  * 
- * @author Yoann Keravec Date: 13/03/2015<br>
+ * @author Yoann Keravec <br> Date: 13/03/2015<br>
  *         Institut Bergonié<br>
  */
 public class SKOSToOWL {

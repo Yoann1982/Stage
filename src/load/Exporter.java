@@ -14,7 +14,7 @@ import param.Param;
  * Cette classe contient les méthodes permettant de préparer les Metadata pour
  * leur exports vers une table, une fichier SQL, un fichier CSV, etc.
  * 
- * @author Yoann Keravec Date: 19/03/2015<br>
+ * @author Yoann Keravec <br> Date: 19/03/2015<br>
  *         Institut Bergonié<br>
  */
 

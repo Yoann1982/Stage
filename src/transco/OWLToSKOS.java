@@ -6,7 +6,7 @@ import org.semanticweb.owlapi.model.OWLOntologyFormat;
 /**
  * Cette classe gère le transcodage OWL vers SKOS
  * 
- * @author Yoann Keravec Date: 13/03/2015<br>
+ * @author Yoann Keravec <br> Date: 13/03/2015<br>
  *         Institut Bergonié<br>
  */
 public class OWLToSKOS {
