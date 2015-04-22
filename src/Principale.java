@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
-import Param.Param;
+import param.Param;
+
 import load.SKOSToI2B2;
 import transco.OWLToSKOS;
 import transco.SKOSToOWL;
@@ -439,8 +440,11 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode effectue le lancement du transcodage SKOS To OWL à partir du tableau de paramètre.
-	 * @param args Tableau de paramètre
+	 * Cette méthode effectue le lancement du transcodage SKOS To OWL à partir
+	 * du tableau de paramètre.
+	 * 
+	 * @param args
+	 *            Tableau de paramètre
 	 */
 	public static void lanceSKOSToOWL(String[] args) {
 		boolean iriRenseigne = false;
@@ -460,7 +464,9 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode effectue le lancement du transcodage OWL To SKOS à partir du tableau de paramètre.
+	 * Cette méthode effectue le lancement du transcodage OWL To SKOS à partir
+	 * du tableau de paramètre.
+	 * 
 	 * @param args
 	 */
 	public static void lanceOWLToSKOS(String[] args) {
@@ -481,17 +487,20 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode effectue le lancement de la génération du fichier CSV à partir du tableau de paramètre.
+	 * Cette méthode effectue le lancement de la génération du fichier CSV à
+	 * partir du tableau de paramètre.
+	 * 
 	 * @param args
 	 */
 	public static void lanceCSV(String[] args) {
 		args[2] = verifFichierSortie(args[2], 1);
 		args[3] = verifFichierFormat(args[3], 1);
 		SKOSToI2B2 loaderCSV = null;
-		if (args[6] != null && !args[6].isEmpty())
-			loaderCSV = new SKOSToI2B2(args[1], args[6]);
+		if (args[6] != null && !args[6].isEmpty() && args[8].matches("(\\d)+"))
+			loaderCSV = new SKOSToI2B2(args[1], args[6],
+					Integer.decode(args[8]));
 		else
-			loaderCSV = new SKOSToI2B2(args[1], "");
+			loaderCSV = new SKOSToI2B2(args[1], "", 0);
 		if (args[7] != null && !args[7].isEmpty())
 			loaderCSV.createCSV(args[2], args[7], args[3]);
 		else
@@ -499,22 +508,27 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode effectue le lancement de la génération du fichier SQL à partir du tableau de paramètre.
+	 * Cette méthode effectue le lancement de la génération du fichier SQL à
+	 * partir du tableau de paramètre.
+	 * 
 	 * @param args
 	 */
 	public static void lanceSQL(String[] args) {
 		args[2] = verifFichierSortie(args[2], 1);
 		args[3] = verifFichierFormat(args[3], 1);
 		SKOSToI2B2 loaderSQL = null;
-		if (args[6] != null && !args[6].isEmpty())
-			loaderSQL = new SKOSToI2B2(args[1], args[6]);
+		if (args[6] != null && !args[6].isEmpty() && args[8].matches("(\\d)+"))
+			loaderSQL = new SKOSToI2B2(args[1], args[6],
+					Integer.decode(args[8]));
 		else
-			loaderSQL = new SKOSToI2B2(args[1], "");
+			loaderSQL = new SKOSToI2B2(args[1], "", 0);
 		loaderSQL.createSQL(args[2], args[9], args[3]);
 	}
 
 	/**
-	 * Cette méthode effectue le lancement de la génération du fichier SQLLoader à partir du tableau de paramètre.
+	 * Cette méthode effectue le lancement de la génération du fichier SQLLoader
+	 * à partir du tableau de paramètre.
+	 * 
 	 * @param args
 	 */
 	public static void lanceSQLLoader(String[] args) {
@@ -522,10 +536,11 @@ public class Principale {
 		args[2] = verifFichierSortie(args[2], 1);
 		args[11] = verifFichierSortie(args[11], 1);
 		SKOSToI2B2 loaderSQLLoader = null;
-		if (args[6] != null && !args[6].isEmpty())
-			loaderSQLLoader = new SKOSToI2B2(args[1], args[6]);
+		if (args[6] != null && !args[6].isEmpty() && args[8].matches("(\\d)+"))
+			loaderSQLLoader = new SKOSToI2B2(args[1], args[6],
+					Integer.decode(args[8]));
 		else
-			loaderSQLLoader = new SKOSToI2B2(args[1], "");
+			loaderSQLLoader = new SKOSToI2B2(args[1], "", 0);
 		if (args[7] != null && !args[7].isEmpty())
 			loaderSQLLoader.createSQLLoader(args[2], args[11], args[7],
 					args[9], args[3]);
@@ -535,7 +550,9 @@ public class Principale {
 	}
 
 	/**
-	 * Cette méthode effectue le lancement du chargement en base à partir du tableau de paramètre.
+	 * Cette méthode effectue le lancement du chargement en base à partir du
+	 * tableau de paramètre.
+	 * 
 	 * @param args
 	 */
 	public static void lanceLoadSQL(String[] args) {
@@ -546,10 +563,11 @@ public class Principale {
 		} else {
 			args[3] = verifFichierFormat(args[3], 1);
 			SKOSToI2B2 loaderTable = null;
-			if (args[6] != null && !args[6].isEmpty())
-				loaderTable = new SKOSToI2B2(args[1], args[4]);
+			if (args[6] != null && !args[6].isEmpty() && args[8].matches("(\\d)+"))
+				loaderTable = new SKOSToI2B2(args[1], args[6],
+						Integer.decode(args[8]));
 			else
-				loaderTable = new SKOSToI2B2(args[1], "");
+				loaderTable = new SKOSToI2B2(args[1], "", 0);
 
 			loaderTable.loadSQL(Integer.parseInt(args[10]), args[3]);
 		}
@@ -634,9 +652,9 @@ public class Principale {
 				args[3] = verifFichierFormat(args[3], 1);
 				SKOSToI2B2 loaderCSV = null;
 				if (args.length > 4)
-					loaderCSV = new SKOSToI2B2(args[1], args[4]);
+					loaderCSV = new SKOSToI2B2(args[1], args[4],0);
 				else
-					loaderCSV = new SKOSToI2B2(args[1], "");
+					loaderCSV = new SKOSToI2B2(args[1], "", 0);
 				parametre = new String[args.length - 2];
 				for (int i = 0; i < args.length - 2; i++) {
 					parametre[i] = args[i + 2];
@@ -648,9 +666,9 @@ public class Principale {
 				args[4] = verifFichierFormat(args[4], 1);
 				SKOSToI2B2 loaderSQL = null;
 				if (args.length > 5)
-					loaderSQL = new SKOSToI2B2(args[1], args[5]);
+					loaderSQL = new SKOSToI2B2(args[1], args[5],0);
 				else
-					loaderSQL = new SKOSToI2B2(args[1], "");
+					loaderSQL = new SKOSToI2B2(args[1], "", 0);
 				parametre = new String[args.length - 2];
 				for (int i = 0; i < args.length - 2; i++) {
 					parametre[i] = args[i + 2];
@@ -663,9 +681,9 @@ public class Principale {
 				args[3] = verifFichierSortie(args[3], 1);
 				SKOSToI2B2 loaderSQLLoader = null;
 				if (args.length > 6)
-					loaderSQLLoader = new SKOSToI2B2(args[1], args[6]);
+					loaderSQLLoader = new SKOSToI2B2(args[1], args[6],0);
 				else
-					loaderSQLLoader = new SKOSToI2B2(args[1], "");
+					loaderSQLLoader = new SKOSToI2B2(args[1], "", 0);
 				parametre = new String[args.length - 2];
 				for (int i = 0; i < args.length - 2; i++) {
 					parametre[i] = args[i + 2];
@@ -681,9 +699,9 @@ public class Principale {
 					args[3] = verifFichierFormat(args[3], 1);
 					SKOSToI2B2 loaderTable = null;
 					if (args.length > 4)
-						loaderTable = new SKOSToI2B2(args[1], args[4]);
+						loaderTable = new SKOSToI2B2(args[1], args[4],0);
 					else
-						loaderTable = new SKOSToI2B2(args[1], "");
+						loaderTable = new SKOSToI2B2(args[1], "", 0);
 					parametre = new String[args.length - 2];
 					for (int i = 0; i < args.length - 2; i++) {
 						parametre[i] = args[i + 2];
@@ -850,6 +868,7 @@ public class Principale {
 		String nomTable = null;
 		String methodeChargement = null;
 		String conceptStart = null;
+		String niveauStart = null;
 
 		System.out.println("Nom du fichier en entrée :");
 		fichierEntree = checkFile(1);
@@ -879,12 +898,15 @@ public class Principale {
 		}
 		System.out.println("Concept de départ (facultatif) :");
 		conceptStart = choixUtilisateur();
+		
+		System.out.println("Niveau de départ (facultatif) :");
+		niveauStart = choixUtilisateur();
 
 		SKOSToI2B2 loaderI2B2 = null;
-		if (conceptStart == null || conceptStart.isEmpty())
-			loaderI2B2 = new SKOSToI2B2(fichierEntree, "");
+		if ((conceptStart == null || conceptStart.isEmpty()) && (niveauStart == null || niveauStart.isEmpty()) && niveauStart.matches("(\\d)+"))
+			loaderI2B2 = new SKOSToI2B2(fichierEntree, "", 0);
 		else
-			loaderI2B2 = new SKOSToI2B2(fichierEntree, conceptStart);
+			loaderI2B2 = new SKOSToI2B2(fichierEntree, conceptStart, Integer.decode(niveauStart));
 		switch (typeFichier) {
 		case 1:
 			if (separateur == null || separateur.isEmpty())

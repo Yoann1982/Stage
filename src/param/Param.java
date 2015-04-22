@@ -1,4 +1,4 @@
-package Param;
+package param;
 
 public class Param {
 

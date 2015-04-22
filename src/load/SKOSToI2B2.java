@@ -9,7 +9,7 @@ public class SKOSToI2B2 {
 
 	private SKOSToI2B2Builder loader;
 
-	public SKOSToI2B2(String inputFile, String conceptStart) {
+	public SKOSToI2B2(String inputFile, String conceptStart, int niveau) {
 		// I2B2 test
 		// Chargement du fichier SKOS
 
@@ -21,7 +21,7 @@ public class SKOSToI2B2 {
 		loader = new SKOSToI2B2Builder(resonneur.findPropertyAssertion());
 		loader.setInputFile(inputFile);
 		// On charge les données dans I2B2
-		loader.load(conceptStart);
+		loader.load(conceptStart, niveau);
 	}
 
 	public void createCSV(String[] parametre) {

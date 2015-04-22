@@ -163,13 +163,13 @@ public class SKOSToI2B2Builder extends Builder {
 
 	}
 
-	public void load(String conceptStart) {
+	public void load(String conceptStart, int niveau) {
 		// On recherche l'IRI de l'ontologie
 		iriProject = foundIriProjectByIndividual();
 		// On crée le préfixe associé
 		if (iriProject != null) {
 			prefixOnto = new DefaultPrefixManager(iriProject.toString() + "#");
-			int niveau = 0;
+			//int niveau = 0;
 
 			// Recherche du Concept I2B2 et créations des enregistrements à
 			// partir
