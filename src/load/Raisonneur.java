@@ -22,12 +22,12 @@ import uk.ac.manchester.cs.owl.owlapi.OWLOntologyImpl;
  *         Institut Bergonié<br>
  */
 
-public class Resonneur {
+public class Raisonneur {
 
 	private OWLOntology ontology;
 	private Reasoner hermit;
 
-	public Resonneur(OWLOntology onto) {
+	public Raisonneur(OWLOntology onto) {
 
 		this.ontology = onto;
 		hermit = new Reasoner(onto);

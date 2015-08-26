@@ -31,7 +31,7 @@ public class SKOSToI2B2 {
 		reader.loadOntology(inputFile);
 
 		// On résonne
-		Resonneur resonneur = new Resonneur(reader.getOntology());
+		Raisonneur resonneur = new Raisonneur(reader.getOntology());
 		loader = new SKOSToI2B2Builder(resonneur.findPropertyAssertion());
 		loader.setInputFile(inputFile);
 		// On charge les données dans I2B2
